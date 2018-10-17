@@ -1,6 +1,10 @@
 package com.roi.galegot.sequal.service;
 
+import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 
 import org.apache.commons.io.FilenameUtils;
 import org.apache.spark.SparkConf;
@@ -9,6 +13,7 @@ import org.apache.spark.api.java.JavaSparkContext;
 
 import com.roi.galegot.sequal.common.Sequence;
 import com.roi.galegot.sequal.dnafilereader.DNAFileReaderFactory;
+import com.roi.galegot.sequal.util.ExecutionParametersManager;
 
 /**
  * The Class AppService.
@@ -46,11 +51,12 @@ public class AppService {
 	 * @param input      the input
 	 * @param output     the output
 	 */
-	public AppService(String masterConf, String input, String output) {
+	public AppService(String masterConf, String input, String output, String configFile) {
 		this.input = input;
 		this.output = output;
 
 		this.start(masterConf);
+		ExecutionParametersManager.setConfigFile(configFile);
 	}
 
 	/**
@@ -110,4 +116,30 @@ public class AppService {
 	public void none() {
 		this.stop();
 	}
+
+	/**
+	 * Filter.
+	 */
+	public void filter() {
+		this.seqs = FilterService.filter(this.seqs);
+	}
+
+	/**
+	 * Generate file.
+	 *
+	 * @throws IOException Signals that an I/O exception has occurred.
+	 */
+	public void generateConfigFile() throws IOException {
+		InputStream in = this.getClass().getResourceAsStream("/ExecutionParameters.properties");
+
+		byte[] buffer = new byte[in.available()];
+		in.read(buffer);
+
+		File targetFile = new File(this.output + "/ExecutionParameters.properties");
+		OutputStream outStream = new FileOutputStream(targetFile);
+		outStream.write(buffer);
+		outStream.close();
+		in.close();
+	}
+
 }
