@@ -22,7 +22,7 @@ public final class ExecutionParametersManager {
 	/**
 	 * Reads all the parameters from the specified CONFIGURATION_FILE and stores
 	 * them in a HashMap
-	 * 
+	 *
 	 * @return Map<String, String> pair of Name - Value of the parameters
 	 */
 	@SuppressWarnings({ "unchecked", "rawtypes" })
@@ -41,17 +41,20 @@ public final class ExecutionParametersManager {
 				}
 			} else {
 				inputStream = classLoader.getResourceAsStream(CONFIGURATION_FILE);
-			}
+				if (inputStream != null) {
+					Properties properties = new Properties();
+					try {
+						properties.load(inputStream);
+						inputStream.close();
+					} catch (IOException e) {
+						throw new RuntimeException(e);
+					}
 
-			Properties properties = new Properties();
-			try {
-				properties.load(inputStream);
-				inputStream.close();
-			} catch (IOException e) {
-				throw new RuntimeException(e);
+					parameters = new HashMap(properties);
+				} else {
+					parameters = new HashMap<String, String>();
+				}
 			}
-
-			parameters = new HashMap(properties);
 
 		}
 		return parameters;
@@ -60,7 +63,7 @@ public final class ExecutionParametersManager {
 
 	/**
 	 * Returns the value of the specified parameter
-	 * 
+	 *
 	 * @param param specified parameter
 	 * @return String value of the parameter
 	 */
@@ -71,7 +74,7 @@ public final class ExecutionParametersManager {
 
 	/**
 	 * Sets a value for the specified parameter
-	 * 
+	 *
 	 * @param param specified parameter
 	 * @param value specified value for the parameter
 	 */

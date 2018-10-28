@@ -25,7 +25,7 @@ public class SingleFiltersTest {
 
 	@BeforeClass
 	public static void setupSpark() throws IOException {
-		spc = new SparkConf().setAppName("TFG").setMaster("local[*]");
+		spc = new SparkConf().setAppName("SeQual").setMaster("local[*]");
 		jsc = new JavaSparkContext(spc);
 		jsc.setLogLevel("ERROR");
 	}
