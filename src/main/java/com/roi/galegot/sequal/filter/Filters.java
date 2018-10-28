@@ -1,7 +1,7 @@
 package com.roi.galegot.sequal.filter;
 
 public enum Filters {
-	EXAMPLE("EXAMPLE");
+	BASEP("com.roi.galegot.sequal.filter.single.BaseP");
 
 	private String filterClassName;
 
