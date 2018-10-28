@@ -1,7 +1,8 @@
 package com.roi.galegot.sequal.filter;
 
 public enum Filters {
-	LENGTH("com.roi.galegot.sequal.filter.single.Length"), QUALITY("com.roi.galegot.sequal.filter.single.Quality");
+	LENGTH("com.roi.galegot.sequal.filter.single.Length"), QUALITY("com.roi.galegot.sequal.filter.single.Quality"),
+	NAMB("com.roi.galegot.sequal.filter.single.NAmb");
 
 	private String filterClassName;
 
