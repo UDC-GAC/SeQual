@@ -2,6 +2,7 @@ package com.roi.galegot.sequal.filter;
 
 public enum Filters {
 	LENGTH("com.roi.galegot.sequal.filter.single.Length"), QUALITY("com.roi.galegot.sequal.filter.single.Quality"),
+	QUALITYSCORE("com.roi.galegot.sequal.filter.single.QualityScore"),
 	NAMB("com.roi.galegot.sequal.filter.single.NAmb"), NAMBP("com.roi.galegot.sequal.filter.single.NAmbP"),
 	GC("com.roi.galegot.sequal.filter.single.GC"), GCP("com.roi.galegot.sequal.filter.single.GCP"),
 	NONIUPAC("com.roi.galegot.sequal.filter.single.NonIupac"), PATTERN("com.roi.galegot.sequal.filter.single.Pattern"),

@@ -162,6 +162,68 @@ public class SingleFiltersTest {
 	}
 
 	@Test
+	public void filterQualityScore() {
+		/*
+		 * 5 = 20 | 6 = 21
+		 */
+		String seq1s1 = "@cluster_2:UMI_ATTCCG";
+		String seq1s2 = "TTTCCGGGGCACATAATCTTCAGCCGGGCGC";
+		String seq1s4 = "6666666666666656666666666666666";
+		Sequence seq1 = new Sequence(seq1s1, seq1s2, commLine, seq1s4);
+
+		/*
+		 * 6 = 21
+		 */
+		String seq2s1 = "@cluster_12:UMI_GGTCAA";
+		String seq2s2 = "GCAGTTNNAGATCAATATATNNNAGAGCA";
+		String seq2s4 = "66666666666666666666666666666";
+		Sequence seq2 = new Sequence(seq2s1, seq2s2, commLine, seq2s4);
+
+		/*
+		 * 6 = 21 | 7 = 22
+		 */
+		String seq3s1 = "@cluster_21:UMI_AGAACA";
+		String seq3s2 = "GGCATTGCAAAATTTNTTSCACCCCCAG";
+		String seq3s4 = "6666666666666676666666666666";
+		Sequence seq3 = new Sequence(seq3s1, seq3s2, commLine, seq3s4);
+
+		JavaRDD<Sequence> original = jsc.parallelize(Arrays.asList(seq1, seq2, seq3));
+		JavaRDD<Sequence> filtered;
+		ArrayList<Sequence> list;
+		SingleFilter filter = new QualityScore();
+
+		ExecutionParametersManager.setParameter("QualityScoreMinVal", "");
+		ExecutionParametersManager.setParameter("QualityScoreMaxVal", "");
+		filtered = filter.validate(original);
+		assertEquals(original.collect(), filtered.collect());
+
+		ExecutionParametersManager.setParameter("QualityScoreMinVal", "21");
+		filtered = filter.validate(original);
+		assertEquals(filtered.count(), 2);
+		list = new ArrayList<>(filtered.collect());
+		assertEquals(list.size(), 2);
+		assertTrue(list.contains(seq2));
+		assertTrue(list.contains(seq3));
+
+		ExecutionParametersManager.setParameter("QualityScoreMinVal", "");
+		ExecutionParametersManager.setParameter("QualityScoreMaxVal", "21");
+		filtered = filter.validate(original);
+		assertEquals(filtered.count(), 2);
+		list = new ArrayList<>(filtered.collect());
+		assertEquals(list.size(), 2);
+		assertTrue(list.contains(seq1));
+		assertTrue(list.contains(seq2));
+
+		ExecutionParametersManager.setParameter("QualityScoreMinVal", "21");
+		ExecutionParametersManager.setParameter("QualityScoreMaxVal", "21");
+		filtered = filter.validate(original);
+		assertEquals(filtered.count(), 1);
+		list = new ArrayList<>(filtered.collect());
+		assertEquals(list.size(), 1);
+		assertTrue(list.contains(seq2));
+	}
+
+	@Test
 	public void filterNAmb() {
 
 		/*
