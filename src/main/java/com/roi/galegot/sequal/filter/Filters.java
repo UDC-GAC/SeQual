@@ -1,7 +1,7 @@
 package com.roi.galegot.sequal.filter;
 
 public enum Filters {
-	EXAMPLE("EXAMPLE");
+	GC("com.roi.galegot.sequal.filter.single.GC");
 
 	private String filterClassName;
 
