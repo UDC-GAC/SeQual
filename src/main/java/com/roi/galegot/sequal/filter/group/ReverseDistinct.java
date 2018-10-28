@@ -8,6 +8,7 @@ import org.apache.spark.api.java.function.Function2;
 import org.apache.spark.api.java.function.PairFunction;
 
 import com.roi.galegot.sequal.common.Sequence;
+
 import scala.Tuple2;
 
 public class ReverseDistinct implements GroupFilter {
@@ -67,7 +68,6 @@ public class ReverseDistinct implements GroupFilter {
 		public int hashCode() {
 			final int prime = 31;
 			int result = 1;
-			result = (prime * result) + this.getOuterType().hashCode();
 			result = (prime * result)
 					+ (((this.s == null) ? 0 : this.s.hashCode()) + ((this.sr == null) ? 0 : this.sr.hashCode()));
 			return result;
@@ -85,9 +85,6 @@ public class ReverseDistinct implements GroupFilter {
 				return false;
 			}
 			ReverseString other = (ReverseString) obj;
-			if (!this.getOuterType().equals(other.getOuterType())) {
-				return false;
-			}
 			if (this.s == null) {
 				if (other.sr != null) {
 					return false;
@@ -103,10 +100,6 @@ public class ReverseDistinct implements GroupFilter {
 				return false;
 			}
 			return true;
-		}
-
-		private ReverseDistinct getOuterType() {
-			return ReverseDistinct.this;
 		}
 
 	}

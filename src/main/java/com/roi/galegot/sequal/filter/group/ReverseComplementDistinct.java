@@ -11,27 +11,28 @@ import com.roi.galegot.sequal.common.Sequence;
 
 import scala.Tuple2;
 
-public class ComplementDistinct implements GroupFilter {
+public class ReverseComplementDistinct implements GroupFilter {
 
-	private static final long serialVersionUID = -5947189310641527595L;
+	private static final long serialVersionUID = -3416801873476204891L;
 
 	@Override
 	public JavaRDD<Sequence> validate(JavaRDD<Sequence> seqs) {
-		JavaPairRDD<ComplementString, Sequence> group = seqs
-				.mapToPair(new PairFunction<Sequence, ComplementString, Sequence>() {
+		JavaPairRDD<ReverseComplementString, Sequence> group = seqs
+				.mapToPair(new PairFunction<Sequence, ReverseComplementString, Sequence>() {
 
-					private static final long serialVersionUID = -7740337890433733128L;
+					private static final long serialVersionUID = -6192877628808422227L;
 
 					@Override
-					public Tuple2<ComplementString, Sequence> call(Sequence seq) {
-						return new Tuple2<ComplementString, Sequence>(new ComplementString(seq.getSeq()), seq);
+					public Tuple2<ReverseComplementString, Sequence> call(Sequence seq) {
+						return new Tuple2<ReverseComplementString, Sequence>(new ReverseComplementString(seq.getSeq()),
+								seq);
 					}
 				});
 
 		if (seqs.first().isHasQual()) {
 			return group.reduceByKey(new Function2<Sequence, Sequence, Sequence>() {
 
-				private static final long serialVersionUID = 409867625719430118L;
+				private static final long serialVersionUID = -2285412703072618941L;
 
 				@Override
 				public Sequence call(Sequence seq1, Sequence seq2) {
@@ -44,7 +45,7 @@ public class ComplementDistinct implements GroupFilter {
 		} else {
 			return group.reduceByKey(new Function2<Sequence, Sequence, Sequence>() {
 
-				private static final long serialVersionUID = 6231420965110817797L;
+				private static final long serialVersionUID = -6498038456070131065L;
 
 				@Override
 				public Sequence call(Sequence seq1, Sequence seq2) {
@@ -54,20 +55,21 @@ public class ComplementDistinct implements GroupFilter {
 		}
 	}
 
-	class ComplementString implements Serializable {
+	class ReverseComplementString implements Serializable {
 
-		private static final long serialVersionUID = 3011027347808993546L;
+		private static final long serialVersionUID = -7032196466156045735L;
 		private String s, sr;
 
-		public ComplementString(String s) {
+		public ReverseComplementString(String s) {
 			this.s = s;
-			this.sr = this.getComplementary(s);
+			this.sr = new StringBuilder(this.getComplementary(s)).reverse().toString();
 		}
 
 		private String getComplementary(String s) {
 			char[] result = new char[s.length()];
 			int counter = 0;
 			for (char c : this.s.toCharArray()) {
+
 				switch (c) {
 				case 'A':
 					result[counter] = 'T';
@@ -109,7 +111,7 @@ public class ComplementDistinct implements GroupFilter {
 			if (this.getClass() != obj.getClass()) {
 				return false;
 			}
-			ComplementString other = (ComplementString) obj;
+			ReverseComplementString other = (ReverseComplementString) obj;
 			if (this.s == null) {
 				if (other.sr != null) {
 					return false;
