@@ -5,7 +5,7 @@ public enum Filters {
 	NAMB("com.roi.galegot.sequal.filter.single.NAmb"), NAMBP("com.roi.galegot.sequal.filter.single.NAmbP"),
 	GC("com.roi.galegot.sequal.filter.single.GC"), GCP("com.roi.galegot.sequal.filter.single.GCP"),
 	NONIUPAC("com.roi.galegot.sequal.filter.single.NonIupac"), PATTERN("com.roi.galegot.sequal.filter.single.Pattern"),
-	NOPATTERN("com.roi.galegot.sequal.filter.single.NoPattern");
+	NOPATTERN("com.roi.galegot.sequal.filter.single.NoPattern"), BASEN("com.roi.galegot.sequal.filter.single.BaseN");
 
 	private String filterClassName;
 
