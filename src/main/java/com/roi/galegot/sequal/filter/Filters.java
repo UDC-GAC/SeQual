@@ -11,7 +11,8 @@ public enum Filters {
 
 	DISTINCT("com.roi.galegot.sequal.filter.group.Distinct"),
 	ALMOSTDISTINCT("com.roi.galegot.sequal.filter.group.AlmostDistinct"),
-	REVERSEDISTINCT("com.roi.galegot.sequal.filter.group.ReverseDistinct");
+	REVERSEDISTINCT("com.roi.galegot.sequal.filter.group.ReverseDistinct"),
+	COMPLEMENTDISTINCT("com.roi.galegot.sequal.filter.group.ComplementDistinct");
 
 	private String filterClassName;
 
