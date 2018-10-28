@@ -412,4 +412,44 @@ public class SingleFiltersTest {
 		assertEquals(list.size(), 1);
 		assertTrue(list.contains(seq2));
 	}
+
+	@Test
+	public void filterNonIupac() {
+
+		/*
+		 * U = 0
+		 */
+		String seq1s1 = "@cluster_2:UMI_ATTCCG";
+		String seq1s2 = "TTTCCGGGGCACATAATCTTCAGCCGGGCGC";
+		String seq1s4 = "9C;=;=<9@4868>9:67AA<9>65<=>591";
+		Sequence seq1 = new Sequence(seq1s1, seq1s2, commLine, seq1s4);
+
+		/*
+		 * U = 1
+		 */
+		String seq2s1 = "@cluster_8:UMI_CTTTGA";
+		String seq2s2 = "TATCCUNGCAATANTCTCCGAACNGGAGAG";
+		String seq2s4 = "1/04.72,(003,-2-22+00-12./.-.4";
+		Sequence seq2 = new Sequence(seq2s1, seq2s2, commLine, seq2s4);
+
+		/*
+		 * U = 0
+		 */
+		String seq3s1 = "@cluster_12:UMI_GGTCAA";
+		String seq3s2 = "GCAGTTNNAGATCAATATATNNNAGAGCA";
+		String seq3s4 = "?7?AEEC@>=1?A?EEEB9ECB?==:B.A";
+		Sequence seq3 = new Sequence(seq3s1, seq3s2, commLine, seq3s4);
+
+		JavaRDD<Sequence> original = jsc.parallelize(Arrays.asList(seq1, seq2, seq3));
+		JavaRDD<Sequence> filtered;
+		ArrayList<Sequence> list;
+		SingleFilter filter = new NonIupac();
+
+		filtered = filter.validate(original);
+		assertEquals(filtered.count(), 2);
+		list = new ArrayList<>(filtered.collect());
+		assertEquals(list.size(), 2);
+		assertTrue(list.contains(seq1));
+		assertTrue(list.contains(seq3));
+	}
 }
