@@ -9,7 +9,8 @@ public enum Filters {
 	NOPATTERN("com.roi.galegot.sequal.filter.single.NoPattern"), BASEN("com.roi.galegot.sequal.filter.single.BaseN"),
 	BASEP("com.roi.galegot.sequal.filter.single.BaseP"),
 
-	DISTINCT("com.roi.galegot.sequal.filter.group.Distinct");
+	DISTINCT("com.roi.galegot.sequal.filter.group.Distinct"),
+	ALMOSTDISTINCT("com.roi.galegot.sequal.filter.group.AlmostDistinct");
 
 	private String filterClassName;
 
