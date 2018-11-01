@@ -41,19 +41,19 @@ public final class ExecutionParametersManager {
 				}
 			} else {
 				inputStream = classLoader.getResourceAsStream(CONFIGURATION_FILE);
-				if (inputStream != null) {
-					Properties properties = new Properties();
-					try {
-						properties.load(inputStream);
-						inputStream.close();
-					} catch (IOException e) {
-						throw new RuntimeException(e);
-					}
-
-					parameters = new HashMap(properties);
-				} else {
-					parameters = new HashMap<String, String>();
+			}
+			if (inputStream != null) {
+				Properties properties = new Properties();
+				try {
+					properties.load(inputStream);
+					inputStream.close();
+				} catch (IOException e) {
+					throw new RuntimeException(e);
 				}
+
+				parameters = new HashMap(properties);
+			} else {
+				parameters = new HashMap<String, String>();
 			}
 
 		}
@@ -69,7 +69,6 @@ public final class ExecutionParametersManager {
 	 */
 	public static String getParameter(String param) {
 		return getParameters().get(param);
-
 	}
 
 	/**

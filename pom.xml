@@ -107,7 +107,7 @@
 				<configuration>
 					<archive>
 						<manifest>
-							<mainClass>ui.ConsoleInterface</mainClass>
+							<mainClass>com.roi.galegot.sequal.console.ConsoleInterface</mainClass>
 						</manifest>
 					</archive>
 				</configuration>

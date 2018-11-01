@@ -11,24 +11,32 @@ import com.roi.galegot.sequal.common.Sequence;
 
 import scala.Tuple2;
 
+/**
+ * The Class ReverseDistinct.
+ */
 public class ReverseDistinct implements GroupFilter {
 
+	/** The Constant serialVersionUID. */
 	private static final long serialVersionUID = -1061447508688116490L;
 
 	@Override
-	public JavaRDD<Sequence> validate(JavaRDD<Sequence> seqs) {
-		JavaPairRDD<ReverseString, Sequence> group = seqs
+	public JavaRDD<Sequence> validate(JavaRDD<Sequence> sequences) {
+		if (sequences.isEmpty()) {
+			return sequences;
+		}
+
+		JavaPairRDD<ReverseString, Sequence> group = sequences
 				.mapToPair(new PairFunction<Sequence, ReverseString, Sequence>() {
 
 					private static final long serialVersionUID = -3184033798508472514L;
 
 					@Override
 					public Tuple2<ReverseString, Sequence> call(Sequence seq) {
-						return new Tuple2<ReverseString, Sequence>(new ReverseString(seq.getSeq()), seq);
+						return new Tuple2<ReverseString, Sequence>(new ReverseString(seq.getSequenceString()), seq);
 					}
 				});
 
-		if (seqs.first().isHasQual()) {
+		if (sequences.first().isHasQual()) {
 			return group.reduceByKey(new Function2<Sequence, Sequence, Sequence>() {
 
 				private static final long serialVersionUID = -1935325326481753717L;
@@ -54,22 +62,33 @@ public class ReverseDistinct implements GroupFilter {
 		}
 	}
 
+	/**
+	 * The Class ReverseString.
+	 */
 	class ReverseString implements Serializable {
 
+		/** The Constant serialVersionUID. */
 		private static final long serialVersionUID = -3467393373228813336L;
-		private String s, sr;
 
-		public ReverseString(String s) {
-			this.s = s;
-			this.sr = new StringBuilder(s).reverse().toString();
+		/** The reverse sequence. */
+		private String sequence, reverseSequence;
+
+		/**
+		 * Instantiates a new reverse string.
+		 *
+		 * @param sequence the sequence
+		 */
+		public ReverseString(String sequence) {
+			this.sequence = sequence;
+			this.reverseSequence = new StringBuilder(sequence).reverse().toString();
 		}
 
 		@Override
 		public int hashCode() {
 			final int prime = 31;
 			int result = 1;
-			result = (prime * result)
-					+ (((this.s == null) ? 0 : this.s.hashCode()) + ((this.sr == null) ? 0 : this.sr.hashCode()));
+			result = (prime * result) + (((this.sequence == null) ? 0 : this.sequence.hashCode())
+					+ ((this.reverseSequence == null) ? 0 : this.reverseSequence.hashCode()));
 			return result;
 		}
 
@@ -85,18 +104,18 @@ public class ReverseDistinct implements GroupFilter {
 				return false;
 			}
 			ReverseString other = (ReverseString) obj;
-			if (this.s == null) {
-				if (other.sr != null) {
+			if (this.sequence == null) {
+				if (other.reverseSequence != null) {
 					return false;
 				}
-			} else if (!this.s.equals(other.sr)) {
+			} else if (!this.sequence.equals(other.reverseSequence)) {
 				return false;
 			}
-			if (this.sr == null) {
-				if (other.s != null) {
+			if (this.reverseSequence == null) {
+				if (other.sequence != null) {
 					return false;
 				}
-			} else if (!this.sr.equals(other.s)) {
+			} else if (!this.reverseSequence.equals(other.sequence)) {
 				return false;
 			}
 			return true;

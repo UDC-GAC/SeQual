@@ -7,6 +7,8 @@ import java.io.InputStream;
 import java.io.OutputStream;
 
 import org.apache.commons.io.FilenameUtils;
+import org.apache.log4j.Level;
+import org.apache.log4j.Logger;
 import org.apache.spark.SparkConf;
 import org.apache.spark.api.java.JavaRDD;
 import org.apache.spark.api.java.JavaSparkContext;
@@ -72,9 +74,11 @@ public class AppService {
 	 * @param masterConf the master conf
 	 */
 	private void start(String masterConf) {
+		Logger.getLogger("org").setLevel(Level.WARN);
+		Logger.getLogger("akka").setLevel(Level.WARN);
+
 		spc = new SparkConf().setAppName("SeQual").setMaster(masterConf);
 		jsc = new JavaSparkContext(spc);
-		jsc.setLogLevel("ERROR");
 	}
 
 	/**
@@ -121,7 +125,9 @@ public class AppService {
 	 * Filter.
 	 */
 	public void filter() {
-		this.seqs = FilterService.filter(this.seqs);
+		if (!this.seqs.isEmpty()) {
+			this.seqs = FilterService.filter(this.seqs);
+		}
 	}
 
 	/**

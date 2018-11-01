@@ -11,24 +11,33 @@ import com.roi.galegot.sequal.common.Sequence;
 
 import scala.Tuple2;
 
+/**
+ * The Class ComplementDistinct.
+ */
 public class ComplementDistinct implements GroupFilter {
 
+	/** The Constant serialVersionUID. */
 	private static final long serialVersionUID = -5947189310641527595L;
 
 	@Override
-	public JavaRDD<Sequence> validate(JavaRDD<Sequence> seqs) {
-		JavaPairRDD<ComplementString, Sequence> group = seqs
+	public JavaRDD<Sequence> validate(JavaRDD<Sequence> sequences) {
+		if (sequences.isEmpty()) {
+			return sequences;
+		}
+
+		JavaPairRDD<ComplementString, Sequence> group = sequences
 				.mapToPair(new PairFunction<Sequence, ComplementString, Sequence>() {
 
 					private static final long serialVersionUID = -7740337890433733128L;
 
 					@Override
 					public Tuple2<ComplementString, Sequence> call(Sequence seq) {
-						return new Tuple2<ComplementString, Sequence>(new ComplementString(seq.getSeq()), seq);
+						return new Tuple2<ComplementString, Sequence>(new ComplementString(seq.getSequenceString()),
+								seq);
 					}
 				});
 
-		if (seqs.first().isHasQual()) {
+		if (sequences.first().isHasQual()) {
 			return group.reduceByKey(new Function2<Sequence, Sequence, Sequence>() {
 
 				private static final long serialVersionUID = 409867625719430118L;
@@ -54,20 +63,37 @@ public class ComplementDistinct implements GroupFilter {
 		}
 	}
 
+	/**
+	 * The Class ComplementString.
+	 */
 	class ComplementString implements Serializable {
 
+		/** The Constant serialVersionUID. */
 		private static final long serialVersionUID = 3011027347808993546L;
-		private String s, sr;
 
-		public ComplementString(String s) {
-			this.s = s;
-			this.sr = this.getComplementary(s);
+		/** The complementary sequence. */
+		private String sequence, complementarySequence;
+
+		/**
+		 * Instantiates a new complement string.
+		 *
+		 * @param sequence the sequence
+		 */
+		public ComplementString(String sequence) {
+			this.sequence = sequence;
+			this.complementarySequence = this.getComplementary(sequence);
 		}
 
-		private String getComplementary(String s) {
-			char[] result = new char[s.length()];
+		/**
+		 * Gets the complementary.
+		 *
+		 * @param sequence the sequence
+		 * @return the complementary
+		 */
+		private String getComplementary(String sequence) {
+			char[] result = new char[sequence.length()];
 			int counter = 0;
-			for (char c : this.s.toCharArray()) {
+			for (char c : this.sequence.toCharArray()) {
 				switch (c) {
 				case 'A':
 					result[counter] = 'T';
@@ -93,8 +119,8 @@ public class ComplementDistinct implements GroupFilter {
 		public int hashCode() {
 			final int prime = 31;
 			int result = 1;
-			result = (prime * result)
-					+ (((this.s == null) ? 0 : this.s.hashCode()) + ((this.sr == null) ? 0 : this.sr.hashCode()));
+			result = (prime * result) + (((this.sequence == null) ? 0 : this.sequence.hashCode())
+					+ ((this.complementarySequence == null) ? 0 : this.complementarySequence.hashCode()));
 			return result;
 		}
 
@@ -110,18 +136,18 @@ public class ComplementDistinct implements GroupFilter {
 				return false;
 			}
 			ComplementString other = (ComplementString) obj;
-			if (this.s == null) {
-				if (other.sr != null) {
+			if (this.sequence == null) {
+				if (other.complementarySequence != null) {
 					return false;
 				}
-			} else if (!this.s.equals(other.sr)) {
+			} else if (!this.sequence.equals(other.complementarySequence)) {
 				return false;
 			}
-			if (this.sr == null) {
-				if (other.s != null) {
+			if (this.complementarySequence == null) {
+				if (other.sequence != null) {
 					return false;
 				}
-			} else if (!this.sr.equals(other.s)) {
+			} else if (!this.complementarySequence.equals(other.sequence)) {
 				return false;
 			}
 			return true;
