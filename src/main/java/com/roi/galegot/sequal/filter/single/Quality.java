@@ -1,32 +1,56 @@
 package com.roi.galegot.sequal.filter.single;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.spark.api.java.JavaRDD;
 
 import com.roi.galegot.sequal.common.Sequence;
 import com.roi.galegot.sequal.util.ExecutionParametersManager;
 
+/**
+ * The Class Quality.
+ */
 public class Quality implements SingleFilter {
 
+	/** The Constant serialVersionUID. */
 	private static final long serialVersionUID = 6867361108805219701L;
 
 	@Override
-	public JavaRDD<Sequence> validate(JavaRDD<Sequence> seqs) {
-		Double limMin, limMax;
-		String limMinStr, limMaxStr;
-		Boolean limMinUse, limMaxUse;
+	public JavaRDD<Sequence> validate(JavaRDD<Sequence> sequences) {
+		Double limMin;
+		Double limMax;
+
+		String limMinStr;
+		String limMaxStr;
+
+		Boolean limMinUse;
+		Boolean limMaxUse;
+
+		if (sequences.isEmpty()) {
+			return sequences;
+		}
 
 		limMinStr = ExecutionParametersManager.getParameter("QualityMinVal");
 		limMaxStr = ExecutionParametersManager.getParameter("QualityMaxVal");
 
-		limMin = (limMinUse = !(limMinStr.isEmpty())) ? new Double(limMinStr) : null;
-		limMax = (limMaxUse = !(limMaxStr.isEmpty())) ? new Double(limMaxStr) : null;
+		limMin = (limMinUse = StringUtils.isNotBlank(limMinStr)) ? new Double(limMinStr) : null;
+		limMax = (limMaxUse = StringUtils.isNotBlank(limMaxStr)) ? new Double(limMaxStr) : null;
 
-		if ((!limMinUse && !limMaxUse) || !seqs.first().isHasQual()) {
-			return seqs;
+		if ((!limMinUse && !limMaxUse) || !sequences.first().isHasQual()) {
+			return sequences;
 		}
-		return seqs.filter(s -> filter(s, limMin, limMinUse, limMax, limMaxUse));
+		return sequences.filter(s -> this.filter(s, limMin, limMinUse, limMax, limMaxUse));
 	}
 
+	/**
+	 * Filter.
+	 *
+	 * @param seq       the seq
+	 * @param limMin    the lim min
+	 * @param limMinUse the lim min use
+	 * @param limMax    the lim max
+	 * @param limMaxUse the lim max use
+	 * @return the boolean
+	 */
 	private Boolean filter(Sequence seq, Double limMin, Boolean limMinUse, Double limMax, Boolean limMaxUse) {
 		if (seq.isHasQual()) {
 			if (limMinUse && limMaxUse) {

@@ -144,7 +144,7 @@ public class Sequence implements Serializable {
 	 *
 	 * @return the seq
 	 */
-	public String getSeq() {
+	public String getSequenceString() {
 		return this.sequenceString;
 	}
 
@@ -313,7 +313,7 @@ public class Sequence implements Serializable {
 	 *
 	 * @param seq the new seq
 	 */
-	public void setSeq(String seq) {
+	public void setSequenceString(String seq) {
 		this.sequenceString = seq;
 		this.length = seq.length();
 		this.guaCyt = this.calcGuaCyt();

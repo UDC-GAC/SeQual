@@ -2,6 +2,7 @@ package com.roi.galegot.sequal.filter.group;
 
 import java.io.Serializable;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.spark.api.java.JavaPairRDD;
 import org.apache.spark.api.java.JavaRDD;
 
@@ -10,19 +11,28 @@ import com.roi.galegot.sequal.util.ExecutionParametersManager;
 
 import scala.Tuple2;
 
+/**
+ * The Class AlmostDistinct.
+ */
 public class AlmostDistinct implements GroupFilter {
 
+	/** The Constant serialVersionUID. */
 	private static final long serialVersionUID = 3561681376850129189L;
 
 	@Override
-	public JavaRDD<Sequence> validate(JavaRDD<Sequence> seqs) {
+	public JavaRDD<Sequence> validate(JavaRDD<Sequence> sequences) {
+		if (sequences.isEmpty()) {
+			return sequences;
+		}
+
 		String sDiff = ExecutionParametersManager.getParameter("MaxDifference");
-		Integer maxDiff = (sDiff.isEmpty()) ? 0 : new Integer(sDiff);
 
-		JavaPairRDD<AlmostString, Sequence> group = seqs
-				.mapToPair(seq -> new Tuple2<AlmostString, Sequence>(new AlmostString(seq.getSeq(), maxDiff), seq));
+		Integer maxDiff = (StringUtils.isNotBlank(sDiff)) ? new Integer(sDiff) : 0;
 
-		if (seqs.first().isHasQual()) {
+		JavaPairRDD<AlmostString, Sequence> group = sequences.mapToPair(
+				seq -> new Tuple2<AlmostString, Sequence>(new AlmostString(seq.getSequenceString(), maxDiff), seq));
+
+		if (sequences.first().isHasQual()) {
 			return group.reduceByKey((seq1, seq2) -> {
 				if (seq1.getQuality() >= seq2.getQuality()) {
 					return seq1;
@@ -34,14 +44,28 @@ public class AlmostDistinct implements GroupFilter {
 		}
 	}
 
+	/**
+	 * The Class AlmostString.
+	 */
 	class AlmostString implements Serializable {
 
+		/** The Constant serialVersionUID. */
 		private static final long serialVersionUID = 3595254670141051507L;
-		private String s;
+
+		/** The sequence. */
+		private String sequence;
+
+		/** The max diff. */
 		private int maxDiff;
 
-		public AlmostString(String s, int maxDiff) {
-			this.s = s;
+		/**
+		 * Instantiates a new almost string.
+		 *
+		 * @param sequence the sequence
+		 * @param maxDiff  the max diff
+		 */
+		public AlmostString(String sequence, int maxDiff) {
+			this.sequence = sequence;
 			this.maxDiff = maxDiff;
 		}
 
@@ -62,25 +86,31 @@ public class AlmostDistinct implements GroupFilter {
 				return false;
 			}
 			AlmostString other = (AlmostString) obj;
-			if (this.s == null) {
-				if (other.s != null) {
+			if (this.sequence == null) {
+				if (other.sequence != null) {
 					return false;
 				}
-			} else if (!checkSeq(other.s)) {
+			} else if (!this.checkSeq(other.sequence)) {
 				return false;
 			}
 			return true;
 		}
 
+		/**
+		 * Check seq.
+		 *
+		 * @param s2 the s 2
+		 * @return the boolean
+		 */
 		private Boolean checkSeq(String s2) {
-			if (this.s.length() != s2.length()) {
+			if (this.sequence.length() != s2.length()) {
 				return false;
 			}
 
-			if ((this.maxDiff > 0) && (this.maxDiff < this.s.length())) {
+			if ((this.maxDiff > 0) && (this.maxDiff < this.sequence.length())) {
 				int counter = 0;
 				int diffs = 0;
-				for (char c : this.s.toCharArray()) {
+				for (char c : this.sequence.toCharArray()) {
 					if (c != s2.charAt(counter)) {
 						diffs++;
 					}
@@ -91,7 +121,7 @@ public class AlmostDistinct implements GroupFilter {
 				}
 				return true;
 			} else {
-				return this.s.equals(s2);
+				return this.sequence.equals(s2);
 			}
 		}
 
