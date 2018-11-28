@@ -37,7 +37,7 @@ public class FilterServiceTest {
 	}
 
 	@Test
-	public void filterLength() {
+	public void filterService() {
 
 		/*
 		 * Length = 30
