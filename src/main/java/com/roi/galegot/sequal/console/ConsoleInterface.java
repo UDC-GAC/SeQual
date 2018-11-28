@@ -91,6 +91,10 @@ public class ConsoleInterface {
 			service.filter();
 		}
 
+		if (findOption(args, ConsoleOptions.FORMAT.getOpt()) != -1) {
+			service.format();
+		}
+
 		service.write();
 		service.end();
 

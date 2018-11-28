@@ -130,6 +130,12 @@ public class AppService {
 		}
 	}
 
+	public void format() {
+		if (!this.seqs.isEmpty()) {
+			this.seqs = FormatService.format(this.seqs);
+		}
+	}
+
 	/**
 	 * Generate file.
 	 *
