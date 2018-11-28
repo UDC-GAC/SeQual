@@ -76,21 +76,8 @@ public class AlmostDistinct implements GroupFilter {
 
 		@Override
 		public boolean equals(Object obj) {
-			if (this == obj) {
-				return true;
-			}
-			if (obj == null) {
-				return false;
-			}
-			if (this.getClass() != obj.getClass()) {
-				return false;
-			}
 			AlmostString other = (AlmostString) obj;
-			if (this.sequence == null) {
-				if (other.sequence != null) {
-					return false;
-				}
-			} else if (!this.checkSeq(other.sequence)) {
+			if (!this.checkSeq(other.sequence)) {
 				return false;
 			}
 			return true;

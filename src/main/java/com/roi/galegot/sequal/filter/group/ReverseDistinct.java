@@ -94,28 +94,8 @@ public class ReverseDistinct implements GroupFilter {
 
 		@Override
 		public boolean equals(Object obj) {
-			if (this == obj) {
-				return true;
-			}
-			if (obj == null) {
-				return false;
-			}
-			if (this.getClass() != obj.getClass()) {
-				return false;
-			}
 			ReverseString other = (ReverseString) obj;
-			if (this.sequence == null) {
-				if (other.reverseSequence != null) {
-					return false;
-				}
-			} else if (!this.sequence.equals(other.reverseSequence)) {
-				return false;
-			}
-			if (this.reverseSequence == null) {
-				if (other.sequence != null) {
-					return false;
-				}
-			} else if (!this.reverseSequence.equals(other.sequence)) {
+			if (!this.sequence.equals(other.reverseSequence)) {
 				return false;
 			}
 			return true;

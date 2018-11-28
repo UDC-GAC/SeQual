@@ -19,7 +19,7 @@
     <plugins>
       <plugin>
         <artifactId>maven-compiler-plugin</artifactId>
-        <version>3.7.0</version>
+        <version>${maven.compiler.version}</version>
         <configuration>
           <source>1.8</source>
           <target>1.8</target>
@@ -27,7 +27,7 @@
       </plugin>
       <plugin>
         <artifactId>maven-shade-plugin</artifactId>
-        <version>3.1.0</version>
+        <version>${maven.shade.version}</version>
         <executions>
           <execution>
             <phase>package</phase>
@@ -58,7 +58,7 @@
       <plugin>
         <groupId>org.codehaus.mojo</groupId>
         <artifactId>exec-maven-plugin</artifactId>
-        <version>1.6.0</version>
+        <version>${maven.exec.version}</version>
         <executions>
           <execution>
             <goals>
@@ -73,7 +73,7 @@
       </plugin>
       <plugin>
         <artifactId>maven-jar-plugin</artifactId>
-        <version>3.0.2</version>
+        <version>${maven.jar.version}</version>
         <configuration>
           <archive>
             <manifest>
@@ -82,13 +82,32 @@
           </archive>
         </configuration>
       </plugin>
+      <plugin>
+        <groupId>org.jacoco</groupId>
+        <artifactId>jacoco-maven-plugin</artifactId>
+        <version>0.8.2</version>
+        <executions>
+          <execution>
+            <goals>
+              <goal>prepare-agent</goal>
+            </goals>
+          </execution>
+          <execution>
+            <id>report</id>
+            <phase>prepare-package</phase>
+            <goals>
+              <goal>report</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
     </plugins>
   </build>
   <dependencies>
     <dependency>
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>
-      <version>4.11</version>
+      <version>4.12</version>
       <scope>test</scope>
       <exclusions>
         <exclusion>
@@ -99,7 +118,13 @@
     </dependency>
   </dependencies>
   <properties>
+    <maven.jar.version>3.1.0</maven.jar.version>
+    <maven.shade.version>3.2.0</maven.shade.version>
+    <maven.exec.version>1.6.0</maven.exec.version>
+    <maven.compiler.version>3.8.0</maven.compiler.version>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <spark.version>2.3.2</spark.version>
+    <hadoop.sequence.parser.version>1.0</hadoop.sequence.parser.version>
+    <junit.version>4.12</junit.version>
   </properties>
 </project>
-
