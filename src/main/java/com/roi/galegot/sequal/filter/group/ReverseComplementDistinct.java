@@ -130,28 +130,8 @@ public class ReverseComplementDistinct implements GroupFilter {
 
 		@Override
 		public boolean equals(Object obj) {
-			if (this == obj) {
-				return true;
-			}
-			if (obj == null) {
-				return false;
-			}
-			if (this.getClass() != obj.getClass()) {
-				return false;
-			}
 			ReverseComplementString other = (ReverseComplementString) obj;
-			if (this.sequence == null) {
-				if (other.reverseComplementarySequence != null) {
-					return false;
-				}
-			} else if (!this.sequence.equals(other.reverseComplementarySequence)) {
-				return false;
-			}
-			if (this.reverseComplementarySequence == null) {
-				if (other.sequence != null) {
-					return false;
-				}
-			} else if (!this.reverseComplementarySequence.equals(other.sequence)) {
+			if (!this.sequence.equals(other.reverseComplementarySequence)) {
 				return false;
 			}
 			return true;

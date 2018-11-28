@@ -63,9 +63,14 @@ public class SingleFiltersTest {
 		Sequence seq4 = new Sequence(seq4s1, seq4s2, commLine, seq4s4);
 
 		JavaRDD<Sequence> original = jsc.parallelize(Arrays.asList(seq2, seq3, seq4));
+		JavaRDD<Sequence> emptyRdd = jsc.parallelize(new ArrayList<Sequence>());
 		JavaRDD<Sequence> filtered;
 		ArrayList<Sequence> list;
 		SingleFilter filter = new Length();
+
+		// Test for empty RDD
+		filtered = filter.validate(emptyRdd);
+		assertEquals(filtered.count(), 0);
 
 		ExecutionParametersManager.setParameter("LengthMinVal", "");
 		ExecutionParametersManager.setParameter("LengthMaxVal", "");
@@ -126,9 +131,14 @@ public class SingleFiltersTest {
 		Sequence seq3 = new Sequence(seq3s1, seq3s2, commLine, seq3s4);
 
 		JavaRDD<Sequence> original = jsc.parallelize(Arrays.asList(seq1, seq2, seq3));
+		JavaRDD<Sequence> emptyRdd = jsc.parallelize(new ArrayList<Sequence>());
 		JavaRDD<Sequence> filtered;
 		ArrayList<Sequence> list;
 		SingleFilter filter = new Quality();
+
+		// Test for empty RDD
+		filtered = filter.validate(emptyRdd);
+		assertEquals(filtered.count(), 0);
 
 		ExecutionParametersManager.setParameter("QualityMinVal", "");
 		ExecutionParametersManager.setParameter("QualityMaxVal", "");
@@ -188,9 +198,14 @@ public class SingleFiltersTest {
 		Sequence seq3 = new Sequence(seq3s1, seq3s2, commLine, seq3s4);
 
 		JavaRDD<Sequence> original = jsc.parallelize(Arrays.asList(seq1, seq2, seq3));
+		JavaRDD<Sequence> emptyRdd = jsc.parallelize(new ArrayList<Sequence>());
 		JavaRDD<Sequence> filtered;
 		ArrayList<Sequence> list;
 		SingleFilter filter = new QualityScore();
+
+		// Test for empty RDD
+		filtered = filter.validate(emptyRdd);
+		assertEquals(filtered.count(), 0);
 
 		ExecutionParametersManager.setParameter("QualityScoreMinVal", "");
 		ExecutionParametersManager.setParameter("QualityScoreMaxVal", "");
@@ -251,9 +266,14 @@ public class SingleFiltersTest {
 		Sequence seq3 = new Sequence(seq3s1, seq3s2, commLine, seq3s4);
 
 		JavaRDD<Sequence> original = jsc.parallelize(Arrays.asList(seq1, seq2, seq3));
+		JavaRDD<Sequence> emptyRdd = jsc.parallelize(new ArrayList<Sequence>());
 		JavaRDD<Sequence> filtered;
 		ArrayList<Sequence> list;
 		SingleFilter filter = new NAmb();
+
+		// Test for empty RDD
+		filtered = filter.validate(emptyRdd);
+		assertEquals(filtered.count(), 0);
 
 		ExecutionParametersManager.setParameter("NAmbMinVal", "");
 		ExecutionParametersManager.setParameter("NAmbMaxVal", "");
@@ -314,9 +334,14 @@ public class SingleFiltersTest {
 		Sequence seq3 = new Sequence(seq3s1, seq3s2, commLine, seq3s4);
 
 		JavaRDD<Sequence> original = jsc.parallelize(Arrays.asList(seq1, seq2, seq3));
+		JavaRDD<Sequence> emptyRdd = jsc.parallelize(new ArrayList<Sequence>());
 		JavaRDD<Sequence> filtered;
 		ArrayList<Sequence> list;
 		SingleFilter filter = new NAmbP();
+
+		// Test for empty RDD
+		filtered = filter.validate(emptyRdd);
+		assertEquals(filtered.count(), 0);
 
 		ExecutionParametersManager.setParameter("NAmbPMinVal", "");
 		ExecutionParametersManager.setParameter("NAmbPMaxVal", "");
@@ -377,9 +402,14 @@ public class SingleFiltersTest {
 		Sequence seq3 = new Sequence(seq3s1, seq3s2, commLine, seq3s4);
 
 		JavaRDD<Sequence> original = jsc.parallelize(Arrays.asList(seq1, seq2, seq3));
+		JavaRDD<Sequence> emptyRdd = jsc.parallelize(new ArrayList<Sequence>());
 		JavaRDD<Sequence> filtered;
 		ArrayList<Sequence> list;
 		SingleFilter filter = new GC();
+
+		// Test for empty RDD
+		filtered = filter.validate(emptyRdd);
+		assertEquals(filtered.count(), 0);
 
 		ExecutionParametersManager.setParameter("GCMinVal", "");
 		ExecutionParametersManager.setParameter("GCMaxVal", "");
@@ -440,9 +470,14 @@ public class SingleFiltersTest {
 		Sequence seq3 = new Sequence(seq3s1, seq3s2, commLine, seq3s4);
 
 		JavaRDD<Sequence> original = jsc.parallelize(Arrays.asList(seq1, seq2, seq3));
+		JavaRDD<Sequence> emptyRdd = jsc.parallelize(new ArrayList<Sequence>());
 		JavaRDD<Sequence> filtered;
 		ArrayList<Sequence> list;
 		SingleFilter filter = new GCP();
+
+		// Test for empty RDD
+		filtered = filter.validate(emptyRdd);
+		assertEquals(filtered.count(), 0);
 
 		ExecutionParametersManager.setParameter("GCPMinVal", "");
 		ExecutionParametersManager.setParameter("GCPMaxVal", "");
@@ -504,8 +539,13 @@ public class SingleFiltersTest {
 
 		JavaRDD<Sequence> original = jsc.parallelize(Arrays.asList(seq1, seq2, seq3));
 		JavaRDD<Sequence> filtered;
+		JavaRDD<Sequence> emptyRdd = jsc.parallelize(new ArrayList<Sequence>());
 		ArrayList<Sequence> list;
 		SingleFilter filter = new NonIupac();
+
+		// Test for empty RDD
+		filtered = filter.validate(emptyRdd);
+		assertEquals(filtered.count(), 0);
 
 		filtered = filter.validate(original);
 		assertEquals(filtered.count(), 2);
@@ -543,9 +583,14 @@ public class SingleFiltersTest {
 		Sequence seq3 = new Sequence(seq3s1, seq3s2, commLine, seq3s4);
 
 		JavaRDD<Sequence> original = jsc.parallelize(Arrays.asList(seq1, seq2, seq3));
+		JavaRDD<Sequence> emptyRdd = jsc.parallelize(new ArrayList<Sequence>());
 		JavaRDD<Sequence> filtered;
 		ArrayList<Sequence> list;
 		SingleFilter filter = new Pattern();
+
+		// Test for empty RDD
+		filtered = filter.validate(emptyRdd);
+		assertEquals(filtered.count(), 0);
 
 		ExecutionParametersManager.setParameter("Pattern", "");
 		ExecutionParametersManager.setParameter("RepPattern", "");
@@ -616,9 +661,14 @@ public class SingleFiltersTest {
 		Sequence seq3 = new Sequence(seq3s1, seq3s2, commLine, seq3s4);
 
 		JavaRDD<Sequence> original = jsc.parallelize(Arrays.asList(seq1, seq2, seq3));
+		JavaRDD<Sequence> emptyRdd = jsc.parallelize(new ArrayList<Sequence>());
 		JavaRDD<Sequence> filtered;
 		ArrayList<Sequence> list;
 		SingleFilter filter = new NoPattern();
+
+		// Test for empty RDD
+		filtered = filter.validate(emptyRdd);
+		assertEquals(filtered.count(), 0);
 
 		ExecutionParametersManager.setParameter("NoPattern", "");
 		ExecutionParametersManager.setParameter("RepNoPattern", "");
@@ -717,9 +767,14 @@ public class SingleFiltersTest {
 		Sequence seq5 = new Sequence(seq5s1, seq5s2, commLine, seq5s4);
 
 		JavaRDD<Sequence> original = jsc.parallelize(Arrays.asList(seq1, seq2, seq3, seq4, seq5));
+		JavaRDD<Sequence> emptyRdd = jsc.parallelize(new ArrayList<Sequence>());
 		JavaRDD<Sequence> filtered;
 		ArrayList<Sequence> list;
 		SingleFilter filter = new BaseN();
+
+		// Test for empty RDD
+		filtered = filter.validate(emptyRdd);
+		assertEquals(filtered.count(), 0);
 
 		ExecutionParametersManager.setParameter("Base", "");
 		ExecutionParametersManager.setParameter("BaseMinVal", "");
@@ -869,9 +924,14 @@ public class SingleFiltersTest {
 		Sequence seq5 = new Sequence(seq5s1, seq5s2, commLine, seq5s4);
 
 		JavaRDD<Sequence> original = jsc.parallelize(Arrays.asList(seq1, seq2, seq3, seq4, seq5));
+		JavaRDD<Sequence> emptyRdd = jsc.parallelize(new ArrayList<Sequence>());
 		JavaRDD<Sequence> filtered;
 		ArrayList<Sequence> list;
 		SingleFilter filter = new BaseP();
+
+		// Test for empty RDD
+		filtered = filter.validate(emptyRdd);
+		assertEquals(filtered.count(), 0);
 
 		ExecutionParametersManager.setParameter("BaseP", "");
 		ExecutionParametersManager.setParameter("BasePMinVal", "");

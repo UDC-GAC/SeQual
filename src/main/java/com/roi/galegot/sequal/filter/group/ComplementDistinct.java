@@ -126,28 +126,8 @@ public class ComplementDistinct implements GroupFilter {
 
 		@Override
 		public boolean equals(Object obj) {
-			if (this == obj) {
-				return true;
-			}
-			if (obj == null) {
-				return false;
-			}
-			if (this.getClass() != obj.getClass()) {
-				return false;
-			}
 			ComplementString other = (ComplementString) obj;
-			if (this.sequence == null) {
-				if (other.complementarySequence != null) {
-					return false;
-				}
-			} else if (!this.sequence.equals(other.complementarySequence)) {
-				return false;
-			}
-			if (this.complementarySequence == null) {
-				if (other.sequence != null) {
-					return false;
-				}
-			} else if (!this.complementarySequence.equals(other.sequence)) {
+			if (!this.sequence.equals(other.complementarySequence)) {
 				return false;
 			}
 			return true;

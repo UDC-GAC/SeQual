@@ -2,6 +2,10 @@ package com.roi.galegot.sequal.common;
 
 import java.io.Serializable;
 
+import org.apache.commons.lang3.StringUtils;
+
+import com.roi.galegot.sequal.exceptions.InvalidSequenceException;
+
 /**
  * The Class Sequence.
  */
@@ -46,8 +50,13 @@ public class Sequence implements Serializable {
 	 *
 	 * @param line1 the line 1
 	 * @param line2 the line 2
+	 * @throws InvalidSequenceException
 	 */
 	public Sequence(String line1, String line2) {
+		if (!this.checkIsWellFormed(line1, line2)) {
+			throw new InvalidSequenceException();
+		}
+
 		this.name = line1;
 		this.sequenceString = line2;
 		this.length = this.sequenceString.length();
@@ -65,8 +74,13 @@ public class Sequence implements Serializable {
 	 * @param line2 the line 2
 	 * @param line3 the line 3
 	 * @param line4 the line 4
+	 * @throws InvalidSequenceException
 	 */
 	public Sequence(String line1, String line2, String line3, String line4) {
+		if (!this.checkIsWellFormed(line1, line2, line3, line4)) {
+			throw new InvalidSequenceException();
+		}
+
 		this.name = line1;
 		this.sequenceString = line2;
 		this.extra = line3;
@@ -82,9 +96,6 @@ public class Sequence implements Serializable {
 
 	@Override
 	public String toString() {
-		if (this.sequenceString.equals("")) {
-			return "";
-		}
 		if (this.hasQuality) {
 			return this.name + "\n" + this.sequenceString + "\n" + this.extra + "\n" + this.qualityString;
 		} else {
@@ -296,6 +307,9 @@ public class Sequence implements Serializable {
 	 * @param name the new name
 	 */
 	public void setName(String name) {
+		if (this.checkStart(name, "@") || this.checkStart(name, ">")) {
+			throw new InvalidSequenceException();
+		}
 		this.name = name;
 	}
 
@@ -313,9 +327,9 @@ public class Sequence implements Serializable {
 	 *
 	 * @param seq the new seq
 	 */
-	public void setSequenceString(String seq) {
-		this.sequenceString = seq;
-		this.length = seq.length();
+	public void setSequenceString(String sequenceString) {
+		this.sequenceString = sequenceString;
+		this.length = sequenceString.length();
 		this.guaCyt = this.calcGuaCyt();
 		this.guaCytP = this.calcGuaCytP();
 		this.nAmb = this.calcNAmb();
@@ -328,11 +342,39 @@ public class Sequence implements Serializable {
 	 * @param qualityS the new quality string
 	 */
 	public void setQualityString(String qualityS) {
-		if (qualityS.isEmpty()) {
+		if (StringUtils.isBlank(qualityS)) {
 			this.hasQuality = false;
 		} else {
 			this.qualityString = qualityS;
 			this.quality = this.calcQuality();
 		}
+	}
+
+	private Boolean checkIsWellFormed(String line1, String line2) {
+		if (StringUtils.isBlank(line1) || StringUtils.isBlank(line2)) {
+			return false;
+		}
+		if (!this.checkStart(line1, ">")) {
+			return false;
+		}
+		return true;
+	}
+
+	private Boolean checkIsWellFormed(String line1, String line2, String line3, String line4) {
+		if (StringUtils.isBlank(line1) || StringUtils.isBlank(line2) || StringUtils.isBlank(line3)
+				|| StringUtils.isBlank(line4)) {
+			return false;
+		}
+		if (line2.length() != line4.length()) {
+			return false;
+		}
+		if (!this.checkStart(line1, "@")) {
+			return false;
+		}
+		return true;
+	}
+
+	private Boolean checkStart(String line, String starter) {
+		return line.startsWith(starter);
 	}
 }

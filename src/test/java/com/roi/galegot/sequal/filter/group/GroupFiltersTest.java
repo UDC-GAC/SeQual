@@ -64,11 +64,17 @@ public class GroupFiltersTest {
 		String seq3s2fa = "TCCCCCCCCCAAATCGGAAAAACACACCCCA";
 		Sequence seq3fa = new Sequence(seq3s1fa, seq3s2fa);
 
-		JavaRDD<Sequence> original = jsc.parallelize(Arrays.asList(seq1, seq2, seq3));
+		// seq1 added twice for testing purposes
+		JavaRDD<Sequence> original = jsc.parallelize(Arrays.asList(seq1, seq1, seq2, seq3));
 		JavaRDD<Sequence> originalFA = jsc.parallelize(Arrays.asList(seq1fa, seq2fa, seq3fa));
+		JavaRDD<Sequence> emptyRdd = jsc.parallelize(new ArrayList<Sequence>());
 		JavaRDD<Sequence> filtered;
 		ArrayList<Sequence> list;
 		GroupFilter filter = new Distinct();
+
+		// Test for empty RDD
+		filtered = filter.validate(emptyRdd);
+		assertEquals(filtered.count(), 0);
 
 		filtered = filter.validate(original);
 		assertEquals(filtered.count(), 2);
@@ -125,9 +131,14 @@ public class GroupFiltersTest {
 
 		JavaRDD<Sequence> original = jsc.parallelize(Arrays.asList(seq1, seq2, seq3, seq4));
 		JavaRDD<Sequence> originalFA = jsc.parallelize(Arrays.asList(seq1fa, seq2fa, seq3fa, seq4fa));
+		JavaRDD<Sequence> emptyRdd = jsc.parallelize(new ArrayList<Sequence>());
 		JavaRDD<Sequence> filtered;
 		ArrayList<Sequence> list;
 		GroupFilter filter = new AlmostDistinct();
+
+		// Test for empty RDD
+		filtered = filter.validate(emptyRdd);
+		assertEquals(filtered.count(), 0);
 
 		ExecutionParametersManager.setParameter("MaxDifference", "");
 		filtered = filter.validate(original);
@@ -209,9 +220,14 @@ public class GroupFiltersTest {
 
 		JavaRDD<Sequence> original = jsc.parallelize(Arrays.asList(seq1, seq2, seq3));
 		JavaRDD<Sequence> originalFA = jsc.parallelize(Arrays.asList(seq1fa, seq2fa, seq3fa));
+		JavaRDD<Sequence> emptyRdd = jsc.parallelize(new ArrayList<Sequence>());
 		JavaRDD<Sequence> filtered;
 		ArrayList<Sequence> list;
 		GroupFilter filter = new ReverseDistinct();
+
+		// Test for empty RDD
+		filtered = filter.validate(emptyRdd);
+		assertEquals(filtered.count(), 0);
 
 		filtered = filter.validate(original);
 
@@ -259,9 +275,14 @@ public class GroupFiltersTest {
 
 		JavaRDD<Sequence> original = jsc.parallelize(Arrays.asList(seq1, seq2, seq3));
 		JavaRDD<Sequence> originalFA = jsc.parallelize(Arrays.asList(seq1fa, seq2fa, seq3fa));
+		JavaRDD<Sequence> emptyRdd = jsc.parallelize(new ArrayList<Sequence>());
 		JavaRDD<Sequence> filtered;
 		ArrayList<Sequence> list;
 		GroupFilter filter = new ComplementDistinct();
+
+		// Test for empty RDD
+		filtered = filter.validate(emptyRdd);
+		assertEquals(filtered.count(), 0);
 
 		filtered = filter.validate(original);
 		assertEquals(filtered.count(), 1);
@@ -306,9 +327,14 @@ public class GroupFiltersTest {
 
 		JavaRDD<Sequence> original = jsc.parallelize(Arrays.asList(seq1, seq2, seq3));
 		JavaRDD<Sequence> originalFA = jsc.parallelize(Arrays.asList(seq1fa, seq2fa, seq3fa));
+		JavaRDD<Sequence> emptyRdd = jsc.parallelize(new ArrayList<Sequence>());
 		JavaRDD<Sequence> filtered;
 		ArrayList<Sequence> list;
 		GroupFilter filter = new ReverseComplementDistinct();
+
+		// Test for empty RDD
+		filtered = filter.validate(emptyRdd);
+		assertEquals(filtered.count(), 0);
 
 		filtered = filter.validate(original);
 		assertEquals(filtered.count(), 1);
