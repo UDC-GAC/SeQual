@@ -307,7 +307,7 @@ public class Sequence implements Serializable {
 	 * @param name the new name
 	 */
 	public void setName(String name) {
-		if (this.checkStart(name, "@") || this.checkStart(name, ">")) {
+		if (!(this.checkStart(name, "@") || this.checkStart(name, ">"))) {
 			throw new InvalidSequenceException();
 		}
 		this.name = name;
@@ -344,6 +344,7 @@ public class Sequence implements Serializable {
 	public void setQualityString(String qualityS) {
 		if (StringUtils.isBlank(qualityS)) {
 			this.hasQuality = false;
+			this.qualityString = null;
 		} else {
 			this.qualityString = qualityS;
 			this.quality = this.calcQuality();
