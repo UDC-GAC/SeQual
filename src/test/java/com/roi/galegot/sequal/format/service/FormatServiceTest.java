@@ -67,27 +67,27 @@ public class FormatServiceTest {
 		ExecutionParametersManager.setParameter("Formatters", "");
 
 		formatted = FormatService.format(original);
-		assertEquals(formatted.count(), 2);
+		assertEquals(2, formatted.count());
 		list = new ArrayList<>(formatted.collect());
-		assertEquals(list.size(), 2);
+		assertEquals(2, list.size());
 		assertTrue(list.contains(seq1));
 		assertTrue(list.contains(seq2));
 
 		ExecutionParametersManager.setParameter("Formatters", "DNATORNA");
 
 		formatted = FormatService.format(original);
-		assertEquals(formatted.count(), 2);
+		assertEquals(2, formatted.count());
 		list = new ArrayList<>(formatted.collect());
-		assertEquals(list.size(), 2);
+		assertEquals(2, list.size());
 		assertTrue(list.contains(seq5));
 		assertTrue(list.contains(seq6));
 
 		ExecutionParametersManager.setParameter("Formatters", "DNATORNA|FASTQTOFASTA");
 
 		formatted = FormatService.format(original);
-		assertEquals(formatted.count(), 2);
+		assertEquals(2, formatted.count());
 		list = new ArrayList<>(formatted.collect());
-		assertEquals(list.size(), 2);
+		assertEquals(2, list.size());
 		assertTrue(list.contains(seq3));
 		assertTrue(list.contains(seq4));
 

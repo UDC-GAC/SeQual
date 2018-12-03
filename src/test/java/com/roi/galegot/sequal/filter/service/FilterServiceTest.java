@@ -83,15 +83,27 @@ public class FilterServiceTest {
 		JavaRDD<Sequence> filtered;
 		ArrayList<Sequence> list;
 
+		ExecutionParametersManager.setParameter("SingleFilters", "");
+		filtered = FilterService.filter(original);
+
+		assertEquals(5, filtered.count());
+		list = new ArrayList<>(filtered.collect());
+		assertEquals(5, list.size());
+		assertTrue(list.contains(seq1));
+		assertTrue(list.contains(seq2));
+		assertTrue(list.contains(seq3));
+		assertTrue(list.contains(seq4));
+		assertTrue(list.contains(seq5));
+
 		ExecutionParametersManager.setParameter("SingleFilters", "LENGTH");
 		ExecutionParametersManager.setParameter("LengthMinVal", "29");
 		ExecutionParametersManager.setParameter("LengthMaxVal", "30");
 
 		filtered = FilterService.filter(original);
 
-		assertEquals(filtered.count(), 4);
+		assertEquals(4, filtered.count());
 		list = new ArrayList<>(filtered.collect());
-		assertEquals(list.size(), 4);
+		assertEquals(4, list.size());
 		assertTrue(list.contains(seq1));
 		assertTrue(list.contains(seq2));
 		assertTrue(list.contains(seq3));
@@ -103,9 +115,9 @@ public class FilterServiceTest {
 
 		filtered = FilterService.filter(original);
 
-		assertEquals(filtered.count(), 3);
+		assertEquals(3, filtered.count());
 		list = new ArrayList<>(filtered.collect());
-		assertEquals(list.size(), 3);
+		assertEquals(3, list.size());
 		assertTrue(list.contains(seq1));
 		assertTrue(list.contains(seq2));
 		assertTrue(list.contains(seq5));
@@ -114,9 +126,9 @@ public class FilterServiceTest {
 
 		filtered = FilterService.filter(original);
 
-		assertEquals(filtered.count(), 2);
+		assertEquals(2, filtered.count());
 		list = new ArrayList<>(filtered.collect());
-		assertEquals(list.size(), 2);
+		assertEquals(2, list.size());
 		assertTrue(list.contains(seq1));
 		assertTrue(list.contains(seq2));
 
@@ -124,9 +136,9 @@ public class FilterServiceTest {
 
 		filtered = FilterService.filter(original);
 
-		assertEquals(filtered.count(), 1);
+		assertEquals(1, filtered.count());
 		list = new ArrayList<>(filtered.collect());
-		assertEquals(list.size(), 1);
+		assertEquals(1, list.size());
 		assertTrue(list.contains(seq2));
 	}
 }

@@ -87,6 +87,10 @@ public class ConsoleInterface {
 		service = new AppService(masterConf, input, output, configFile);
 		service.read();
 
+		if (findOption(args, ConsoleOptions.TRIM.getOpt()) != -1) {
+			service.trim();
+		}
+
 		if (findOption(args, ConsoleOptions.FILTER.getOpt()) != -1) {
 			service.filter();
 		}
@@ -110,8 +114,7 @@ public class ConsoleInterface {
 	 * @return the int
 	 */
 	private static int findOption(String[] args, String opt) {
-		int pos = Arrays.asList(args).indexOf(opt);
-		return pos;
+		return Arrays.asList(args).indexOf(opt);
 	}
 
 	/**
@@ -124,6 +127,8 @@ public class ConsoleInterface {
 		System.out.println("-c ConfigFile: Specifies run options configuration file");
 		System.out.println("-g: Generates a blank configuration file in the specified with -o location");
 		System.out.println("-f: Filters read sequences following specified parameters");
+		System.out.println("-f: Format read sequences following specified parameters");
+		System.out.println("-t: Trims read sequences following specified parameters");
 		System.out.println("-sc SparkMasterConf: Specifies master configuration (local[*] by default)");
 	}
 }

@@ -57,7 +57,7 @@ public enum Filters {
 	REVERSECOMPLEMENTDISTINCT(16, "com.roi.galegot.sequal.filter.group.ReverseComplementDistinct");
 
 	/** The Constant MAX_FILTER_PRIORITY. */
-	public final static int MAX_FILTER_PRIORITY = 16;
+	public static final int MAX_FILTER_PRIORITY = 16;
 
 	/** The filter class name. */
 	private String filterClassName;
