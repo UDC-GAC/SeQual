@@ -19,7 +19,7 @@ public class FormatterFactory {
 	 * @param formatter Formatter selected to be returned
 	 * @return Formatter specified
 	 */
-	public synchronized static Formatter getFormatter(Formatters formatter) {
+	public static synchronized Formatter getFormatter(Formatters formatter) {
 		try {
 			return (Formatter) Class.forName(formatter.getFormatterClass()).newInstance();
 		} catch (ClassNotFoundException | InstantiationException | IllegalAccessException e) {

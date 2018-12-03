@@ -52,6 +52,7 @@ public class AppService {
 	 * @param masterConf the master conf
 	 * @param input      the input
 	 * @param output     the output
+	 * @param configFile the config file
 	 */
 	public AppService(String masterConf, String input, String output, String configFile) {
 		this.input = input;
@@ -130,9 +131,21 @@ public class AppService {
 		}
 	}
 
+	/**
+	 * Format.
+	 */
 	public void format() {
 		if (!this.seqs.isEmpty()) {
 			this.seqs = FormatService.format(this.seqs);
+		}
+	}
+
+	/**
+	 * Trim.
+	 */
+	public void trim() {
+		if (!this.seqs.isEmpty()) {
+			this.seqs = TrimService.trim(this.seqs);
 		}
 	}
 

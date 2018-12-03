@@ -19,7 +19,7 @@ public class FilterFactory {
 	 * @param filter Filter selected to be returned
 	 * @return SingleFilter specified
 	 */
-	public synchronized static Filter getFilter(Filters filter) {
+	public static synchronized Filter getFilter(Filters filter) {
 		try {
 			return (Filter) Class.forName(filter.getFilterClass()).newInstance();
 		} catch (ClassNotFoundException | InstantiationException | IllegalAccessException e) {

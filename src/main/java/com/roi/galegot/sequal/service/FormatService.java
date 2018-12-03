@@ -25,32 +25,32 @@ public class FormatService {
 	/**
 	 * Format.
 	 *
-	 * @param seqs the seqs
+	 * @param sequences the sequences
 	 * @return the java RDD
 	 */
-	public static JavaRDD<Sequence> format(JavaRDD<Sequence> seqs) {
+	public static JavaRDD<Sequence> format(JavaRDD<Sequence> sequences) {
 		List<Formatters> formatters = getFormatters();
 		if (!formatters.isEmpty()) {
-			return formatLoop(seqs, formatters);
+			return formatLoop(sequences, formatters);
 		} else {
 			System.out.println("\n\nNo formatters specified. No operations will be performed.");
 		}
-		return seqs;
+		return sequences;
 	}
 
 	/**
 	 * Format loop.
 	 *
-	 * @param seqs       the seqs
+	 * @param sequences  the sequences
 	 * @param formatters the formatters
 	 * @return the java RDD
 	 */
-	private static JavaRDD<Sequence> formatLoop(JavaRDD<Sequence> seqs, List<Formatters> formatters) {
+	private static JavaRDD<Sequence> formatLoop(JavaRDD<Sequence> sequences, List<Formatters> formatters) {
 		for (int i = 0; i < formatters.size(); i++) {
 			Formatter formatter = FormatterFactory.getFormatter(formatters.get(i));
-			seqs = formatter.format(seqs);
+			sequences = formatter.format(sequences);
 		}
-		return seqs;
+		return sequences;
 	}
 
 	/**
