@@ -1,8 +1,20 @@
 package com.roi.galegot.sequal.formatter;
 
+/**
+ * The Enum Formatters.
+ */
 public enum Formatters {
-	DNATORNA("formatters.DNAToRNA"), RNATODNA("formatters.RNAToDNA"), FASTQTOFASTA("formatters.FASTQToFASTA");
 
+	/** The dnatorna. */
+	DNATORNA("com.roi.galegot.sequal.formatter.DNAToRNA"),
+
+	/** The rnatodna. */
+	RNATODNA("com.roi.galegot.sequal.formatter.RNAToDNA"),
+
+	/** The fastqtofasta. */
+	FASTQTOFASTA("com.roi.galegot.sequal.formatter.FASTQToFASTA");
+
+	/** The formatter class name. */
 	private String formatterClassName;
 
 	/**

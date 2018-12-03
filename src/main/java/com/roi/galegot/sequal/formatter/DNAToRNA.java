@@ -4,17 +4,27 @@ import org.apache.spark.api.java.JavaRDD;
 
 import com.roi.galegot.sequal.common.Sequence;
 
+/**
+ * The Class DNAToRNA.
+ */
 public class DNAToRNA implements Formatter {
 
+	/** The Constant serialVersionUID. */
 	private static final long serialVersionUID = 1507230060510674227L;
 
 	@Override
-	public JavaRDD<Sequence> format(JavaRDD<Sequence> seqs) {
-		return seqs.map(s -> this.doFormat(s));
+	public JavaRDD<Sequence> format(JavaRDD<Sequence> sequences) {
+		return sequences.map(sequence -> this.doFormat(sequence));
 	}
 
-	private Sequence doFormat(Sequence seq) {
-		seq.setSequenceString(seq.getSequenceString().replace("T", "U"));
-		return seq;
+	/**
+	 * Do format.
+	 *
+	 * @param sequence the sequence
+	 * @return the sequence
+	 */
+	private Sequence doFormat(Sequence sequence) {
+		sequence.setSequenceString(sequence.getSequenceString().replace("T", "U"));
+		return sequence;
 	}
 }

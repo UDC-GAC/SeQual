@@ -4,18 +4,28 @@ import org.apache.spark.api.java.JavaRDD;
 
 import com.roi.galegot.sequal.common.Sequence;
 
+/**
+ * The Class FASTQToFASTA.
+ */
 public class FASTQToFASTA implements Formatter {
 
+	/** The Constant serialVersionUID. */
 	private static final long serialVersionUID = -5337524582924746654L;
 
 	@Override
-	public JavaRDD<Sequence> format(JavaRDD<Sequence> seqs) {
-		return seqs.map(s -> this.doFormat(s));
+	public JavaRDD<Sequence> format(JavaRDD<Sequence> sequences) {
+		return sequences.map(sequence -> this.doFormat(sequence));
 	}
 
-	private Sequence doFormat(Sequence seq) {
-		seq.setName(">" + seq.getName().substring(1));
-		seq.setQualityString("");
-		return seq;
+	/**
+	 * Do format.
+	 *
+	 * @param sequence the sequence
+	 * @return the sequence
+	 */
+	private Sequence doFormat(Sequence sequence) {
+		sequence.setName(">" + sequence.getName().substring(1));
+		sequence.setQualityString("");
+		return sequence;
 	}
 }

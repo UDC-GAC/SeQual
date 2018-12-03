@@ -1,7 +1,15 @@
 package com.roi.galegot.sequal.formatter;
 
+import com.roi.galegot.sequal.exceptions.NonExistentFormatterException;
+
+/**
+ * A factory for creating Formatter objects.
+ */
 public class FormatterFactory {
 
+	/**
+	 * Instantiates a new formatter factory.
+	 */
 	private FormatterFactory() {
 	}
 
@@ -15,7 +23,7 @@ public class FormatterFactory {
 		try {
 			return (Formatter) Class.forName(formatter.getFormatterClass()).newInstance();
 		} catch (ClassNotFoundException | InstantiationException | IllegalAccessException e) {
-			throw new RuntimeException("Formatter not found");
+			throw new NonExistentFormatterException(formatter.getFormatterClass());
 		}
 	}
 }
