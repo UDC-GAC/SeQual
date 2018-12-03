@@ -1,11 +1,20 @@
 package com.roi.galegot.sequal.filter;
 
+import com.roi.galegot.sequal.exceptions.NonExistentFilterException;
+
+/**
+ * A factory for creating Filter objects.
+ */
 public class FilterFactory {
+
+	/**
+	 * Instantiates a new filter factory.
+	 */
 	private FilterFactory() {
 	}
 
 	/**
-	 * Returns a filter based on the enum Filters
+	 * Returns a filter based on the enum Filters.
 	 *
 	 * @param filter Filter selected to be returned
 	 * @return SingleFilter specified
@@ -14,7 +23,7 @@ public class FilterFactory {
 		try {
 			return (Filter) Class.forName(filter.getFilterClass()).newInstance();
 		} catch (ClassNotFoundException | InstantiationException | IllegalAccessException e) {
-			throw new RuntimeException("Filter not found");
+			throw new NonExistentFilterException(filter.getFilterClass());
 		}
 	}
 }
