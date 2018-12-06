@@ -16,6 +16,7 @@ import org.junit.Test;
 
 import com.roi.galegot.sequal.common.Sequence;
 import com.roi.galegot.sequal.trimmer.TrimLeft;
+import com.roi.galegot.sequal.trimmer.TrimLeftP;
 import com.roi.galegot.sequal.trimmer.TrimRight;
 import com.roi.galegot.sequal.trimmer.Trimmer;
 import com.roi.galegot.sequal.util.ExecutionParametersManager;
@@ -219,7 +220,97 @@ public class TrimmersTest {
 
 	@Test
 	public void trimLeftP() {
+		/*
+		 * Length = 30
+		 */
+		String seq1s1 = "@cluster_8:UMI_CTTTGA";
+		String seq1s2 = "TATCCUNGCAATANTCTCCGAACNGGAGAG";
+		String seq1s4 = "1/04.72,(003,-2-22+00-12./.-.4";
+		Sequence seq1 = new Sequence(seq1s1, seq1s2, commLine, seq1s4);
 
+		String seq1s1fa = ">cluster_8:UMI_CTTTGA";
+		Sequence seq1fa = new Sequence(seq1s1fa, seq1s2);
+
+		// Copy of above sequence with 27 characters
+		String seq4s2 = "CCUNGCAATANTCTCCGAACNGGAGAG";
+		String seq4s4 = "4.72,(003,-2-22+00-12./.-.4";
+		Sequence seq4 = new Sequence(seq1s1, seq4s2, commLine, seq4s4);
+		Sequence seq4fa = new Sequence(seq1s1fa, seq4s2);
+
+		/*
+		 * Length = 29
+		 */
+		String seq2s1 = "@cluster_12:UMI_GGTCAA";
+		String seq2s2 = "GCAGTTNNAGATCAATATATNNNAGAGCA";
+		String seq2s4 = "?7?AEEC@>=1?A?EEEB9ECB?==:B.A";
+		Sequence seq2 = new Sequence(seq2s1, seq2s2, commLine, seq2s4);
+
+		String seq2s1fa = ">cluster_12:UMI_GGTCAA";
+		Sequence seq2fa = new Sequence(seq2s1fa, seq2s2);
+
+		// Copy of above sequence with 27 characters
+		String seq5s2 = "AGTTNNAGATCAATATATNNNAGAGCA";
+		String seq5s4 = "?AEEC@>=1?A?EEEB9ECB?==:B.A";
+		Sequence seq5 = new Sequence(seq1s1, seq5s2, commLine, seq5s4);
+		Sequence seq5fa = new Sequence(seq2s1fa, seq5s2);
+
+		/*
+		 * Length = 24
+		 */
+		String seq3s1 = "@cluster_21:UMI_AGAACA";
+		String seq3s2 = "GGCATTGCAAAATTTNTTSCACCC";
+		String seq3s4 = ">=2.660/?:36AD;0<1470364";
+		Sequence seq3 = new Sequence(seq3s1, seq3s2, commLine, seq3s4);
+
+		String seq3s1fa = ">cluster_21:UMI_AGAACA";
+		Sequence seq3fa = new Sequence(seq3s1fa, seq3s2);
+
+		// Copy of above sequence with 22 characters
+		String seq6s2 = "CATTGCAAAATTTNTTSCACCC";
+		String seq6s4 = "2.660/?:36AD;0<1470364";
+		Sequence seq6 = new Sequence(seq1s1, seq6s2, commLine, seq6s4);
+		Sequence seq6fa = new Sequence(seq2s1fa, seq6s2);
+
+		JavaRDD<Sequence> original = jsc.parallelize(Arrays.asList(seq1, seq2, seq3));
+		JavaRDD<Sequence> originalFA = jsc.parallelize(Arrays.asList(seq1fa, seq2fa, seq3fa));
+		JavaRDD<Sequence> emptyRdd = jsc.parallelize(new ArrayList<Sequence>());
+		JavaRDD<Sequence> trimmered;
+		ArrayList<Sequence> list;
+		Trimmer trimmer = new TrimLeftP();
+
+		// Test for empty RDD
+		trimmered = trimmer.trim(emptyRdd);
+		assertEquals(0, trimmered.count());
+
+		ExecutionParametersManager.setParameter("TrimLeftP", "");
+		trimmered = trimmer.trim(original);
+		assertEquals(original.collect(), trimmered.collect());
+
+		ExecutionParametersManager.setParameter("TrimLeftP", "0");
+		trimmered = trimmer.trim(original);
+		assertEquals(original.collect(), trimmered.collect());
+
+		ExecutionParametersManager.setParameter("TrimLeftP", "-1");
+		trimmered = trimmer.trim(original);
+		assertEquals(original.collect(), trimmered.collect());
+
+		ExecutionParametersManager.setParameter("TrimLeftP", "0.10");
+		trimmered = trimmer.trim(original);
+		assertEquals(3, trimmered.count());
+		list = new ArrayList<>(trimmered.collect());
+		assertEquals(3, list.size());
+
+		assertTrue(list.contains(seq4));
+		assertTrue(list.contains(seq5));
+		assertTrue(list.contains(seq6));
+
+		trimmered = trimmer.trim(originalFA);
+		assertEquals(3, trimmered.count());
+		list = new ArrayList<>(trimmered.collect());
+		assertEquals(3, list.size());
+		assertTrue(list.contains(seq4fa));
+		assertTrue(list.contains(seq5fa));
+		assertTrue(list.contains(seq6fa));
 	}
 
 	@Test
