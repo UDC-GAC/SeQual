@@ -23,14 +23,20 @@ public enum Trimmers {
 	/** The trimqualright. */
 	TRIMQUALRIGHT(5, "trimmers.TrimQualRight"),
 
+	/** The trimleft. */
+	TRIMNLEFT(6, "trimmers.TrimNLeft"),
+
+	/** The trimright. */
+	TRIMNRIGHT(7, "trimmers.TrimNRight"),
+
 	/** The trimlefttolength. */
-	TRIMLEFTTOLENGTH(6, "trimmers.TrimLeftToLength"),
+	TRIMLEFTTOLENGTH(8, "trimmers.TrimLeftToLength"),
 
 	/** The trimrighttolength. */
-	TRIMRIGHTTOLENGTH(7, "trimmers.TrimRightToLength");
+	TRIMRIGHTTOLENGTH(9, "trimmers.TrimRightToLength");
 
 	/** The Constant MAX_FILTER_PRIORITY. */
-	public static final int MAX_TRIMMER_PRIORITY = 7;
+	public static final int MAX_TRIMMER_PRIORITY = 9;
 
 	/** The trimmer class name. */
 	private String trimmerClassName;
