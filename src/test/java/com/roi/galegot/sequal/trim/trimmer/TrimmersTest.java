@@ -19,6 +19,7 @@ import com.roi.galegot.sequal.trimmer.TrimLeft;
 import com.roi.galegot.sequal.trimmer.TrimLeftP;
 import com.roi.galegot.sequal.trimmer.TrimLeftToLength;
 import com.roi.galegot.sequal.trimmer.TrimQualLeft;
+import com.roi.galegot.sequal.trimmer.TrimQualRight;
 import com.roi.galegot.sequal.trimmer.TrimRight;
 import com.roi.galegot.sequal.trimmer.TrimRightP;
 import com.roi.galegot.sequal.trimmer.TrimRightToLength;
@@ -520,7 +521,107 @@ public class TrimmersTest {
 
 	@Test
 	public void trimQualRight() {
+		/*
+		 * Length = 30 Quality = 14,566666
+		 */
+		String seq1s1 = "@cluster_8:UMI_CTTTGA";
+		String seq1s2 = "TATCCUNGCAATANTCTCCGAACNGGAGAG";
+		String seq1s4 = "1/04.72,(003,-2-22+00-12./.-.4";
+		Sequence seq1 = new Sequence(seq1s1, seq1s2, commLine, seq1s4);
 
+		String seq1s1fa = ">cluster_8:UMI_CTTTGA";
+		Sequence seq1fa = new Sequence(seq1s1fa, seq1s2);
+
+		// Copy of above sequence with 1 character
+		String seq7s2 = "T";
+		String seq7s4 = "1";
+		Sequence seq7 = new Sequence(seq1s1, seq7s2, commLine, seq7s4);
+
+		/*
+		 * Length = 29 Quality = 30.103448275862068
+		 */
+		String seq2s1 = "@cluster_12:UMI_GGTCAA";
+		String seq2s2 = "GCAGTTNNAGATCAATATATNNNAGAGCA";
+		String seq2s4 = "?7?AEEC@>=1?A?EEEB9ECB?==:B.A";
+		Sequence seq2 = new Sequence(seq2s1, seq2s2, commLine, seq2s4);
+
+		String seq2s1fa = ">cluster_12:UMI_GGTCAA";
+		Sequence seq2fa = new Sequence(seq2s1fa, seq2s2);
+
+		// Copy of above sequence with 1 character and quality = 30
+		String seq8s2 = "G";
+		String seq8s4 = "?";
+		Sequence seq8 = new Sequence(seq2s1, seq8s2, commLine, seq8s4);
+
+		/*
+		 * Length = 24 Quality = 21,541666666
+		 */
+		String seq3s1 = "@cluster_21:UMI_AGAACA";
+		String seq3s2 = "GGCATTGCAAAATTTNTTSCACCC";
+		String seq3s4 = ">=2.660/?:36AD;0<1470364";
+		Sequence seq3 = new Sequence(seq3s1, seq3s2, commLine, seq3s4);
+
+		String seq3s1fa = ">cluster_21:UMI_AGAACA";
+		Sequence seq3fa = new Sequence(seq3s1fa, seq3s2);
+
+		// Copy of above sequence with 25 characters and quality = 19,75
+		String seq5s2 = "GGCATTGC";
+		String seq5s4 = ">=2.660/";
+		Sequence seq5 = new Sequence(seq1s1, seq5s2, commLine, seq5s4);
+
+		// Copy of above sequence with 1 character
+		String seq9s2 = "G";
+		String seq9s4 = ">";
+		Sequence seq9 = new Sequence(seq3s1, seq9s2, commLine, seq9s4);
+
+		JavaRDD<Sequence> original = jsc.parallelize(Arrays.asList(seq1, seq2, seq3));
+		JavaRDD<Sequence> originalFA = jsc.parallelize(Arrays.asList(seq1fa, seq2fa, seq3fa));
+		JavaRDD<Sequence> emptyRdd = jsc.parallelize(new ArrayList<>());
+		JavaRDD<Sequence> trimmered;
+		ArrayList<Sequence> list;
+		Trimmer trimmer = new TrimQualRight();
+
+		// Test for empty RDD
+		trimmered = trimmer.trim(emptyRdd);
+		assertEquals(0, trimmered.count());
+
+		ExecutionParametersManager.setParameter("TrimQualRight", "");
+		trimmered = trimmer.trim(original);
+		assertEquals(original.collect(), trimmered.collect());
+
+		ExecutionParametersManager.setParameter("TrimQualRight", "0");
+		trimmered = trimmer.trim(original);
+		assertEquals(original.collect(), trimmered.collect());
+
+		ExecutionParametersManager.setParameter("TrimQualRight", "-1");
+		trimmered = trimmer.trim(original);
+		assertEquals(original.collect(), trimmered.collect());
+
+		ExecutionParametersManager.setParameter("TrimQualRight", "1");
+		trimmered = trimmer.trim(original);
+		assertEquals(3, trimmered.count());
+		list = new ArrayList<>(trimmered.collect());
+		assertEquals(3, list.size());
+		assertTrue(list.contains(seq7));
+		assertTrue(list.contains(seq8));
+		assertTrue(list.contains(seq9));
+
+		ExecutionParametersManager.setParameter("TrimQualRight", "20");
+		trimmered = trimmer.trim(original);
+		assertEquals(3, trimmered.count());
+		list = new ArrayList<>(trimmered.collect());
+		assertEquals(3, list.size());
+		assertTrue(list.contains(seq1));
+		assertTrue(list.contains(seq5));
+		assertTrue(list.contains(seq8));
+
+		trimmered = trimmer.trim(originalFA);
+		assertEquals(3, trimmered.count());
+		list = new ArrayList<>(trimmered.collect());
+		assertEquals(3, list.size());
+		assertTrue(list.contains(seq1fa));
+		assertTrue(list.contains(seq2fa));
+		assertTrue(list.contains(seq3fa));
 	}
 
 	@Test
