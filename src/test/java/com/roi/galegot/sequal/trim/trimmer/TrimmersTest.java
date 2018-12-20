@@ -79,7 +79,7 @@ public class TrimmersTest {
 		// Copy of above sequence with 4 characters
 		String seq5s2 = "AGCA";
 		String seq5s4 = ":B.A";
-		Sequence seq5 = new Sequence(seq1s1, seq5s2, commLine, seq5s4);
+		Sequence seq5 = new Sequence(seq2s1, seq5s2, commLine, seq5s4);
 		Sequence seq5fa = new Sequence(seq2s1fa, seq5s2);
 
 		/*
@@ -168,7 +168,7 @@ public class TrimmersTest {
 		// Copy of above sequence with 4 characters
 		String seq5s2 = "GCAG";
 		String seq5s4 = "?7?A";
-		Sequence seq5 = new Sequence(seq1s1, seq5s2, commLine, seq5s4);
+		Sequence seq5 = new Sequence(seq2s1, seq5s2, commLine, seq5s4);
 		Sequence seq5fa = new Sequence(seq2s1fa, seq5s2);
 
 		/*
@@ -258,7 +258,7 @@ public class TrimmersTest {
 		// Copy of above sequence with 27 characters
 		String seq5s2 = "AGTTNNAGATCAATATATNNNAGAGCA";
 		String seq5s4 = "?AEEC@>=1?A?EEEB9ECB?==:B.A";
-		Sequence seq5 = new Sequence(seq1s1, seq5s2, commLine, seq5s4);
+		Sequence seq5 = new Sequence(seq2s1, seq5s2, commLine, seq5s4);
 		Sequence seq5fa = new Sequence(seq2s1fa, seq5s2);
 
 		/*
@@ -275,8 +275,8 @@ public class TrimmersTest {
 		// Copy of above sequence with 22 characters
 		String seq6s2 = "CATTGCAAAATTTNTTSCACCC";
 		String seq6s4 = "2.660/?:36AD;0<1470364";
-		Sequence seq6 = new Sequence(seq1s1, seq6s2, commLine, seq6s4);
-		Sequence seq6fa = new Sequence(seq2s1fa, seq6s2);
+		Sequence seq6 = new Sequence(seq3s1, seq6s2, commLine, seq6s4);
+		Sequence seq6fa = new Sequence(seq3s1fa, seq6s2);
 
 		JavaRDD<Sequence> original = jsc.parallelize(Arrays.asList(seq1, seq2, seq3));
 		JavaRDD<Sequence> originalFA = jsc.parallelize(Arrays.asList(seq1fa, seq2fa, seq3fa));
@@ -294,6 +294,10 @@ public class TrimmersTest {
 		assertEquals(original.collect(), trimmered.collect());
 
 		ExecutionParametersManager.setParameter("TrimLeftP", "0");
+		trimmered = trimmer.trim(original);
+		assertEquals(original.collect(), trimmered.collect());
+
+		ExecutionParametersManager.setParameter("TrimLeftP", "1");
 		trimmered = trimmer.trim(original);
 		assertEquals(original.collect(), trimmered.collect());
 
@@ -353,7 +357,7 @@ public class TrimmersTest {
 		// Copy of above sequence with 27 characters
 		String seq5s2 = "GCAGTTNNAGATCAATATATNNNAGAG";
 		String seq5s4 = "?7?AEEC@>=1?A?EEEB9ECB?==:B";
-		Sequence seq5 = new Sequence(seq1s1, seq5s2, commLine, seq5s4);
+		Sequence seq5 = new Sequence(seq2s1, seq5s2, commLine, seq5s4);
 		Sequence seq5fa = new Sequence(seq2s1fa, seq5s2);
 
 		/*
@@ -370,8 +374,8 @@ public class TrimmersTest {
 		// Copy of above sequence with 22 characters
 		String seq6s2 = "GGCATTGCAAAATTTNTTSCAC";
 		String seq6s4 = ">=2.660/?:36AD;0<14703";
-		Sequence seq6 = new Sequence(seq1s1, seq6s2, commLine, seq6s4);
-		Sequence seq6fa = new Sequence(seq2s1fa, seq6s2);
+		Sequence seq6 = new Sequence(seq3s1, seq6s2, commLine, seq6s4);
+		Sequence seq6fa = new Sequence(seq3s1fa, seq6s2);
 
 		JavaRDD<Sequence> original = jsc.parallelize(Arrays.asList(seq1, seq2, seq3));
 		JavaRDD<Sequence> originalFA = jsc.parallelize(Arrays.asList(seq1fa, seq2fa, seq3fa));
@@ -389,6 +393,10 @@ public class TrimmersTest {
 		assertEquals(original.collect(), trimmered.collect());
 
 		ExecutionParametersManager.setParameter("TrimRightP", "0");
+		trimmered = trimmer.trim(original);
+		assertEquals(original.collect(), trimmered.collect());
+
+		ExecutionParametersManager.setParameter("TrimRightP", "1");
 		trimmered = trimmer.trim(original);
 		assertEquals(original.collect(), trimmered.collect());
 
@@ -464,7 +472,7 @@ public class TrimmersTest {
 		// Copy of above sequence with 25 characters and quality = 19,8
 		String seq5s2 = "TNTTSCACCC";
 		String seq5s4 = ";0<1470364";
-		Sequence seq5 = new Sequence(seq1s1, seq5s2, commLine, seq5s4);
+		Sequence seq5 = new Sequence(seq3s1, seq5s2, commLine, seq5s4);
 
 		// Copy of above sequence with 1 character
 		String seq9s2 = "C";
@@ -569,7 +577,7 @@ public class TrimmersTest {
 		// Copy of above sequence with 25 characters and quality = 19,75
 		String seq5s2 = "GGCATTGC";
 		String seq5s4 = ">=2.660/";
-		Sequence seq5 = new Sequence(seq1s1, seq5s2, commLine, seq5s4);
+		Sequence seq5 = new Sequence(seq3s1, seq5s2, commLine, seq5s4);
 
 		// Copy of above sequence with 1 character
 		String seq9s2 = "G";
@@ -659,7 +667,7 @@ public class TrimmersTest {
 		// Copy of above sequence with 25 characters
 		String seq5s2 = "TTNNAGATCAATATATNNNAGAGCA";
 		String seq5s4 = "EEC@>=1?A?EEEB9ECB?==:B.A";
-		Sequence seq5 = new Sequence(seq1s1, seq5s2, commLine, seq5s4);
+		Sequence seq5 = new Sequence(seq2s1, seq5s2, commLine, seq5s4);
 		Sequence seq5fa = new Sequence(seq2s1fa, seq5s2);
 
 		/*
@@ -747,7 +755,7 @@ public class TrimmersTest {
 		// Copy of above sequence with 25 characters
 		String seq5s2 = "GCAGTTNNAGATCAATATATNNNAG";
 		String seq5s4 = "?7?AEEC@>=1?A?EEEB9ECB?==";
-		Sequence seq5 = new Sequence(seq1s1, seq5s2, commLine, seq5s4);
+		Sequence seq5 = new Sequence(seq2s1, seq5s2, commLine, seq5s4);
 		Sequence seq5fa = new Sequence(seq2s1fa, seq5s2);
 
 		/*
@@ -836,7 +844,7 @@ public class TrimmersTest {
 		// Copy of above sequence with 25 characters
 		String seq5s2 = "TTNNAGATCAATATATNNNAGAGCA";
 		String seq5s4 = "EEC@>=1?A?EEEB9ECB?==:B.A";
-		Sequence seq5 = new Sequence(seq1s1, seq5s2, commLine, seq5s4);
+		Sequence seq5 = new Sequence(seq2s1, seq5s2, commLine, seq5s4);
 		Sequence seq5fa = new Sequence(seq2s1fa, seq5s2);
 
 		/*
@@ -866,6 +874,10 @@ public class TrimmersTest {
 		assertEquals(original.collect(), trimmered.collect());
 
 		ExecutionParametersManager.setParameter("TrimNLeft", "0");
+		trimmered = trimmer.trim(original);
+		assertEquals(original.collect(), trimmered.collect());
+
+		ExecutionParametersManager.setParameter("TrimNLeft", "40");
 		trimmered = trimmer.trim(original);
 		assertEquals(original.collect(), trimmered.collect());
 
@@ -924,7 +936,7 @@ public class TrimmersTest {
 		// Copy of above sequence with 25 characters
 		String seq5s2 = "GCAGTTNNAGATCAATATATNNNAG";
 		String seq5s4 = "?7?AEEC@>=1?A?EEEB9ECB?==";
-		Sequence seq5 = new Sequence(seq1s1, seq5s2, commLine, seq5s4);
+		Sequence seq5 = new Sequence(seq2s1, seq5s2, commLine, seq5s4);
 		Sequence seq5fa = new Sequence(seq2s1fa, seq5s2);
 
 		/*
@@ -954,6 +966,10 @@ public class TrimmersTest {
 		assertEquals(original.collect(), trimmered.collect());
 
 		ExecutionParametersManager.setParameter("TrimNRight", "0");
+		trimmered = trimmer.trim(original);
+		assertEquals(original.collect(), trimmered.collect());
+
+		ExecutionParametersManager.setParameter("TrimNRight", "40");
 		trimmered = trimmer.trim(original);
 		assertEquals(original.collect(), trimmered.collect());
 

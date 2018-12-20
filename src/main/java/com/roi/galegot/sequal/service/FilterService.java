@@ -34,7 +34,7 @@ public class FilterService {
 	public static JavaRDD<Sequence> filter(JavaRDD<Sequence> sequences) {
 		List<Filters> filters = getFilters();
 		if (filters.isEmpty()) {
-			System.out.println("\n\nNo filters specified. No operations will be performed.");
+			System.out.println("\nNo filters specified. No operations will be performed.\n");
 		} else {
 			sequences = applyFilters(sequences, filters);
 		}

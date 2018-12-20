@@ -12,7 +12,7 @@ import com.roi.galegot.sequal.util.ExecutionParametersManager;
 public class TrimNRight implements Trimmer {
 
 	/** The Constant serialVersionUID. */
-	private static final long serialVersionUID = -8433853203449156471L;
+	private static final long serialVersionUID = -1373653504736559043L;
 
 	/**
 	 * Trim.
