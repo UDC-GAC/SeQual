@@ -36,7 +36,7 @@ public class TrimService {
 		if (!trimmers.isEmpty()) {
 			return applyTrimmers(sequences, trimmers);
 		} else {
-			System.out.println("\n\nNo trimmers specified. No operations will be performed.");
+			System.out.println("\nNo trimmers specified. No operations will be performed.\n");
 		}
 		return sequences;
 	}

@@ -6,34 +6,34 @@ package com.roi.galegot.sequal.trimmer;
 public enum Trimmers {
 
 	/** The trimleft. */
-	TRIMLEFT(0, "trimmers.TrimLeft"),
+	TRIMLEFT(0, "com.roi.galegot.sequal.trimmer.TrimLeft"),
 
 	/** The trimright. */
-	TRIMRIGHT(1, "trimmers.TrimRight"),
+	TRIMRIGHT(1, "com.roi.galegot.sequal.trimmer.TrimRight"),
 
 	/** The trimleftp. */
-	TRIMLEFTP(2, "trimmers.TrimLeftP"),
+	TRIMLEFTP(2, "com.roi.galegot.sequal.trimmer.TrimLeftP"),
 
 	/** The trimrightp. */
-	TRIMRIGHTP(3, "trimmers.TrimRightP"),
+	TRIMRIGHTP(3, "com.roi.galegot.sequal.trimmer.TrimRightP"),
 
 	/** The trimqualleft. */
-	TRIMQUALLEFT(4, "trimmers.TrimQualLeft"),
+	TRIMQUALLEFT(4, "com.roi.galegot.sequal.trimmer.TrimQualLeft"),
 
 	/** The trimqualright. */
-	TRIMQUALRIGHT(5, "trimmers.TrimQualRight"),
+	TRIMQUALRIGHT(5, "com.roi.galegot.sequal.trimmer.TrimQualRight"),
 
 	/** The trimleft. */
-	TRIMNLEFT(6, "trimmers.TrimNLeft"),
+	TRIMNLEFT(6, "com.roi.galegot.sequal.trimmer.TrimNLeft"),
 
 	/** The trimright. */
-	TRIMNRIGHT(7, "trimmers.TrimNRight"),
+	TRIMNRIGHT(7, "com.roi.galegot.sequal.trimmer.TrimNRight"),
 
 	/** The trimlefttolength. */
-	TRIMLEFTTOLENGTH(8, "trimmers.TrimLeftToLength"),
+	TRIMLEFTTOLENGTH(8, "com.roi.galegot.sequal.trimmer.TrimLeftToLength"),
 
 	/** The trimrighttolength. */
-	TRIMRIGHTTOLENGTH(9, "trimmers.TrimRightToLength");
+	TRIMRIGHTTOLENGTH(9, "com.roi.galegot.sequal.trimmer.TrimRightToLength");
 
 	/** The Constant MAX_FILTER_PRIORITY. */
 	public static final int MAX_TRIMMER_PRIORITY = 9;

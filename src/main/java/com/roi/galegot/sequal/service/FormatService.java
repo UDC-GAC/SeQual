@@ -33,7 +33,7 @@ public class FormatService {
 		if (!formatters.isEmpty()) {
 			return formatLoop(sequences, formatters);
 		} else {
-			System.out.println("\n\nNo formatters specified. No operations will be performed.");
+			System.out.println("\nNo formatters specified. No operations will be performed.\n");
 		}
 		return sequences;
 	}
