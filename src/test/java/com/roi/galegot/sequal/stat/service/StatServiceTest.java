@@ -1,12 +1,24 @@
 package com.roi.galegot.sequal.stat.service;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+
 import java.io.IOException;
+import java.util.Arrays;
+import java.util.Map;
 
 import org.apache.spark.SparkConf;
+import org.apache.spark.api.java.JavaRDD;
 import org.apache.spark.api.java.JavaSparkContext;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
+
+import com.roi.galegot.sequal.common.Sequence;
+import com.roi.galegot.sequal.service.StatService;
+import com.roi.galegot.sequal.stat.StatsPhrasing;
+import com.roi.galegot.sequal.util.ExecutionParametersManager;
 
 public class StatServiceTest {
 	private static SparkConf spc;
@@ -28,5 +40,97 @@ public class StatServiceTest {
 
 	@Test
 	public void statService() {
+		/*
+		 * Sequence 1 Quality = 14.566666666666666
+		 */
+		String seq1s1 = "@cluster_8:UMI_CTTTGA";
+		String seq1s2 = "TATCCUNGCAATANTCTCCGAACNGGAGAG";
+		String seq1s4 = "1/04.72,(003,-2-22+00-12./.-.4";
+		Sequence seq1 = new Sequence(seq1s1, seq1s2, commLine, seq1s4);
+
+		/*
+		 * Sequence 2 Quality = 30.103448275862068
+		 */
+		String seq2s1 = "@cluster_12:UMI_GGTCAA";
+		String seq2s2 = "GCAGTTNNAGATCAATATATNNNAGAGCA";
+		String seq2s4 = "?7?AEEC@>=1?A?EEEB9ECB?==:B.A";
+		Sequence seq2 = new Sequence(seq2s1, seq2s2, commLine, seq2s4);
+
+		/*
+		 * Sequence 3 Quality = 20.964285714285715
+		 */
+		String seq3s1 = "@cluster_21:UMI_AGAACA";
+		String seq3s2 = "GGCATTGCAAAATTTNTTSCACCCCCAG";
+		String seq3s4 = ">=2.660/?:36AD;0<14703640334";
+		Sequence seq3 = new Sequence(seq3s1, seq3s2, commLine, seq3s4);
+
+		JavaRDD<Sequence> original1 = jsc
+				.parallelize(Arrays.asList(seq1, seq2, seq3));
+		JavaRDD<Sequence> original2 = jsc
+				.parallelize(Arrays.asList(seq1, seq2));
+
+		Map<String, Double> results;
+		String resultsString;
+
+		assertTrue(StatService.getResults().isEmpty());
+
+		ExecutionParametersManager.setParameter("Statistics", "");
+		StatService.measure(original1, true);
+		assertTrue(StatService.getResults().isEmpty());
+		resultsString = "";
+		assertEquals(resultsString, StatService.getResultsAsString());
+
+		StatService.measure(original1, false);
+		assertTrue(StatService.getResults().isEmpty());
+		resultsString = "";
+		assertEquals(resultsString, StatService.getResultsAsString());
+
+		ExecutionParametersManager.setParameter("Statistics", "COUNT");
+		StatService.measure(original1, true);
+		results = StatService.getResults();
+		assertFalse(results.isEmpty());
+		assertTrue(results.get(StatsPhrasing.COUNT_BEFORE) == 3);
+		assertTrue(results.get(StatsPhrasing.COUNT_AFTER) == null);
+		resultsString = "Count before transformations: 3.0\n";
+		assertEquals(resultsString, StatService.getResultsAsString());
+
+		StatService.measure(original2, false);
+		results = StatService.getResults();
+		assertFalse(results.isEmpty());
+		assertTrue(results.get(StatsPhrasing.COUNT_BEFORE) == 3);
+		assertTrue(results.get(StatsPhrasing.COUNT_AFTER) == 2);
+		resultsString = "Count before transformations: 3.0\n"
+				+ "Count after transformations: 2.0\n";
+		assertEquals(resultsString, StatService.getResultsAsString());
+
+		ExecutionParametersManager.setParameter("Statistics",
+				"COUNT|MEANLENGTH|MEANQUALITY");
+		StatService.measure(original1, true);
+		results = StatService.getResults();
+		assertFalse(results.isEmpty());
+		assertTrue(results.get(StatsPhrasing.COUNT_BEFORE) == 3);
+		assertTrue(results.get(StatsPhrasing.COUNT_AFTER) == null);
+		assertTrue(results.get(StatsPhrasing.MEAN_LENGTH_BEFORE) == 29);
+		assertTrue(results.get(StatsPhrasing.MEAN_LENGTH_AFTER) == null);
+		resultsString = "Count before transformations: 3.0\n"
+				+ "Mean quality before transformations: 21.88\n"
+				+ "Mean length before transformations: 29.0\n";
+		assertEquals(resultsString, StatService.getResultsAsString());
+
+		StatService.measure(original2, false);
+		results = StatService.getResults();
+		assertFalse(results.isEmpty());
+		assertTrue(results.get(StatsPhrasing.COUNT_BEFORE) == 3);
+		assertTrue(results.get(StatsPhrasing.COUNT_AFTER) == 2);
+		assertTrue(results.get(StatsPhrasing.MEAN_LENGTH_BEFORE) == 29);
+		assertTrue(results.get(StatsPhrasing.MEAN_LENGTH_AFTER) == 29.5);
+		resultsString = "Count before transformations: 3.0\n"
+				+ "Mean quality before transformations: 21.88\n"
+				+ "Mean length before transformations: 29.0\n"
+				+ "Count after transformations: 2.0\n"
+				+ "Mean quality after transformations: 22.34\n"
+				+ "Mean length after transformations: 29.5\n";
+		assertEquals(resultsString, StatService.getResultsAsString());
+
 	}
 }

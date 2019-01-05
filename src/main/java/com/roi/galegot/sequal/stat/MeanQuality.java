@@ -75,42 +75,6 @@ public class MeanQuality implements Stat {
 		private Long countNumber = Long.valueOf(0);
 
 		/**
-		 * Gets the count quality.
-		 *
-		 * @return the count quality
-		 */
-		public BigDecimal getCountQuality() {
-			return this.countQuality;
-		}
-
-		/**
-		 * Sets the count quality.
-		 *
-		 * @param countQuality the new count quality
-		 */
-		public void setCountQuality(BigDecimal countQuality) {
-			this.countQuality = countQuality;
-		}
-
-		/**
-		 * Gets the count number.
-		 *
-		 * @return the count number
-		 */
-		public Long getCountNumber() {
-			return this.countNumber;
-		}
-
-		/**
-		 * Sets the count number.
-		 *
-		 * @param countNumber the new count number
-		 */
-		public void setCountNumber(Long countNumber) {
-			this.countNumber = countNumber;
-		}
-
-		/**
 		 * Gets the mean.
 		 *
 		 * @return the mean

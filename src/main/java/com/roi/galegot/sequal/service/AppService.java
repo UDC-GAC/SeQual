@@ -158,7 +158,7 @@ public class AppService {
 	 */
 	public void measure(boolean isFirst) {
 		if (!this.seqs.isEmpty()) {
-			StatsService.measure(this.seqs, isFirst);
+			StatService.measure(this.seqs, isFirst);
 		}
 	}
 
@@ -166,7 +166,7 @@ public class AppService {
 	 * Prints the stats.
 	 */
 	public void printStats() {
-		System.out.println(StatsService.getResultsAsString());
+		System.out.println(StatService.getResultsAsString());
 	}
 
 	/**
