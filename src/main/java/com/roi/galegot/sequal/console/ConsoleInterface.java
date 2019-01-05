@@ -25,6 +25,8 @@ public class ConsoleInterface {
 		String configFile;
 		String masterConf;
 
+		Boolean writeStats;
+
 		AppService service;
 
 		lengthArgs = args.length;
@@ -70,7 +72,8 @@ public class ConsoleInterface {
 
 		position = findOption(args, ConsoleOptions.CONFIGFILE.getOpt());
 		if ((position == -1) || (position == (lengthArgs - 1))) {
-			System.out.println("Execution parameters file not specified correctly.\n");
+			System.out.println(
+					"Execution parameters file not specified correctly.\n");
 			instructions();
 			return;
 		}
@@ -78,7 +81,8 @@ public class ConsoleInterface {
 
 		position = findOption(args, ConsoleOptions.SPARKMASTERCONF.getOpt());
 		if ((position == -1) || (position == (lengthArgs - 1))) {
-			System.out.println("Spark master not specified. All local cores will be used.\n");
+			System.out.println(
+					"Spark master not specified. All local cores will be used.\n");
 			masterConf = "local[*]";
 		} else {
 			masterConf = args[position + 1];
@@ -86,6 +90,13 @@ public class ConsoleInterface {
 
 		service = new AppService(masterConf, input, output, configFile);
 		service.read();
+
+		if (findOption(args, ConsoleOptions.MEASURE.getOpt()) != -1) {
+			writeStats = true;
+			service.measure(true);
+		} else {
+			writeStats = false;
+		}
 
 		if (findOption(args, ConsoleOptions.TRIM.getOpt()) != -1) {
 			service.trim();
@@ -99,10 +110,17 @@ public class ConsoleInterface {
 			service.format();
 		}
 
-		service.write();
-		service.end();
+		if (writeStats) {
+			service.measure(false);
+		}
 
-		return;
+		service.write();
+
+		if (writeStats) {
+			service.printStats();
+		}
+
+		service.end();
 
 	}
 
@@ -122,13 +140,23 @@ public class ConsoleInterface {
 	 */
 	private static void instructions() {
 		System.out.println("Available options:");
-		System.out.println("-o OuputDirectory: Specifies output directory where resulting sequences will be written");
-		System.out.println("-i InputFile: Specifies input file from where sequences will be read");
-		System.out.println("-c ConfigFile: Specifies run options configuration file");
-		System.out.println("-g: Generates a blank configuration file in the specified with -o location");
-		System.out.println("-f: Filters read sequences following specified parameters");
-		System.out.println("-f: Format read sequences following specified parameters");
-		System.out.println("-t: Trims read sequences following specified parameters");
-		System.out.println("-sc SparkMasterConf: Specifies master configuration (local[*] by default)");
+		System.out.println(
+				"-o OuputDirectory: Specifies output directory where resulting sequences will be written");
+		System.out.println(
+				"-i InputFile: Specifies input file from where sequences will be read");
+		System.out.println(
+				"-c ConfigFile: Specifies run options configuration file");
+		System.out.println(
+				"-g: Generates a blank configuration file in the specified with -o location");
+		System.out.println(
+				"-f: Filters read sequences following specified parameters");
+		System.out.println(
+				"-f: Format read sequences following specified parameters");
+		System.out.println(
+				"-t: Trims read sequences following specified parameters");
+		System.out.println(
+				"-s: Calculates statistics before and after performing transformations on the read sequences");
+		System.out.println(
+				"-sc SparkMasterConf: Specifies Spark master configuration (local[*] by default)");
 	}
 }

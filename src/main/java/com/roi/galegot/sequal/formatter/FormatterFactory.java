@@ -21,9 +21,12 @@ public class FormatterFactory {
 	 */
 	public static synchronized Formatter getFormatter(Formatters formatter) {
 		try {
-			return (Formatter) Class.forName(formatter.getFormatterClass()).newInstance();
-		} catch (ClassNotFoundException | InstantiationException | IllegalAccessException e) {
-			throw new NonExistentFormatterException(formatter.getFormatterClass());
+			return (Formatter) Class.forName(formatter.getFormatterClass())
+					.newInstance();
+		} catch (ClassNotFoundException | InstantiationException
+				| IllegalAccessException e) {
+			throw new NonExistentFormatterException(
+					formatter.getFormatterClass());
 		}
 	}
 }

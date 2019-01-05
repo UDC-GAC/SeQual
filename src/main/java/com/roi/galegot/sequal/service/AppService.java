@@ -54,7 +54,8 @@ public class AppService {
 	 * @param output     the output
 	 * @param configFile the config file
 	 */
-	public AppService(String masterConf, String input, String output, String configFile) {
+	public AppService(String masterConf, String input, String output,
+			String configFile) {
 		this.input = input;
 		this.output = output;
 
@@ -105,7 +106,8 @@ public class AppService {
 	 * @throws IOException Signals that an I/O exception has occurred.
 	 */
 	public void read() throws IOException {
-		this.seqs = DNAFileReaderFactory.getReader(this.getFormat(this.input)).readFileToRDD(this.input, jsc);
+		this.seqs = DNAFileReaderFactory.getReader(this.getFormat(this.input))
+				.readFileToRDD(this.input, jsc);
 	}
 
 	/**
@@ -150,17 +152,37 @@ public class AppService {
 	}
 
 	/**
+	 * Measure.
+	 *
+	 * @param isFirst the is first
+	 */
+	public void measure(boolean isFirst) {
+		if (!this.seqs.isEmpty()) {
+			StatsService.measure(this.seqs, isFirst);
+		}
+	}
+
+	/**
+	 * Prints the stats.
+	 */
+	public void printStats() {
+		System.out.println(StatsService.getResultsAsString());
+	}
+
+	/**
 	 * Generate file.
 	 *
 	 * @throws IOException Signals that an I/O exception has occurred.
 	 */
 	public void generateConfigFile() throws IOException {
-		InputStream in = this.getClass().getResourceAsStream("/ExecutionParameters.properties");
+		InputStream in = this.getClass()
+				.getResourceAsStream("/ExecutionParameters.properties");
 
 		byte[] buffer = new byte[in.available()];
 		in.read(buffer);
 
-		File targetFile = new File(this.output + "/ExecutionParameters.properties");
+		File targetFile = new File(
+				this.output + "/ExecutionParameters.properties");
 		OutputStream outStream = new FileOutputStream(targetFile);
 		outStream.write(buffer);
 		outStream.close();
