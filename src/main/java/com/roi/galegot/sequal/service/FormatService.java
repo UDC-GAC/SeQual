@@ -3,6 +3,7 @@ package com.roi.galegot.sequal.service;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.spark.api.java.JavaRDD;
 
 import com.roi.galegot.sequal.common.Sequence;
@@ -33,7 +34,8 @@ public class FormatService {
 		if (!formatters.isEmpty()) {
 			return formatLoop(sequences, formatters);
 		} else {
-			System.out.println("\nNo formatters specified. No operations will be performed.\n");
+			System.out.println(
+					"\nNo formatters specified. No operations will be performed.\n");
 		}
 		return sequences;
 	}
@@ -45,9 +47,11 @@ public class FormatService {
 	 * @param formatters the formatters
 	 * @return the java RDD
 	 */
-	private static JavaRDD<Sequence> formatLoop(JavaRDD<Sequence> sequences, List<Formatters> formatters) {
+	private static JavaRDD<Sequence> formatLoop(JavaRDD<Sequence> sequences,
+			List<Formatters> formatters) {
 		for (int i = 0; i < formatters.size(); i++) {
-			Formatter formatter = FormatterFactory.getFormatter(formatters.get(i));
+			Formatter formatter = FormatterFactory
+					.getFormatter(formatters.get(i));
 			sequences = formatter.format(sequences);
 		}
 		return sequences;
@@ -59,14 +63,17 @@ public class FormatService {
 	 * @return the formatters
 	 */
 	private static List<Formatters> getFormatters() {
-		String formatters = ExecutionParametersManager.getParameter("Formatters");
-		String[] splitFormatters = formatters.split("\\|");
+		String formatters = ExecutionParametersManager
+				.getParameter("Formatters");
 		ArrayList<Formatters> enumFormatters = new ArrayList<>();
-		if (!formatters.isEmpty()) {
+
+		if (StringUtils.isNotBlank(formatters)) {
+			String[] splitFormatters = formatters.split("\\|");
 			for (String formatter : splitFormatters) {
 				enumFormatters.add(Formatters.valueOf(formatter.trim()));
 			}
 		}
+
 		return enumFormatters;
 	}
 }

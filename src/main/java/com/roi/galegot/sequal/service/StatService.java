@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.spark.api.java.JavaRDD;
 
 import com.roi.galegot.sequal.common.Sequence;
@@ -19,15 +20,15 @@ import com.roi.galegot.sequal.util.ExecutionParametersManager;
 /**
  * The Class StatsService.
  */
-public class StatsService {
+public class StatService {
 
 	/** The results. */
-	private static Map<String, Double> results;
+	private static Map<String, Double> results = new HashMap<String, Double>();
 
 	/**
 	 * Instantiates a new stats service.
 	 */
-	public StatsService() {
+	public StatService() {
 	}
 
 	/**
@@ -46,7 +47,7 @@ public class StatsService {
 		if (!stats.isEmpty()) {
 			for (int i = 0; i < stats.size(); i++) {
 				Stat stat = StatFactory.getStat(stats.get(i));
-				addToResult(stats.get(i).getStatName(), stat.measure(seqs),
+				addToResult(stats.get(i).toString(), stat.measure(seqs),
 						isFirst);
 			}
 		} else {
@@ -64,9 +65,9 @@ public class StatsService {
 	 */
 	private static List<Stats> getStats() {
 		String stats = ExecutionParametersManager.getParameter("Statistics");
-		String[] splitStats = stats.split("\\|");
 		ArrayList<Stats> enumStats = new ArrayList<>();
-		if (!stats.isEmpty()) {
+		if (StringUtils.isNotBlank(stats)) {
+			String[] splitStats = stats.split("\\|");
 			for (String stat : splitStats) {
 				enumStats.add(Stats.valueOf(stat.trim()));
 			}

@@ -76,42 +76,6 @@ public class MeanLength implements Stat {
 		private Long countNumber = Long.valueOf(0);
 
 		/**
-		 * Gets the count length.
-		 *
-		 * @return the count length
-		 */
-		public Long getCountLength() {
-			return this.countLength;
-		}
-
-		/**
-		 * Sets the count length.
-		 *
-		 * @param countLength the new count length
-		 */
-		public void setCountLength(Long countLength) {
-			this.countLength = countLength;
-		}
-
-		/**
-		 * Gets the count number.
-		 *
-		 * @return the count number
-		 */
-		public Long getCountNumber() {
-			return this.countNumber;
-		}
-
-		/**
-		 * Sets the count number.
-		 *
-		 * @param countNumber the new count number
-		 */
-		public void setCountNumber(Long countNumber) {
-			this.countNumber = countNumber;
-		}
-
-		/**
 		 * Gets the mean.
 		 *
 		 * @return the mean

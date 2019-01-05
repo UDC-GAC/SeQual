@@ -6,21 +6,16 @@ package com.roi.galegot.sequal.stat;
 public enum Stats {
 
 	/** The count. */
-	COUNT("com.roi.galegot.sequal.stats.Count", StatsNaming.COUNT),
+	COUNT("com.roi.galegot.sequal.stat.Count"),
 
 	/** The meanlength. */
-	MEANLENGTH("com.roi.galegot.sequal.stats.MeanLength",
-			StatsNaming.MEAN_LENGTH),
+	MEANLENGTH("com.roi.galegot.sequal.stat.MeanLength"),
 
 	/** The meanquality. */
-	MEANQUALITY("com.roi.galegot.sequal.stats.MeanQuality",
-			StatsNaming.MEAN_QUALITY);
+	MEANQUALITY("com.roi.galegot.sequal.stat.MeanQuality");
 
 	/** The stat class name. */
 	private String statClassName;
-
-	/** The stat name. */
-	private String statName;
 
 	/**
 	 * Instantiates a new stats.
@@ -28,7 +23,7 @@ public enum Stats {
 	 * @param statClassName the stat class name
 	 * @param statName      the stat name
 	 */
-	private Stats(String statClassName, String statName) {
+	private Stats(String statClassName) {
 		this.statClassName = statClassName;
 	}
 
@@ -39,14 +34,5 @@ public enum Stats {
 	 */
 	public String getStatClass() {
 		return this.statClassName;
-	}
-
-	/**
-	 * Gets the stat name.
-	 *
-	 * @return the stat name
-	 */
-	public String getStatName() {
-		return this.statName;
 	}
 }
