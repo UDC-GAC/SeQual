@@ -114,7 +114,8 @@ public class ConsoleInterface {
 			service.measure(false);
 		}
 
-		service.write();
+		service.write(findOption(args,
+				ConsoleOptions.SINGLEFILEOUTPUT.getOpt()) != -1);
 
 		if (writeStats) {
 			service.printStats();
@@ -142,6 +143,8 @@ public class ConsoleInterface {
 		System.out.println("Available options:");
 		System.out.println(
 				"-o OuputDirectory: Specifies output directory where resulting sequences will be written");
+		System.out.println(
+				"-sfo: Generates a single file containing result sequences inside the output directory named {input-file-name}-results.{format}, along with a folder named Parts containing HDFS files");
 		System.out.println(
 				"-i InputFile: Specifies input file from where sequences will be read");
 		System.out.println(

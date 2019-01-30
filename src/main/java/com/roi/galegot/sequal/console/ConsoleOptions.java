@@ -20,6 +20,9 @@ public enum ConsoleOptions {
 	/** The output. */
 	OUTPUT("-o"),
 
+	/** The singlefileoutput. */
+	SINGLEFILEOUTPUT("-sfo"),
+
 	/** The outputstats. */
 	OUTPUTSTATS("-os"),
 

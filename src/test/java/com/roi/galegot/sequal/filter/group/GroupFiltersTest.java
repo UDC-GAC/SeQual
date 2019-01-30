@@ -25,7 +25,7 @@ public class GroupFiltersTest {
 
 	@BeforeClass
 	public static void setupSpark() throws IOException {
-		spc = new SparkConf().setAppName("SeQual").setMaster("local[*]");
+		spc = new SparkConf().setAppName("SeQual").setMaster("local[1]");
 		jsc = new JavaSparkContext(spc);
 		jsc.setLogLevel("ERROR");
 	}
@@ -65,8 +65,10 @@ public class GroupFiltersTest {
 		Sequence seq3fa = new Sequence(seq3s1fa, seq3s2fa);
 
 		// seq1 added twice for testing purposes
-		JavaRDD<Sequence> original = jsc.parallelize(Arrays.asList(seq1, seq1, seq2, seq3));
-		JavaRDD<Sequence> originalFA = jsc.parallelize(Arrays.asList(seq1fa, seq2fa, seq3fa));
+		JavaRDD<Sequence> original = jsc
+				.parallelize(Arrays.asList(seq1, seq1, seq2, seq3));
+		JavaRDD<Sequence> originalFA = jsc
+				.parallelize(Arrays.asList(seq1fa, seq2fa, seq3fa));
 		JavaRDD<Sequence> emptyRdd = jsc.parallelize(new ArrayList<Sequence>());
 		JavaRDD<Sequence> filtered;
 		ArrayList<Sequence> list;
@@ -129,8 +131,10 @@ public class GroupFiltersTest {
 		String seq4s2fa = "TCCCCCCCCCAAATCGGAAAAACACACCCAA";
 		Sequence seq4fa = new Sequence(seq4s1fa, seq4s2fa);
 
-		JavaRDD<Sequence> original = jsc.parallelize(Arrays.asList(seq1, seq2, seq3, seq4));
-		JavaRDD<Sequence> originalFA = jsc.parallelize(Arrays.asList(seq1fa, seq2fa, seq3fa, seq4fa));
+		JavaRDD<Sequence> original = jsc
+				.parallelize(Arrays.asList(seq1, seq2, seq3, seq4));
+		JavaRDD<Sequence> originalFA = jsc
+				.parallelize(Arrays.asList(seq1fa, seq2fa, seq3fa, seq4fa));
 		JavaRDD<Sequence> emptyRdd = jsc.parallelize(new ArrayList<Sequence>());
 		JavaRDD<Sequence> filtered;
 		ArrayList<Sequence> list;
@@ -178,7 +182,8 @@ public class GroupFiltersTest {
 		assertEquals(filtered.count(), 2);
 		list = new ArrayList<>(filtered.collect());
 		assertEquals(list.size(), 2);
-		assertTrue(list.contains(seq1fa) || list.contains(seq2fa) || list.contains(seq3fa));
+		assertTrue(list.contains(seq1fa) || list.contains(seq2fa)
+				|| list.contains(seq3fa));
 		assertTrue(list.contains(seq4fa));
 
 		ExecutionParametersManager.setParameter("MaxDifference", "2");
@@ -186,7 +191,8 @@ public class GroupFiltersTest {
 		assertEquals(filtered.count(), 1);
 		list = new ArrayList<>(filtered.collect());
 		assertEquals(list.size(), 1);
-		assertTrue(list.contains(seq1fa) || list.contains(seq2fa) || list.contains(seq3fa) || list.contains(seq4fa));
+		assertTrue(list.contains(seq1fa) || list.contains(seq2fa)
+				|| list.contains(seq3fa) || list.contains(seq4fa));
 	}
 
 	@Test
@@ -218,8 +224,10 @@ public class GroupFiltersTest {
 		String seq3s2fa = "CCCCCACACAAAAAGGCTAAACCCCCCCCCT";
 		Sequence seq3fa = new Sequence(seq3s1fa, seq3s2fa);
 
-		JavaRDD<Sequence> original = jsc.parallelize(Arrays.asList(seq1, seq2, seq3));
-		JavaRDD<Sequence> originalFA = jsc.parallelize(Arrays.asList(seq1fa, seq2fa, seq3fa));
+		JavaRDD<Sequence> original = jsc
+				.parallelize(Arrays.asList(seq1, seq2, seq3));
+		JavaRDD<Sequence> originalFA = jsc
+				.parallelize(Arrays.asList(seq1fa, seq2fa, seq3fa));
 		JavaRDD<Sequence> emptyRdd = jsc.parallelize(new ArrayList<Sequence>());
 		JavaRDD<Sequence> filtered;
 		ArrayList<Sequence> list;
@@ -273,8 +281,10 @@ public class GroupFiltersTest {
 		String seq3s2fa = "AGGGGGGGGGTTTAGCCTTTTTGTGTGGGGG";
 		Sequence seq3fa = new Sequence(seq3s1fa, seq3s2fa);
 
-		JavaRDD<Sequence> original = jsc.parallelize(Arrays.asList(seq1, seq2, seq3));
-		JavaRDD<Sequence> originalFA = jsc.parallelize(Arrays.asList(seq1fa, seq2fa, seq3fa));
+		JavaRDD<Sequence> original = jsc
+				.parallelize(Arrays.asList(seq1, seq2, seq3));
+		JavaRDD<Sequence> originalFA = jsc
+				.parallelize(Arrays.asList(seq1fa, seq2fa, seq3fa));
 		JavaRDD<Sequence> emptyRdd = jsc.parallelize(new ArrayList<Sequence>());
 		JavaRDD<Sequence> filtered;
 		ArrayList<Sequence> list;
@@ -325,8 +335,10 @@ public class GroupFiltersTest {
 		String seq3s2fa = "GGGGGTGTGTTTTTCCGATTTGGGGGGGGGA";
 		Sequence seq3fa = new Sequence(seq3s1fa, seq3s2fa);
 
-		JavaRDD<Sequence> original = jsc.parallelize(Arrays.asList(seq1, seq2, seq3));
-		JavaRDD<Sequence> originalFA = jsc.parallelize(Arrays.asList(seq1fa, seq2fa, seq3fa));
+		JavaRDD<Sequence> original = jsc
+				.parallelize(Arrays.asList(seq1, seq2, seq3));
+		JavaRDD<Sequence> originalFA = jsc
+				.parallelize(Arrays.asList(seq1fa, seq2fa, seq3fa));
 		JavaRDD<Sequence> emptyRdd = jsc.parallelize(new ArrayList<Sequence>());
 		JavaRDD<Sequence> filtered;
 		ArrayList<Sequence> list;
