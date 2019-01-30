@@ -16,6 +16,7 @@ import org.apache.spark.api.java.JavaSparkContext;
 import com.roi.galegot.sequal.common.Sequence;
 import com.roi.galegot.sequal.dnafilereader.DNAFileReaderFactory;
 import com.roi.galegot.sequal.util.ExecutionParametersManager;
+import com.roi.galegot.sequal.writer.HDFSToFile;
 
 /**
  * The Class AppService.
@@ -101,6 +102,29 @@ public class AppService {
 	}
 
 	/**
+	 * Gets the file name.
+	 *
+	 * @param file the file
+	 * @return the file name
+	 */
+	private String getFileName(String file) {
+		return FilenameUtils.getBaseName(file);
+	}
+
+	/**
+	 * Gets the actual format.
+	 *
+	 * @return the actual format
+	 */
+	private String getActualFormat() {
+		if (this.seqs.first().isHasQual()) {
+			return "fq";
+		}
+
+		return "fa";
+	}
+
+	/**
 	 * Read.
 	 *
 	 * @throws IOException Signals that an I/O exception has occurred.
@@ -112,9 +136,18 @@ public class AppService {
 
 	/**
 	 * Write.
+	 *
+	 * @throws IOException
 	 */
-	public void write() {
-		this.seqs.saveAsTextFile(this.output);
+	public void write(Boolean singleFile) throws IOException {
+		if (singleFile) {
+			String partsFolder = this.output + "/Parts";
+			this.seqs.saveAsTextFile(partsFolder);
+			HDFSToFile.writeToFile(this.output, this.getFileName(this.input)
+					+ "-results." + this.getActualFormat(), partsFolder);
+		} else {
+			this.seqs.saveAsTextFile(this.output);
+		}
 	}
 
 	/**

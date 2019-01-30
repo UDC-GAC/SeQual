@@ -16,6 +16,7 @@
         </includes>
       </resource>
     </resources>
+    <finalName>${artifactId}</finalName>
     <plugins>
       <plugin>
         <artifactId>maven-compiler-plugin</artifactId>
