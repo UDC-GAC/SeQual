@@ -4,9 +4,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
+import org.apache.log4j.Logger;
 import org.apache.spark.api.java.JavaRDD;
 
 import com.roi.galegot.sequal.common.Sequence;
+import com.roi.galegot.sequal.console.ConsoleInterface;
 import com.roi.galegot.sequal.formatter.Formatter;
 import com.roi.galegot.sequal.formatter.FormatterFactory;
 import com.roi.galegot.sequal.formatter.Formatters;
@@ -16,6 +18,10 @@ import com.roi.galegot.sequal.util.ExecutionParametersManager;
  * The Class FormatService.
  */
 public class FormatService {
+
+	/** The Constant LOGGER. */
+	private static final Logger LOGGER = Logger
+			.getLogger(ConsoleInterface.class.getName());
 
 	/**
 	 * Instantiates a new format service.
@@ -32,9 +38,9 @@ public class FormatService {
 	public static JavaRDD<Sequence> format(JavaRDD<Sequence> sequences) {
 		List<Formatters> formatters = getFormatters();
 		if (!formatters.isEmpty()) {
-			return formatLoop(sequences, formatters);
+			return applyFormatters(sequences, formatters);
 		} else {
-			System.out.println(
+			LOGGER.warn(
 					"\nNo formatters specified. No operations will be performed.\n");
 		}
 		return sequences;
@@ -47,11 +53,14 @@ public class FormatService {
 	 * @param formatters the formatters
 	 * @return the java RDD
 	 */
-	private static JavaRDD<Sequence> formatLoop(JavaRDD<Sequence> sequences,
-			List<Formatters> formatters) {
+	private static JavaRDD<Sequence> applyFormatters(
+			JavaRDD<Sequence> sequences, List<Formatters> formatters) {
 		for (int i = 0; i < formatters.size(); i++) {
 			Formatter formatter = FormatterFactory
 					.getFormatter(formatters.get(i));
+
+			LOGGER.info("Applying formatter " + formatters.get(i));
+
 			sequences = formatter.format(sequences);
 		}
 		return sequences;

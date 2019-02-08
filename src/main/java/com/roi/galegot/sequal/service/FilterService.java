@@ -6,9 +6,11 @@ import java.util.Map;
 import java.util.TreeMap;
 
 import org.apache.commons.lang3.StringUtils;
+import org.apache.log4j.Logger;
 import org.apache.spark.api.java.JavaRDD;
 
 import com.roi.galegot.sequal.common.Sequence;
+import com.roi.galegot.sequal.console.ConsoleInterface;
 import com.roi.galegot.sequal.filter.Filter;
 import com.roi.galegot.sequal.filter.FilterFactory;
 import com.roi.galegot.sequal.filter.Filters;
@@ -18,6 +20,10 @@ import com.roi.galegot.sequal.util.ExecutionParametersManager;
  * The Class FilterService.
  */
 public class FilterService {
+
+	/** The Constant LOGGER. */
+	private static final Logger LOGGER = Logger
+			.getLogger(ConsoleInterface.class.getName());
 
 	/**
 	 * Instantiates a new filter service.
@@ -34,7 +40,8 @@ public class FilterService {
 	public static JavaRDD<Sequence> filter(JavaRDD<Sequence> sequences) {
 		List<Filters> filters = getFilters();
 		if (filters.isEmpty()) {
-			System.out.println("\nNo filters specified. No operations will be performed.\n");
+			LOGGER.warn(
+					"\nNo filters specified. No operations will be performed.\n");
 		} else {
 			sequences = applyFilters(sequences, filters);
 		}
@@ -42,8 +49,8 @@ public class FilterService {
 	}
 
 	/**
-	 * Retrieves the specified filters into ExecutionParameter.properties file and
-	 * converts them into Filters
+	 * Retrieves the specified filters into ExecutionParameter.properties file
+	 * and converts them into Filters
 	 *
 	 * @return List<Filters> containing all the specified filters
 	 * @see filters.Filters
@@ -83,12 +90,16 @@ public class FilterService {
 	 * @param filters   the filters
 	 * @return the java RDD
 	 */
-	private static JavaRDD<Sequence> applyFilters(JavaRDD<Sequence> sequences, List<Filters> filters) {
+	private static JavaRDD<Sequence> applyFilters(JavaRDD<Sequence> sequences,
+			List<Filters> filters) {
 		for (int i = 0; i < filters.size(); i++) {
 			if (sequences.isEmpty()) {
 				return sequences;
 			}
 			Filter filter = FilterFactory.getFilter(filters.get(i));
+
+			LOGGER.info("Applying filter " + filters.get(i));
+
 			sequences = filter.validate(sequences);
 		}
 		return sequences;

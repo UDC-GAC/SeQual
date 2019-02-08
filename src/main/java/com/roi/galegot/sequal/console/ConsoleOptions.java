@@ -39,7 +39,10 @@ public enum ConsoleOptions {
 	FORMAT("-fo"),
 
 	/** The sparkmasterconf. */
-	SPARKMASTERCONF("-sc");
+	SPARKMASTERCONF("-smc"),
+
+	/** The sparklogconf. */
+	SPARKLOGCONF("-slc");
 
 	/** The opt. */
 	private String opt;
