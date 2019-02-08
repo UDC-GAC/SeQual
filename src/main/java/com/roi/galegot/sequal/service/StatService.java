@@ -6,9 +6,11 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.lang.StringUtils;
+import org.apache.log4j.Logger;
 import org.apache.spark.api.java.JavaRDD;
 
 import com.roi.galegot.sequal.common.Sequence;
+import com.roi.galegot.sequal.console.ConsoleInterface;
 import com.roi.galegot.sequal.exceptions.NonExistentStatException;
 import com.roi.galegot.sequal.stat.Stat;
 import com.roi.galegot.sequal.stat.StatFactory;
@@ -21,6 +23,10 @@ import com.roi.galegot.sequal.util.ExecutionParametersManager;
  * The Class StatsService.
  */
 public class StatService {
+
+	/** The Constant LOGGER. */
+	private static final Logger LOGGER = Logger
+			.getLogger(ConsoleInterface.class.getName());
 
 	/** The results. */
 	private static Map<String, Double> results = new HashMap<String, Double>();
@@ -47,12 +53,15 @@ public class StatService {
 		if (!stats.isEmpty()) {
 			for (int i = 0; i < stats.size(); i++) {
 				Stat stat = StatFactory.getStat(stats.get(i));
+
+				LOGGER.info("Applying measurement " + stats.get(i));
+
 				addToResult(stats.get(i).toString(), stat.measure(seqs),
 						isFirst);
 			}
 		} else {
 			if (isFirst) {
-				System.out.println(
+				LOGGER.warn(
 						"\nNo statistics specified. No measurements will be performed.\n");
 			}
 		}

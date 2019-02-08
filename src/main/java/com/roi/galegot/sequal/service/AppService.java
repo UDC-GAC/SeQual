@@ -23,11 +23,11 @@ import com.roi.galegot.sequal.writer.HDFSToFile;
  */
 public class AppService {
 
-	/** The spc. */
-	private static SparkConf spc;
+	/** The spark conf. */
+	private static SparkConf sparkConf;
 
-	/** The jsc. */
-	private static JavaSparkContext jsc;
+	/** The spark context. */
+	private static JavaSparkContext sparkContext;
 
 	/** The input. */
 	private String input;
@@ -54,13 +54,14 @@ public class AppService {
 	 * @param input      the input
 	 * @param output     the output
 	 * @param configFile the config file
+	 * @param logLevel   the log level
 	 */
 	public AppService(String masterConf, String input, String output,
-			String configFile) {
+			String configFile, Level sparkLogLevel) {
 		this.input = input;
 		this.output = output;
 
-		this.start(masterConf);
+		this.start(masterConf, sparkLogLevel);
 		ExecutionParametersManager.setConfigFile(configFile);
 	}
 
@@ -75,20 +76,21 @@ public class AppService {
 	 * Configures the Spark app and its context.
 	 *
 	 * @param masterConf the master conf
+	 * @param logLevel   the log level
 	 */
-	private void start(String masterConf) {
-		Logger.getLogger("org").setLevel(Level.WARN);
-		Logger.getLogger("akka").setLevel(Level.WARN);
+	private void start(String masterConf, Level sparkLogLevel) {
+		Logger.getLogger("org").setLevel(sparkLogLevel);
+		Logger.getLogger("akka").setLevel(sparkLogLevel);
 
-		spc = new SparkConf().setAppName("SeQual").setMaster(masterConf);
-		jsc = new JavaSparkContext(spc);
+		sparkConf = new SparkConf().setAppName("SeQual").setMaster(masterConf);
+		sparkContext = new JavaSparkContext(sparkConf);
 	}
 
 	/**
 	 * Stops the Spark app and its context.
 	 */
 	private void stop() {
-		jsc.close();
+		sparkContext.close();
 	}
 
 	/**
@@ -131,13 +133,14 @@ public class AppService {
 	 */
 	public void read() throws IOException {
 		this.seqs = DNAFileReaderFactory.getReader(this.getFormat(this.input))
-				.readFileToRDD(this.input, jsc);
+				.readFileToRDD(this.input, sparkContext);
 	}
 
 	/**
 	 * Write.
 	 *
-	 * @throws IOException
+	 * @param singleFile the single file
+	 * @throws IOException Signals that an I/O exception has occurred.
 	 */
 	public void write(Boolean singleFile) throws IOException {
 		if (singleFile) {
@@ -220,6 +223,16 @@ public class AppService {
 		outStream.write(buffer);
 		outStream.close();
 		in.close();
+	}
+
+	/**
+	 * Sets the log level.
+	 *
+	 * @param level the new log level
+	 */
+	public void setLogLevel(Level sparkLogLevel) {
+		Logger.getLogger("org").setLevel(sparkLogLevel);
+		Logger.getLogger("akka").setLevel(sparkLogLevel);
 	}
 
 }

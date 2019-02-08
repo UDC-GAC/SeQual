@@ -6,9 +6,11 @@ import java.util.Map;
 import java.util.TreeMap;
 
 import org.apache.commons.lang3.StringUtils;
+import org.apache.log4j.Logger;
 import org.apache.spark.api.java.JavaRDD;
 
 import com.roi.galegot.sequal.common.Sequence;
+import com.roi.galegot.sequal.console.ConsoleInterface;
 import com.roi.galegot.sequal.trimmer.Trimmer;
 import com.roi.galegot.sequal.trimmer.TrimmerFactory;
 import com.roi.galegot.sequal.trimmer.Trimmers;
@@ -18,6 +20,10 @@ import com.roi.galegot.sequal.util.ExecutionParametersManager;
  * The Class TrimService.
  */
 public class TrimService {
+
+	/** The Constant LOGGER. */
+	private static final Logger LOGGER = Logger
+			.getLogger(ConsoleInterface.class.getName());
 
 	/**
 	 * Instantiates a new trim service.
@@ -36,7 +42,8 @@ public class TrimService {
 		if (!trimmers.isEmpty()) {
 			return applyTrimmers(sequences, trimmers);
 		} else {
-			System.out.println("\nNo trimmers specified. No operations will be performed.\n");
+			LOGGER.warn(
+					"\nNo trimmers specified. No operations will be performed.\n");
 		}
 		return sequences;
 	}
@@ -48,11 +55,15 @@ public class TrimService {
 	 * @param trimmers  the trimmers
 	 * @return the java RDD
 	 */
-	private static JavaRDD<Sequence> applyTrimmers(JavaRDD<Sequence> sequences, List<Trimmers> trimmers) {
+	private static JavaRDD<Sequence> applyTrimmers(JavaRDD<Sequence> sequences,
+			List<Trimmers> trimmers) {
 		for (int i = 0; i < trimmers.size(); i++) {
 			if (sequences.isEmpty()) {
 				return sequences;
 			}
+
+			LOGGER.info("Applying trimmer " + trimmers.get(i));
+
 			Trimmer trimmer = TrimmerFactory.getTrimmer(trimmers.get(i));
 			sequences = trimmer.trim(sequences);
 		}
