@@ -41,6 +41,10 @@ public class TrimRightToLength implements Trimmer {
 			return sequences;
 		}
 
+		if (sequences.first().getIsPaired()) {
+			return sequences.map(sequence -> this.doTrimPair(sequence, limit));
+		}
+
 		return sequences.map(sequence -> this.doTrim(sequence, limit));
 	}
 
@@ -54,7 +58,21 @@ public class TrimRightToLength implements Trimmer {
 	private Sequence doTrim(Sequence sequence, Integer limit) {
 		if (sequence.getLength() > limit) {
 			sequence.setSequenceString(sequence.getSequenceString().substring(0, limit));
-			if (sequence.isHasQual()) {
+			if (sequence.getHasQuality()) {
+				sequence.setQualityString(sequence.getQualityString().substring(0, limit));
+			}
+		}
+
+		return sequence;
+	}
+
+	private Sequence doTrimPair(Sequence sequence, Integer limit) {
+
+		// TODO
+
+		if (sequence.getLength() > limit) {
+			sequence.setSequenceString(sequence.getSequenceString().substring(0, limit));
+			if (sequence.getHasQuality()) {
 				sequence.setQualityString(sequence.getQualityString().substring(0, limit));
 			}
 		}

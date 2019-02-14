@@ -21,6 +21,10 @@ public class NonIupac implements SingleFilter {
 			return sequences;
 		}
 
+		if (sequences.first().getIsPaired()) {
+			return sequences.filter(s -> this.filterPair(s, bases));
+		}
+
 		return sequences.filter(s -> this.filter(s, bases));
 	}
 
@@ -32,6 +36,23 @@ public class NonIupac implements SingleFilter {
 	 * @return the boolean
 	 */
 	private Boolean filter(Sequence seq, String[] bases) {
+		int counter;
+		String sequence;
+
+		counter = 0;
+		sequence = seq.getSequenceString();
+
+		for (String base : bases) {
+			counter = counter + StringUtils.countMatches(sequence, base);
+		}
+
+		return (counter == sequence.length());
+	}
+
+	private Boolean filterPair(Sequence seq, String[] bases) {
+
+		// TODO
+
 		int counter;
 		String sequence;
 

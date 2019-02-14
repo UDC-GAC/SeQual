@@ -14,6 +14,11 @@ public class DNAToRNA implements Formatter {
 
 	@Override
 	public JavaRDD<Sequence> format(JavaRDD<Sequence> sequences) {
+
+		if (sequences.first().getIsPaired()) {
+			return sequences.map(sequence -> this.doFormatPair(sequence));
+		}
+
 		return sequences.map(sequence -> this.doFormat(sequence));
 	}
 
@@ -27,4 +32,13 @@ public class DNAToRNA implements Formatter {
 		sequence.setSequenceString(sequence.getSequenceString().replace("T", "U"));
 		return sequence;
 	}
+
+	private Sequence doFormatPair(Sequence sequence) {
+
+		// TODO
+
+		sequence.setSequenceString(sequence.getSequenceString().replace("T", "U"));
+		return sequence;
+	}
+
 }

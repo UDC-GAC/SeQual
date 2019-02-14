@@ -11,6 +11,7 @@ import org.apache.spark.SparkConf;
 import org.apache.spark.api.java.JavaRDD;
 import org.apache.spark.api.java.JavaSparkContext;
 import org.junit.AfterClass;
+import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
@@ -19,6 +20,9 @@ import com.roi.galegot.sequal.service.FilterService;
 import com.roi.galegot.sequal.util.ExecutionParametersManager;
 
 public class FilterServiceTest {
+
+	private FilterService filterService;
+
 	private static SparkConf spc;
 	private static JavaSparkContext jsc;
 
@@ -29,6 +33,11 @@ public class FilterServiceTest {
 		spc = new SparkConf().setAppName("SeQual").setMaster("local[*]");
 		jsc = new JavaSparkContext(spc);
 		jsc.setLogLevel("ERROR");
+	}
+
+	@Before
+	public void setupService() {
+		this.filterService = new FilterService();
 	}
 
 	@AfterClass
@@ -79,12 +88,13 @@ public class FilterServiceTest {
 		String seq5s4 = ">=2.660/?:36AD;0<147036403343";
 		Sequence seq5 = new Sequence(seq5s1, seq5s2, commLine, seq5s4);
 
-		JavaRDD<Sequence> original = jsc.parallelize(Arrays.asList(seq1, seq2, seq3, seq4, seq5));
+		JavaRDD<Sequence> original = jsc
+				.parallelize(Arrays.asList(seq1, seq2, seq3, seq4, seq5));
 		JavaRDD<Sequence> filtered;
 		ArrayList<Sequence> list;
 
 		ExecutionParametersManager.setParameter("SingleFilters", "");
-		filtered = FilterService.filter(original);
+		filtered = this.filterService.filter(original);
 
 		assertEquals(5, filtered.count());
 		list = new ArrayList<>(filtered.collect());
@@ -99,7 +109,7 @@ public class FilterServiceTest {
 		ExecutionParametersManager.setParameter("LengthMinVal", "29");
 		ExecutionParametersManager.setParameter("LengthMaxVal", "30");
 
-		filtered = FilterService.filter(original);
+		filtered = this.filterService.filter(original);
 
 		assertEquals(4, filtered.count());
 		list = new ArrayList<>(filtered.collect());
@@ -109,11 +119,12 @@ public class FilterServiceTest {
 		assertTrue(list.contains(seq3));
 		assertTrue(list.contains(seq5));
 
-		ExecutionParametersManager.setParameter("SingleFilters", "LENGTH | QUALITY");
+		ExecutionParametersManager.setParameter("SingleFilters",
+				"LENGTH | QUALITY");
 		ExecutionParametersManager.setParameter("QualityMinVal", "10");
 		ExecutionParametersManager.setParameter("QualityMaxVal", "29");
 
-		filtered = FilterService.filter(original);
+		filtered = this.filterService.filter(original);
 
 		assertEquals(3, filtered.count());
 		list = new ArrayList<>(filtered.collect());
@@ -122,9 +133,10 @@ public class FilterServiceTest {
 		assertTrue(list.contains(seq2));
 		assertTrue(list.contains(seq5));
 
-		ExecutionParametersManager.setParameter("SingleFilters", "LENGTH | QUALITY | NONIUPAC");
+		ExecutionParametersManager.setParameter("SingleFilters",
+				"LENGTH | QUALITY | NONIUPAC");
 
-		filtered = FilterService.filter(original);
+		filtered = this.filterService.filter(original);
 
 		assertEquals(2, filtered.count());
 		list = new ArrayList<>(filtered.collect());
@@ -134,7 +146,7 @@ public class FilterServiceTest {
 
 		ExecutionParametersManager.setParameter("GroupFilters", "DISTINCT");
 
-		filtered = FilterService.filter(original);
+		filtered = this.filterService.filter(original);
 
 		assertEquals(1, filtered.count());
 		list = new ArrayList<>(filtered.collect());

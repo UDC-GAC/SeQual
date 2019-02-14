@@ -26,24 +26,18 @@ public class FilterService {
 			.getLogger(ConsoleInterface.class.getName());
 
 	/**
-	 * Instantiates a new filter service.
-	 */
-	private FilterService() {
-	}
-
-	/**
 	 * Filter.
 	 *
 	 * @param sequences the sequences
 	 * @return the java RDD
 	 */
-	public static JavaRDD<Sequence> filter(JavaRDD<Sequence> sequences) {
-		List<Filters> filters = getFilters();
+	public JavaRDD<Sequence> filter(JavaRDD<Sequence> sequences) {
+		List<Filters> filters = this.getFilters();
 		if (filters.isEmpty()) {
 			LOGGER.warn(
 					"\nNo filters specified. No operations will be performed.\n");
 		} else {
-			sequences = applyFilters(sequences, filters);
+			sequences = this.applyFilters(sequences, filters);
 		}
 		return sequences;
 	}
@@ -55,7 +49,7 @@ public class FilterService {
 	 * @return List<Filters> containing all the specified filters
 	 * @see filters.Filters
 	 */
-	private static List<Filters> getFilters() {
+	private List<Filters> getFilters() {
 		String filters;
 		String[] splitFilters;
 		Map<Integer, Filters> filtersMap;
@@ -90,7 +84,7 @@ public class FilterService {
 	 * @param filters   the filters
 	 * @return the java RDD
 	 */
-	private static JavaRDD<Sequence> applyFilters(JavaRDD<Sequence> sequences,
+	private JavaRDD<Sequence> applyFilters(JavaRDD<Sequence> sequences,
 			List<Filters> filters) {
 		for (int i = 0; i < filters.size(); i++) {
 			if (sequences.isEmpty()) {

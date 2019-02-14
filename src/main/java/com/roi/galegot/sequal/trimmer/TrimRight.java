@@ -41,6 +41,10 @@ public class TrimRight implements Trimmer {
 			return sequences;
 		}
 
+		if (sequences.first().getIsPaired()) {
+			return sequences.map(sequence -> this.doTrimPair(sequence, limit));
+		}
+
 		return sequences.map(sequence -> this.doTrim(sequence, limit));
 	}
 
@@ -56,7 +60,22 @@ public class TrimRight implements Trimmer {
 		int length = sequence.getLength();
 		if (length > limit) {
 			sequence.setSequenceString(sequence.getSequenceString().substring(0, length - limit));
-			if (sequence.isHasQual()) {
+			if (sequence.getHasQuality()) {
+				sequence.setQualityString(sequence.getQualityString().substring(0, length - limit));
+			}
+		}
+
+		return sequence;
+	}
+
+	private Sequence doTrimPair(Sequence sequence, Integer limit) {
+
+		// TODO
+
+		int length = sequence.getLength();
+		if (length > limit) {
+			sequence.setSequenceString(sequence.getSequenceString().substring(0, length - limit));
+			if (sequence.getHasQuality()) {
 				sequence.setQualityString(sequence.getQualityString().substring(0, length - limit));
 			}
 		}

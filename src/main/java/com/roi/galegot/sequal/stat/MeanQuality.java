@@ -19,6 +19,8 @@ public class MeanQuality implements Stat {
 	@Override
 	public Double measure(JavaRDD<Sequence> seqs) {
 
+		// TODO Check how to adapt it to Paired End Sequences
+
 		BigDecimal mean;
 		DummyCount initialDummy = new DummyCount();
 		DummyCount resultDummy;
@@ -30,10 +32,8 @@ public class MeanQuality implements Stat {
 			private static final long serialVersionUID = 1L;
 
 			@Override
-			public DummyCount call(DummyCount v1, Sequence v2)
-					throws Exception {
-				v1.countQuality = v1.countQuality
-						.add(BigDecimal.valueOf(v2.getQuality()));
+			public DummyCount call(DummyCount v1, Sequence v2) throws Exception {
+				v1.countQuality = v1.countQuality.add(BigDecimal.valueOf(v2.getQuality()));
 				v1.countNumber += (long) 1;
 				return v1;
 			}
@@ -45,8 +45,7 @@ public class MeanQuality implements Stat {
 			private static final long serialVersionUID = 1L;
 
 			@Override
-			public DummyCount call(DummyCount v1, DummyCount v2)
-					throws Exception {
+			public DummyCount call(DummyCount v1, DummyCount v2) throws Exception {
 				v1.countQuality = v1.countQuality.add(v2.countQuality);
 				v1.countNumber += v2.countNumber;
 				return v1;
@@ -84,9 +83,7 @@ public class MeanQuality implements Stat {
 				return BigDecimal.ZERO;
 			}
 
-			return this.countQuality.divide(
-					BigDecimal.valueOf(this.countNumber), 2,
-					BigDecimal.ROUND_UP);
+			return this.countQuality.divide(BigDecimal.valueOf(this.countNumber), 2, BigDecimal.ROUND_UP);
 		}
 
 	}

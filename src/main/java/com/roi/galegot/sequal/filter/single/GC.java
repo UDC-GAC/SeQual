@@ -38,6 +38,11 @@ public class GC implements SingleFilter {
 		if (!limMinUse && !limMaxUse) {
 			return sequences;
 		}
+
+		if (sequences.first().getIsPaired()) {
+			return sequences.filter(s -> this.filterPair(s, limMin, limMinUse, limMax, limMaxUse));
+		}
+
 		return sequences.filter(s -> this.filter(s, limMin, limMinUse, limMax, limMaxUse));
 	}
 
@@ -52,6 +57,22 @@ public class GC implements SingleFilter {
 	 * @return the boolean
 	 */
 	private Boolean filter(Sequence seq, Integer limMin, Boolean limMinUse, Integer limMax, Boolean limMaxUse) {
+		if (limMinUse && limMaxUse) {
+			return ((seq.getGuaCyt() >= limMin) && (seq.getGuaCyt() <= limMax));
+		}
+		if (limMinUse) {
+			return (seq.getGuaCyt() >= limMin);
+		}
+		if (limMaxUse) {
+			return (seq.getGuaCyt() <= limMax);
+		}
+		return true;
+	}
+
+	private Boolean filterPair(Sequence seq, Integer limMin, Boolean limMinUse, Integer limMax, Boolean limMaxUse) {
+
+		// TODO
+
 		if (limMinUse && limMaxUse) {
 			return ((seq.getGuaCyt() >= limMin) && (seq.getGuaCyt() <= limMax));
 		}

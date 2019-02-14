@@ -11,6 +11,7 @@ import org.apache.spark.SparkConf;
 import org.apache.spark.api.java.JavaRDD;
 import org.apache.spark.api.java.JavaSparkContext;
 import org.junit.AfterClass;
+import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
@@ -19,6 +20,9 @@ import com.roi.galegot.sequal.service.TrimService;
 import com.roi.galegot.sequal.util.ExecutionParametersManager;
 
 public class TrimServiceTest {
+
+	private TrimService trimService;
+
 	private static SparkConf spc;
 	private static JavaSparkContext jsc;
 
@@ -29,6 +33,11 @@ public class TrimServiceTest {
 		spc = new SparkConf().setAppName("SeQual").setMaster("local[*]");
 		jsc = new JavaSparkContext(spc);
 		jsc.setLogLevel("ERROR");
+	}
+
+	@Before
+	public void setupService() {
+		this.trimService = new TrimService();
 	}
 
 	@AfterClass
@@ -82,12 +91,13 @@ public class TrimServiceTest {
 		String seq6s4 = ">=2.660/?:3";
 		Sequence seq6 = new Sequence(seq3s1, seq6s2, commLine, seq6s4);
 
-		JavaRDD<Sequence> original = jsc.parallelize(Arrays.asList(seq1, seq2, seq3));
+		JavaRDD<Sequence> original = jsc
+				.parallelize(Arrays.asList(seq1, seq2, seq3));
 		JavaRDD<Sequence> trimmered;
 		ArrayList<Sequence> list;
 
 		ExecutionParametersManager.setParameter("Trimmers", "");
-		trimmered = TrimService.trim(original);
+		trimmered = this.trimService.trim(original);
 		assertEquals(3, trimmered.count());
 		list = new ArrayList<>(trimmered.collect());
 		assertEquals(3, list.size());
@@ -97,7 +107,7 @@ public class TrimServiceTest {
 
 		ExecutionParametersManager.setParameter("Trimmers", "TRIMLEFT");
 		ExecutionParametersManager.setParameter("TrimLeft", "15");
-		trimmered = TrimService.trim(original);
+		trimmered = this.trimService.trim(original);
 		assertEquals(3, trimmered.count());
 		list = new ArrayList<>(trimmered.collect());
 		assertEquals(3, list.size());
@@ -105,9 +115,10 @@ public class TrimServiceTest {
 		assertTrue(list.contains(seq4));
 		assertTrue(list.contains(seq5));
 
-		ExecutionParametersManager.setParameter("Trimmers", "TRIMLEFT|TRIMNRIGHT");
+		ExecutionParametersManager.setParameter("Trimmers",
+				"TRIMLEFT|TRIMNRIGHT");
 		ExecutionParametersManager.setParameter("TrimNRight", "3");
-		trimmered = TrimService.trim(original);
+		trimmered = this.trimService.trim(original);
 		assertEquals(3, trimmered.count());
 		list = new ArrayList<>(trimmered.collect());
 		assertEquals(3, list.size());

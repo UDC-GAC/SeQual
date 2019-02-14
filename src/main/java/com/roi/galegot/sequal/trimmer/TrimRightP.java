@@ -41,6 +41,10 @@ public class TrimRightP implements Trimmer {
 			return sequences;
 		}
 
+		if (sequences.first().getIsPaired()) {
+			return sequences.map(sequence -> this.doTrimPair(sequence, percentage));
+		}
+
 		return sequences.map(sequence -> this.doTrim(sequence, percentage));
 	}
 
@@ -55,7 +59,21 @@ public class TrimRightP implements Trimmer {
 		Integer oldLength = sequence.getLength();
 		Integer valueToTrim = (int) (percentage * sequence.getLength());
 		sequence.setSequenceString(sequence.getSequenceString().substring(0, oldLength - valueToTrim));
-		if (sequence.isHasQual()) {
+		if (sequence.getHasQuality()) {
+			sequence.setQualityString(sequence.getQualityString().substring(0, oldLength - valueToTrim));
+		}
+
+		return sequence;
+	}
+
+	private Sequence doTrimPair(Sequence sequence, Double percentage) {
+
+		// TODO
+
+		Integer oldLength = sequence.getLength();
+		Integer valueToTrim = (int) (percentage * sequence.getLength());
+		sequence.setSequenceString(sequence.getSequenceString().substring(0, oldLength - valueToTrim));
+		if (sequence.getHasQuality()) {
 			sequence.setQualityString(sequence.getQualityString().substring(0, oldLength - valueToTrim));
 		}
 

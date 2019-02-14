@@ -36,7 +36,7 @@ public class ReverseDistinct implements GroupFilter {
 					}
 				});
 
-		if (sequences.first().isHasQual()) {
+		if (sequences.first().getHasQuality()) {
 			return group.reduceByKey(new Function2<Sequence, Sequence, Sequence>() {
 
 				private static final long serialVersionUID = -1935325326481753717L;

@@ -12,59 +12,58 @@ import com.roi.galegot.sequal.exceptions.InvalidSequenceException;
 @SuppressWarnings("serial")
 public class Sequence implements Serializable {
 
-	/** The name. */
 	private String name;
-
-	/** The sequence string. */
 	private String sequenceString;
-
-	/** The extra. */
 	private String extra;
-
-	/** The quality string. */
 	private String qualityString;
 
-	/** The length. */
 	private int length;
-
-	/** The gua cyt. */
 	private int guaCyt;
-
-	/** The n amb. */
 	private int nAmb;
 
-	/** The gua cyt P. */
 	private double guaCytP;
-
-	/** The n amb P. */
 	private double nAmbP;
-
-	/** The quality. */
 	private double quality;
 
-	/** The has quality. */
 	private Boolean hasQuality;
+
+	// Parameters for paired sequence
+
+	private Boolean isPaired;
+	private String namePair;
+	private String sequenceStringPair;
+	private String extraPair;
+	private String qualityStringPair;
+
+	private int lengthPair;
+	private int guaCytPair;
+	private int nAmbPair;
+
+	private double guaCytPPair;
+	private double nAmbPPair;
+	private double qualityPair;
 
 	/**
 	 * Instantiates a new sequence.
 	 *
 	 * @param line1 the line 1
 	 * @param line2 the line 2
-	 * @throws InvalidSequenceException
+	 * @throws InvalidSequenceException the invalid sequence exception
 	 */
 	public Sequence(String line1, String line2) {
-		if (!this.checkIsWellFormed(line1, line2)) {
+		if (!SequenceUtils.checkFastaIsWellFormed(line1, line2)) {
 			throw new InvalidSequenceException();
 		}
 
 		this.name = line1;
 		this.sequenceString = line2;
 		this.length = this.sequenceString.length();
-		this.guaCyt = this.calcGuaCyt();
-		this.guaCytP = this.calcGuaCytP();
-		this.nAmb = this.calcNAmb();
-		this.nAmbP = this.calcNAmbP();
+		this.guaCyt = SequenceUtils.calculateGuaninoCitosyne(this.sequenceString);
+		this.guaCytP = SequenceUtils.calculatePercentage(this.guaCyt, this.sequenceString);
+		this.nAmb = SequenceUtils.calculateNAmbiguous(this.sequenceString);
+		this.nAmbP = SequenceUtils.calculatePercentage(this.nAmb, this.sequenceString);
 		this.hasQuality = false;
+		this.isPaired = false;
 	}
 
 	/**
@@ -74,10 +73,10 @@ public class Sequence implements Serializable {
 	 * @param line2 the line 2
 	 * @param line3 the line 3
 	 * @param line4 the line 4
-	 * @throws InvalidSequenceException
+	 * @throws InvalidSequenceException the invalid sequence exception
 	 */
 	public Sequence(String line1, String line2, String line3, String line4) {
-		if (!this.checkIsWellFormed(line1, line2, line3, line4)) {
+		if (!SequenceUtils.checkFastQIsWellFormed(line1, line2, line3, line4)) {
 			throw new InvalidSequenceException();
 		}
 
@@ -86,12 +85,350 @@ public class Sequence implements Serializable {
 		this.extra = line3;
 		this.qualityString = line4;
 		this.length = this.sequenceString.length();
-		this.quality = this.calcQuality();
-		this.guaCyt = this.calcGuaCyt();
-		this.guaCytP = this.calcGuaCytP();
-		this.nAmb = this.calcNAmb();
-		this.nAmbP = this.calcNAmbP();
+		this.quality = SequenceUtils.calculateQuality(this.qualityString);
+		this.guaCyt = SequenceUtils.calculateGuaninoCitosyne(this.sequenceString);
+		this.guaCytP = SequenceUtils.calculatePercentage(this.guaCyt, this.sequenceString);
+		this.nAmb = SequenceUtils.calculateNAmbiguous(this.sequenceString);
+		this.nAmbP = SequenceUtils.calculatePercentage(this.nAmb, this.sequenceString);
 		this.hasQuality = true;
+		this.isPaired = false;
+	}
+
+	public void setPairSequence(String line1, String line2) {
+		if (!SequenceUtils.checkFastaIsWellFormed(line1, line2)
+				|| !SequenceUtils.checkIsAValidFastaPair(this.sequenceString, line2)) {
+			throw new InvalidSequenceException();
+		}
+
+		this.namePair = line1;
+		this.sequenceStringPair = line2;
+		this.lengthPair = this.sequenceStringPair.length();
+		this.guaCytPair = SequenceUtils.calculateGuaninoCitosyne(this.sequenceStringPair);
+		this.guaCytPPair = SequenceUtils.calculatePercentage(this.guaCytPair, this.sequenceStringPair);
+		this.nAmbPair = SequenceUtils.calculateNAmbiguous(this.sequenceStringPair);
+		this.nAmbPPair = SequenceUtils.calculatePercentage(this.nAmbPair, this.sequenceStringPair);
+		this.hasQuality = false;
+		this.isPaired = true;
+	}
+
+	public void setPairSequence(String line1, String line2, String line3, String line4) {
+		if (!SequenceUtils.checkFastQIsWellFormed(line1, line2, line3, line4)
+				|| !SequenceUtils.checkIsAValidFastQPair(this.sequenceString, this.qualityString, line2, line4)) {
+			throw new InvalidSequenceException();
+		}
+
+		this.namePair = line1;
+		this.sequenceStringPair = line2;
+		this.extraPair = line3;
+		this.qualityStringPair = line4;
+		this.lengthPair = this.sequenceStringPair.length();
+		this.qualityPair = SequenceUtils.calculateQuality(this.qualityStringPair);
+		this.guaCytPair = SequenceUtils.calculateGuaninoCitosyne(this.sequenceStringPair);
+		this.guaCytPPair = SequenceUtils.calculatePercentage(this.guaCytPair, this.sequenceStringPair);
+		this.nAmbPair = SequenceUtils.calculateNAmbiguous(this.sequenceStringPair);
+		this.nAmbPPair = SequenceUtils.calculatePercentage(this.nAmbPair, this.sequenceStringPair);
+		this.hasQuality = true;
+		this.isPaired = true;
+	}
+
+	/**
+	 * Gets the name.
+	 *
+	 * @return the name
+	 */
+	public String getName() {
+		return this.name;
+	}
+
+	/**
+	 * Sets the name.
+	 *
+	 * @param name the new name
+	 */
+	public void setName(String name) {
+		if (!(SequenceUtils.checkStart(name, "@") || SequenceUtils.checkStart(name, ">"))) {
+			throw new InvalidSequenceException();
+		}
+		this.name = name;
+	}
+
+	/**
+	 * Gets the sequence string.
+	 *
+	 * @return the sequence string
+	 */
+	public String getSequenceString() {
+		return this.sequenceString;
+	}
+
+	/**
+	 * Sets the sequence string.
+	 *
+	 * @param sequenceString the new sequence string
+	 */
+	public void setSequenceString(String sequenceString) {
+		this.sequenceString = sequenceString;
+		this.length = sequenceString.length();
+		this.guaCyt = SequenceUtils.calculateGuaninoCitosyne(sequenceString);
+		this.guaCytP = SequenceUtils.calculatePercentage(this.guaCyt, this.sequenceString);
+		this.nAmb = SequenceUtils.calculateNAmbiguous(sequenceString);
+		this.nAmbP = SequenceUtils.calculatePercentage(this.nAmb, this.sequenceString);
+	}
+
+	/**
+	 * Gets the extra.
+	 *
+	 * @return the extra
+	 */
+	public String getExtra() {
+		return this.extra;
+	}
+
+	/**
+	 * Sets the extra.
+	 *
+	 * @param extra the new extra
+	 */
+	public void setExtra(String extra) {
+		this.extra = extra;
+	}
+
+	/**
+	 * Gets the quality string.
+	 *
+	 * @return the quality string
+	 */
+	public String getQualityString() {
+		return this.qualityString;
+	}
+
+	/**
+	 * Sets the quality string.
+	 *
+	 * @param qualityString the new quality string
+	 */
+	public void setQualityString(String qualityString) {
+		if (StringUtils.isBlank(qualityString)) {
+			this.hasQuality = false;
+			this.qualityString = null;
+		} else {
+			this.qualityString = qualityString;
+			this.quality = SequenceUtils.calculateQuality(qualityString);
+		}
+	}
+
+	/**
+	 * Gets the length.
+	 *
+	 * @return the length
+	 */
+	public int getLength() {
+		return this.length;
+	}
+
+	/**
+	 * Gets the gua cyt.
+	 *
+	 * @return the gua cyt
+	 */
+	public int getGuaCyt() {
+		return this.guaCyt;
+	}
+
+	/**
+	 * Gets the n amb.
+	 *
+	 * @return the n amb
+	 */
+	public int getnAmb() {
+		return this.nAmb;
+	}
+
+	/**
+	 * Gets the gua cyt P.
+	 *
+	 * @return the gua cyt P
+	 */
+	public double getGuaCytP() {
+		return this.guaCytP;
+	}
+
+	/**
+	 * Gets the n amb P.
+	 *
+	 * @return the n amb P
+	 */
+	public double getnAmbP() {
+		return this.nAmbP;
+	}
+
+	/**
+	 * Gets the quality.
+	 *
+	 * @return the quality
+	 */
+	public double getQuality() {
+		return this.quality;
+	}
+
+	/**
+	 * Gets the checks for quality.
+	 *
+	 * @return the checks for quality
+	 */
+	public Boolean getHasQuality() {
+		return this.hasQuality;
+	}
+
+	/**
+	 * Gets the checks if is paired.
+	 *
+	 * @return the checks if is paired
+	 */
+	public Boolean getIsPaired() {
+		return this.isPaired;
+	}
+
+	/**
+	 * Gets the name pair.
+	 *
+	 * @return the name pair
+	 */
+	public String getNamePair() {
+		return this.namePair;
+	}
+
+	// Getters and setters for paired sequence
+
+	/**
+	 * Sets the name pair.
+	 *
+	 * @param namePair the new name pair
+	 */
+	public void setNamePair(String namePair) {
+		if (!(SequenceUtils.checkStart(namePair, "@") || SequenceUtils.checkStart(namePair, ">"))) {
+			throw new InvalidSequenceException();
+		}
+		this.namePair = namePair;
+	}
+
+	/**
+	 * Gets the sequence string pair.
+	 *
+	 * @return the sequence string pair
+	 */
+	public String getSequenceStringPair() {
+		return this.sequenceStringPair;
+	}
+
+	/**
+	 * Sets the sequence string pair.
+	 *
+	 * @param sequenceStringPair the new sequence string pair
+	 */
+	public void setSequenceStringPair(String sequenceStringPair) {
+		this.sequenceStringPair = sequenceStringPair;
+		this.lengthPair = sequenceStringPair.length();
+		this.guaCytPair = SequenceUtils.calculateGuaninoCitosyne(sequenceStringPair);
+		this.guaCytPPair = SequenceUtils.calculatePercentage(this.guaCytPair, this.sequenceStringPair);
+		this.nAmbPair = SequenceUtils.calculateNAmbiguous(sequenceStringPair);
+		this.nAmbPPair = SequenceUtils.calculatePercentage(this.nAmbPair, this.sequenceStringPair);
+	}
+
+	/**
+	 * Gets the extra pair.
+	 *
+	 * @return the extra pair
+	 */
+	public String getExtraPair() {
+		return this.extraPair;
+	}
+
+	/**
+	 * Sets the extra pair.
+	 *
+	 * @param extraPair the new extra pair
+	 */
+	public void setExtraPair(String extraPair) {
+		this.extraPair = extraPair;
+	}
+
+	/**
+	 * Gets the quality string pair.
+	 *
+	 * @return the quality string pair
+	 */
+	public String getQualityStringPair() {
+		return this.qualityStringPair;
+	}
+
+	/**
+	 * Sets the quality string pair.
+	 *
+	 * @param qualityStringPair the new quality string pair
+	 */
+	public void setQualityStringPair(String qualityStringPair) {
+		if (StringUtils.isBlank(qualityStringPair)) {
+			this.hasQuality = false;
+			this.qualityStringPair = null;
+		} else {
+			this.qualityStringPair = qualityStringPair;
+			this.qualityPair = SequenceUtils.calculateQuality(qualityStringPair);
+		}
+	}
+
+	/**
+	 * Gets the length pair.
+	 *
+	 * @return the length pair
+	 */
+	public int getLengthPair() {
+		return this.lengthPair;
+	}
+
+	/**
+	 * Gets the gua cyt pair.
+	 *
+	 * @return the gua cyt pair
+	 */
+	public int getGuaCytPair() {
+		return this.guaCytPair;
+	}
+
+	/**
+	 * Gets the n amb pair.
+	 *
+	 * @return the n amb pair
+	 */
+	public int getnAmbPair() {
+		return this.nAmbPair;
+	}
+
+	/**
+	 * Gets the gua cyt P pair.
+	 *
+	 * @return the gua cyt P pair
+	 */
+	public double getGuaCytPPair() {
+		return this.guaCytPPair;
+	}
+
+	/**
+	 * Gets the n amb P pair.
+	 *
+	 * @return the n amb P pair
+	 */
+	public double getnAmbPPair() {
+		return this.nAmbPPair;
+	}
+
+	/**
+	 * Gets the quality pair.
+	 *
+	 * @return the quality pair
+	 */
+	public double getQualityPair() {
+		return this.qualityPair;
 	}
 
 	@Override
@@ -138,244 +475,28 @@ public class Sequence implements Serializable {
 		} else if (!this.sequenceString.equals(other.sequenceString)) {
 			return false;
 		}
-		return true;
-	}
-
-	/**
-	 * Gets the name.
-	 *
-	 * @return the name
-	 */
-	public String getName() {
-		return this.name;
-	}
-
-	/**
-	 * Gets the seq.
-	 *
-	 * @return the seq
-	 */
-	public String getSequenceString() {
-		return this.sequenceString;
-	}
-
-	/**
-	 * Gets the extra.
-	 *
-	 * @return the extra
-	 */
-	public String getExtra() {
-		return this.extra;
-	}
-
-	/**
-	 * Gets the quality string.
-	 *
-	 * @return the quality string
-	 */
-	public String getQualityString() {
-		return this.qualityString;
-	}
-
-	/**
-	 * Gets the length.
-	 *
-	 * @return the length
-	 */
-	public int getLength() {
-		return this.length;
-	}
-
-	/**
-	 * Gets the quality.
-	 *
-	 * @return the quality
-	 */
-	public double getQuality() {
-		return this.quality;
-	}
-
-	/**
-	 * Gets the gua cyt.
-	 *
-	 * @return the gua cyt
-	 */
-	public int getGuaCyt() {
-		return this.guaCyt;
-	}
-
-	/**
-	 * Gets the gua cyt P.
-	 *
-	 * @return the gua cyt P
-	 */
-	public double getGuaCytP() {
-		return this.guaCytP;
-	}
-
-	/**
-	 * Gets the n amb.
-	 *
-	 * @return the n amb
-	 */
-	public int getNAmb() {
-		return this.nAmb;
-	}
-
-	/**
-	 * Gets the n amb P.
-	 *
-	 * @return the n amb P
-	 */
-	public double getNAmbP() {
-		return this.nAmbP;
-	}
-
-	/**
-	 * Checks if is has qual.
-	 *
-	 * @return the boolean
-	 */
-	public Boolean isHasQual() {
-		return this.hasQuality;
-	}
-
-	/**
-	 * Calc quality.
-	 *
-	 * @return the double
-	 */
-	private double calcQuality() {
-		double qual = 0;
-		for (char c : this.qualityString.toCharArray()) {
-			qual = (qual + c) - 33;
-		}
-		return qual / this.length;
-	}
-
-	/**
-	 * Calc gua cyt.
-	 *
-	 * @return the int
-	 */
-	private int calcGuaCyt() {
-		int guaCyt = 0;
-		for (char c : this.sequenceString.toCharArray()) {
-			if ((c == 'G') || (c == 'C')) {
-				guaCyt++;
+		if (this.isPaired) {
+			if (!other.isPaired) {
+				return false;
 			}
-		}
-		return guaCyt;
-	}
-
-	/**
-	 * Calc gua cyt P.
-	 *
-	 * @return the double
-	 */
-	private double calcGuaCytP() {
-		return (double) this.guaCyt / this.length;
-	}
-
-	/**
-	 * Calc N amb.
-	 *
-	 * @return the int
-	 */
-	private int calcNAmb() {
-		int nAmb = 0;
-		for (char c : this.sequenceString.toCharArray()) {
-			if (c == 'N') {
-				nAmb++;
+			if (this.sequenceStringPair == null) {
+				if (other.sequenceStringPair != null) {
+					return false;
+				}
+			} else if (!this.sequenceStringPair.equals(other.sequenceStringPair)) {
+				return false;
 			}
-		}
-		return nAmb;
-	}
-
-	/**
-	 * Calc N amb P.
-	 *
-	 * @return the double
-	 */
-	private double calcNAmbP() {
-		return (double) this.nAmb / this.length;
-	}
-
-	/**
-	 * Sets the name.
-	 *
-	 * @param name the new name
-	 */
-	public void setName(String name) {
-		if (!(this.checkStart(name, "@") || this.checkStart(name, ">"))) {
-			throw new InvalidSequenceException();
-		}
-		this.name = name;
-	}
-
-	/**
-	 * Sets the extra.
-	 *
-	 * @param extra the new extra
-	 */
-	public void setExtra(String extra) {
-		this.extra = extra;
-	}
-
-	/**
-	 * Sets the seq.
-	 *
-	 * @param seq the new seq
-	 */
-	public void setSequenceString(String sequenceString) {
-		this.sequenceString = sequenceString;
-		this.length = sequenceString.length();
-		this.guaCyt = this.calcGuaCyt();
-		this.guaCytP = this.calcGuaCytP();
-		this.nAmb = this.calcNAmb();
-		this.nAmbP = this.calcNAmbP();
-	}
-
-	/**
-	 * Sets the quality string.
-	 *
-	 * @param qualityS the new quality string
-	 */
-	public void setQualityString(String qualityS) {
-		if (StringUtils.isBlank(qualityS)) {
-			this.hasQuality = false;
-			this.qualityString = null;
-		} else {
-			this.qualityString = qualityS;
-			this.quality = this.calcQuality();
-		}
-	}
-
-	private Boolean checkIsWellFormed(String line1, String line2) {
-		if (StringUtils.isBlank(line1) || StringUtils.isBlank(line2)) {
-			return false;
-		}
-		if (!this.checkStart(line1, ">")) {
+			if (this.qualityStringPair == null) {
+				if (other.qualityStringPair != null) {
+					return false;
+				}
+			} else if (!this.qualityStringPair.equals(other.qualityStringPair)) {
+				return false;
+			}
+		} else if (other.isPaired) {
 			return false;
 		}
 		return true;
 	}
 
-	private Boolean checkIsWellFormed(String line1, String line2, String line3, String line4) {
-		if (StringUtils.isBlank(line1) || StringUtils.isBlank(line2) || StringUtils.isBlank(line3)
-				|| StringUtils.isBlank(line4)) {
-			return false;
-		}
-		if (line2.length() != line4.length()) {
-			return false;
-		}
-		if (!this.checkStart(line1, "@")) {
-			return false;
-		}
-		return true;
-	}
-
-	private Boolean checkStart(String line, String starter) {
-		return line.startsWith(starter);
-	}
 }

@@ -38,6 +38,7 @@ public class Length implements SingleFilter {
 		if (!limMinUse && !limMaxUse) {
 			return sequences;
 		}
+
 		return sequences.filter(s -> this.filter(s, limMin, limMinUse, limMax, limMaxUse));
 	}
 

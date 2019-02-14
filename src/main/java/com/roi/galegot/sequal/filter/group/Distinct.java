@@ -21,7 +21,7 @@ public class Distinct implements GroupFilter {
 			return sequences;
 		}
 
-		if (sequences.first().isHasQual()) {
+		if (sequences.first().getHasQuality()) {
 			JavaPairRDD<String, Sequence> group = sequences
 					.mapToPair(seq -> new Tuple2<String, Sequence>(seq.getSequenceString(), seq));
 			return group.reduceByKey((seq1, seq2) -> {

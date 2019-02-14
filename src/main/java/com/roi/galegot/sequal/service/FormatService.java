@@ -24,21 +24,15 @@ public class FormatService {
 			.getLogger(ConsoleInterface.class.getName());
 
 	/**
-	 * Instantiates a new format service.
-	 */
-	private FormatService() {
-	}
-
-	/**
 	 * Format.
 	 *
 	 * @param sequences the sequences
 	 * @return the java RDD
 	 */
-	public static JavaRDD<Sequence> format(JavaRDD<Sequence> sequences) {
-		List<Formatters> formatters = getFormatters();
+	public JavaRDD<Sequence> format(JavaRDD<Sequence> sequences) {
+		List<Formatters> formatters = this.getFormatters();
 		if (!formatters.isEmpty()) {
-			return applyFormatters(sequences, formatters);
+			return this.applyFormatters(sequences, formatters);
 		} else {
 			LOGGER.warn(
 					"\nNo formatters specified. No operations will be performed.\n");
@@ -53,8 +47,8 @@ public class FormatService {
 	 * @param formatters the formatters
 	 * @return the java RDD
 	 */
-	private static JavaRDD<Sequence> applyFormatters(
-			JavaRDD<Sequence> sequences, List<Formatters> formatters) {
+	private JavaRDD<Sequence> applyFormatters(JavaRDD<Sequence> sequences,
+			List<Formatters> formatters) {
 		for (int i = 0; i < formatters.size(); i++) {
 			Formatter formatter = FormatterFactory
 					.getFormatter(formatters.get(i));
@@ -71,7 +65,7 @@ public class FormatService {
 	 *
 	 * @return the formatters
 	 */
-	private static List<Formatters> getFormatters() {
+	private List<Formatters> getFormatters() {
 		String formatters = ExecutionParametersManager
 				.getParameter("Formatters");
 		ArrayList<Formatters> enumFormatters = new ArrayList<>();

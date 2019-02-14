@@ -14,6 +14,11 @@ public class RNAToDNA implements Formatter {
 
 	@Override
 	public JavaRDD<Sequence> format(JavaRDD<Sequence> sequences) {
+
+		if (sequences.first().getIsPaired()) {
+			return sequences.map(sequence -> this.doFormatPair(sequence));
+		}
+
 		return sequences.map(sequence -> this.doFormat(sequence));
 	}
 
@@ -24,6 +29,14 @@ public class RNAToDNA implements Formatter {
 	 * @return the sequence
 	 */
 	private Sequence doFormat(Sequence sequence) {
+		sequence.setSequenceString(sequence.getSequenceString().replace("U", "T"));
+		return sequence;
+	}
+
+	private Sequence doFormatPair(Sequence sequence) {
+
+		// TODO
+
 		sequence.setSequenceString(sequence.getSequenceString().replace("U", "T"));
 		return sequence;
 	}

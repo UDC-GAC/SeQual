@@ -39,6 +39,10 @@ public class NAmb implements SingleFilter {
 			return sequences;
 		}
 
+		if (sequences.first().getIsPaired()) {
+			return sequences.filter(s -> this.filterPair(s, limMin, limMinUse, limMax, limMaxUse));
+		}
+
 		return sequences.filter(s -> this.filter(s, limMin, limMinUse, limMax, limMaxUse));
 	}
 
@@ -54,13 +58,29 @@ public class NAmb implements SingleFilter {
 	 */
 	private Boolean filter(Sequence seq, Integer limMin, Boolean limMinUse, Integer limMax, Boolean limMaxUse) {
 		if (limMinUse && limMaxUse) {
-			return ((seq.getNAmb() >= limMin) && (seq.getNAmb() <= limMax));
+			return ((seq.getnAmb() >= limMin) && (seq.getnAmb() <= limMax));
 		}
 		if (limMinUse) {
-			return (seq.getNAmb() >= limMin);
+			return (seq.getnAmb() >= limMin);
 		}
 		if (limMaxUse) {
-			return (seq.getNAmb() <= limMax);
+			return (seq.getnAmb() <= limMax);
+		}
+		return true;
+	}
+
+	private Boolean filterPair(Sequence seq, Integer limMin, Boolean limMinUse, Integer limMax, Boolean limMaxUse) {
+
+		// TODO
+
+		if (limMinUse && limMaxUse) {
+			return ((seq.getnAmb() >= limMin) && (seq.getnAmb() <= limMax));
+		}
+		if (limMinUse) {
+			return (seq.getnAmb() >= limMin);
+		}
+		if (limMaxUse) {
+			return (seq.getnAmb() <= limMax);
 		}
 		return true;
 	}

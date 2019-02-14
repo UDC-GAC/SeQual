@@ -26,21 +26,15 @@ public class TrimService {
 			.getLogger(ConsoleInterface.class.getName());
 
 	/**
-	 * Instantiates a new trim service.
-	 */
-	private TrimService() {
-	}
-
-	/**
 	 * Trim.
 	 *
 	 * @param sequences the sequences
 	 * @return the java RDD
 	 */
-	public static JavaRDD<Sequence> trim(JavaRDD<Sequence> sequences) {
-		List<Trimmers> trimmers = getTrimmers();
+	public JavaRDD<Sequence> trim(JavaRDD<Sequence> sequences) {
+		List<Trimmers> trimmers = this.getTrimmers();
 		if (!trimmers.isEmpty()) {
-			return applyTrimmers(sequences, trimmers);
+			return this.applyTrimmers(sequences, trimmers);
 		} else {
 			LOGGER.warn(
 					"\nNo trimmers specified. No operations will be performed.\n");
@@ -55,7 +49,7 @@ public class TrimService {
 	 * @param trimmers  the trimmers
 	 * @return the java RDD
 	 */
-	private static JavaRDD<Sequence> applyTrimmers(JavaRDD<Sequence> sequences,
+	private JavaRDD<Sequence> applyTrimmers(JavaRDD<Sequence> sequences,
 			List<Trimmers> trimmers) {
 		for (int i = 0; i < trimmers.size(); i++) {
 			if (sequences.isEmpty()) {
@@ -75,7 +69,7 @@ public class TrimService {
 	 *
 	 * @return the trimmers
 	 */
-	private static List<Trimmers> getTrimmers() {
+	private List<Trimmers> getTrimmers() {
 		String trimmers;
 		String[] splitTrimmers;
 		Map<Integer, Trimmers> trimmersMap;

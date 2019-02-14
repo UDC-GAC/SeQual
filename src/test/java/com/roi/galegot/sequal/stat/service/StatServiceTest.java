@@ -12,6 +12,7 @@ import org.apache.spark.SparkConf;
 import org.apache.spark.api.java.JavaRDD;
 import org.apache.spark.api.java.JavaSparkContext;
 import org.junit.AfterClass;
+import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
@@ -21,6 +22,9 @@ import com.roi.galegot.sequal.stat.StatsPhrasing;
 import com.roi.galegot.sequal.util.ExecutionParametersManager;
 
 public class StatServiceTest {
+
+	private StatService statService;
+
 	private static SparkConf spc;
 	private static JavaSparkContext jsc;
 
@@ -31,6 +35,11 @@ public class StatServiceTest {
 		spc = new SparkConf().setAppName("SeQual").setMaster("local[*]");
 		jsc = new JavaSparkContext(spc);
 		jsc.setLogLevel("ERROR");
+	}
+
+	@Before
+	public void setupService() {
+		this.statService = new StatService();
 	}
 
 	@AfterClass
@@ -72,41 +81,41 @@ public class StatServiceTest {
 		Map<String, Double> results;
 		String resultsString;
 
-		assertTrue(StatService.getResults().isEmpty());
+		assertTrue(this.statService.getResults().isEmpty());
 
 		ExecutionParametersManager.setParameter("Statistics", "");
-		StatService.measure(original1, true);
-		assertTrue(StatService.getResults().isEmpty());
+		this.statService.measure(original1, true);
+		assertTrue(this.statService.getResults().isEmpty());
 		resultsString = "";
-		assertEquals(resultsString, StatService.getResultsAsString());
+		assertEquals(resultsString, this.statService.getResultsAsString());
 
-		StatService.measure(original1, false);
-		assertTrue(StatService.getResults().isEmpty());
+		this.statService.measure(original1, false);
+		assertTrue(this.statService.getResults().isEmpty());
 		resultsString = "";
-		assertEquals(resultsString, StatService.getResultsAsString());
+		assertEquals(resultsString, this.statService.getResultsAsString());
 
 		ExecutionParametersManager.setParameter("Statistics", "COUNT");
-		StatService.measure(original1, true);
-		results = StatService.getResults();
+		this.statService.measure(original1, true);
+		results = this.statService.getResults();
 		assertFalse(results.isEmpty());
 		assertTrue(results.get(StatsPhrasing.COUNT_BEFORE) == 3);
 		assertTrue(results.get(StatsPhrasing.COUNT_AFTER) == null);
 		resultsString = "Count before transformations: 3.0\n";
-		assertEquals(resultsString, StatService.getResultsAsString());
+		assertEquals(resultsString, this.statService.getResultsAsString());
 
-		StatService.measure(original2, false);
-		results = StatService.getResults();
+		this.statService.measure(original2, false);
+		results = this.statService.getResults();
 		assertFalse(results.isEmpty());
 		assertTrue(results.get(StatsPhrasing.COUNT_BEFORE) == 3);
 		assertTrue(results.get(StatsPhrasing.COUNT_AFTER) == 2);
 		resultsString = "Count before transformations: 3.0\n"
 				+ "Count after transformations: 2.0\n";
-		assertEquals(resultsString, StatService.getResultsAsString());
+		assertEquals(resultsString, this.statService.getResultsAsString());
 
 		ExecutionParametersManager.setParameter("Statistics",
 				"COUNT|MEANLENGTH|MEANQUALITY");
-		StatService.measure(original1, true);
-		results = StatService.getResults();
+		this.statService.measure(original1, true);
+		results = this.statService.getResults();
 		assertFalse(results.isEmpty());
 		assertTrue(results.get(StatsPhrasing.COUNT_BEFORE) == 3);
 		assertTrue(results.get(StatsPhrasing.COUNT_AFTER) == null);
@@ -115,10 +124,10 @@ public class StatServiceTest {
 		resultsString = "Count before transformations: 3.0\n"
 				+ "Mean quality before transformations: 21.88\n"
 				+ "Mean length before transformations: 29.0\n";
-		assertEquals(resultsString, StatService.getResultsAsString());
+		assertEquals(resultsString, this.statService.getResultsAsString());
 
-		StatService.measure(original2, false);
-		results = StatService.getResults();
+		this.statService.measure(original2, false);
+		results = this.statService.getResults();
 		assertFalse(results.isEmpty());
 		assertTrue(results.get(StatsPhrasing.COUNT_BEFORE) == 3);
 		assertTrue(results.get(StatsPhrasing.COUNT_AFTER) == 2);
@@ -130,7 +139,7 @@ public class StatServiceTest {
 				+ "Count after transformations: 2.0\n"
 				+ "Mean quality after transformations: 22.34\n"
 				+ "Mean length after transformations: 29.5\n";
-		assertEquals(resultsString, StatService.getResultsAsString());
+		assertEquals(resultsString, this.statService.getResultsAsString());
 
 	}
 }
