@@ -11,6 +11,7 @@ import org.apache.spark.SparkConf;
 import org.apache.spark.api.java.JavaRDD;
 import org.apache.spark.api.java.JavaSparkContext;
 import org.junit.AfterClass;
+import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
@@ -19,6 +20,9 @@ import com.roi.galegot.sequal.service.FormatService;
 import com.roi.galegot.sequal.util.ExecutionParametersManager;
 
 public class FormatServiceTest {
+
+	private FormatService formatService;
+
 	private static SparkConf spc;
 	private static JavaSparkContext jsc;
 
@@ -29,6 +33,11 @@ public class FormatServiceTest {
 		spc = new SparkConf().setAppName("SeQual").setMaster("local[*]");
 		jsc = new JavaSparkContext(spc);
 		jsc.setLogLevel("ERROR");
+	}
+
+	@Before
+	public void setupService() {
+		this.formatService = new FormatService();
 	}
 
 	@AfterClass
@@ -66,7 +75,7 @@ public class FormatServiceTest {
 
 		ExecutionParametersManager.setParameter("Formatters", "");
 
-		formatted = FormatService.format(original);
+		formatted = this.formatService.format(original);
 		assertEquals(2, formatted.count());
 		list = new ArrayList<>(formatted.collect());
 		assertEquals(2, list.size());
@@ -75,16 +84,17 @@ public class FormatServiceTest {
 
 		ExecutionParametersManager.setParameter("Formatters", "DNATORNA");
 
-		formatted = FormatService.format(original);
+		formatted = this.formatService.format(original);
 		assertEquals(2, formatted.count());
 		list = new ArrayList<>(formatted.collect());
 		assertEquals(2, list.size());
 		assertTrue(list.contains(seq5));
 		assertTrue(list.contains(seq6));
 
-		ExecutionParametersManager.setParameter("Formatters", "DNATORNA|FASTQTOFASTA");
+		ExecutionParametersManager.setParameter("Formatters",
+				"DNATORNA|FASTQTOFASTA");
 
-		formatted = FormatService.format(original);
+		formatted = this.formatService.format(original);
 		assertEquals(2, formatted.count());
 		list = new ArrayList<>(formatted.collect());
 		assertEquals(2, list.size());

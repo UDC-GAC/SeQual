@@ -35,9 +35,14 @@ public class Quality implements SingleFilter {
 		limMin = (limMinUse = StringUtils.isNotBlank(limMinStr)) ? new Double(limMinStr) : null;
 		limMax = (limMaxUse = StringUtils.isNotBlank(limMaxStr)) ? new Double(limMaxStr) : null;
 
-		if ((!limMinUse && !limMaxUse) || !sequences.first().isHasQual()) {
+		if ((!limMinUse && !limMaxUse) || !sequences.first().getHasQuality()) {
 			return sequences;
 		}
+
+		if (sequences.first().getIsPaired()) {
+			return sequences.filter(s -> this.filterPair(s, limMin, limMinUse, limMax, limMaxUse));
+		}
+
 		return sequences.filter(s -> this.filter(s, limMin, limMinUse, limMax, limMaxUse));
 	}
 
@@ -52,7 +57,27 @@ public class Quality implements SingleFilter {
 	 * @return the boolean
 	 */
 	private Boolean filter(Sequence seq, Double limMin, Boolean limMinUse, Double limMax, Boolean limMaxUse) {
-		if (seq.isHasQual()) {
+		if (seq.getHasQuality()) {
+			if (limMinUse && limMaxUse) {
+				return ((seq.getQuality() >= limMin) && (seq.getQuality() <= limMax));
+			}
+			if (limMinUse) {
+				return (seq.getQuality() >= limMin);
+			}
+			if (limMaxUse) {
+				return (seq.getQuality() <= limMax);
+			}
+			return true;
+		} else {
+			return false;
+		}
+	}
+
+	private Boolean filterPair(Sequence seq, Double limMin, Boolean limMinUse, Double limMax, Boolean limMaxUse) {
+
+		// TODO
+
+		if (seq.getHasQuality()) {
 			if (limMinUse && limMaxUse) {
 				return ((seq.getQuality() >= limMin) && (seq.getQuality() <= limMax));
 			}

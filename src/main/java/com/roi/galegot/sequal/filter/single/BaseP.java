@@ -63,6 +63,10 @@ public class BaseP implements SingleFilter {
 			throw new RuntimeException("Incorrect number of parameters");
 		}
 
+		if (sequences.first().getIsPaired()) {
+			return sequences.filter(s -> this.filterPair(s, bases, baseMin, limMinUse, baseMax, limMaxUse));
+		}
+
 		return sequences.filter(s -> this.filter(s, bases, baseMin, limMinUse, baseMax, limMaxUse));
 	}
 
@@ -79,6 +83,33 @@ public class BaseP implements SingleFilter {
 	 */
 	private Boolean filter(Sequence seq, String[] bases, String[] baseMin, Boolean limMinUse, String[] baseMax,
 			Boolean limMaxUse) {
+		Double lim1;
+		Double lim2;
+
+		for (int i = 0; i < bases.length; i++) {
+			Double perc = (double) StringUtils.countMatches(seq.getSequenceString(), bases[i])
+					/ seq.getSequenceString().length();
+			if (limMinUse) {
+				lim1 = new Double(baseMin[i]);
+				if ((lim1 != -1) && (perc < lim1)) {
+					return false;
+				}
+			}
+			if (limMaxUse) {
+				lim2 = new Double(baseMax[i]);
+				if ((lim2 != -1) && (perc > lim2)) {
+					return false;
+				}
+			}
+		}
+		return true;
+	}
+
+	private Boolean filterPair(Sequence seq, String[] bases, String[] baseMin, Boolean limMinUse, String[] baseMax,
+			Boolean limMaxUse) {
+
+		// TODO
+
 		Double lim1;
 		Double lim2;
 

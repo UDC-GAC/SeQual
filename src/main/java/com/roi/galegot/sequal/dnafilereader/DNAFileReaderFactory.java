@@ -21,7 +21,8 @@ public class DNAFileReaderFactory {
 	 */
 	public synchronized static DNAFileReader getReader(String extension) {
 		if (StringUtils.isBlank(extension)) {
-			throw new RuntimeException("Supported file formats: FASTQ (.fq .fastq) FASTA(.fa .fasta)");
+			throw new RuntimeException(
+					"Supported file formats: FASTQ (.fq .fastq) FASTA(.fa .fasta)");
 		}
 		switch (extension.toLowerCase()) {
 		case "fq":
@@ -33,7 +34,30 @@ public class DNAFileReaderFactory {
 			return new FASTAReader();
 
 		default:
-			throw new RuntimeException("Supported file formats: FASTQ (.fq .fastq) FASTA(.fa .fasta)");
+			throw new RuntimeException(
+					"Supported file formats: FASTQ (.fq .fastq) FASTA(.fa .fasta)");
+
+		}
+	}
+
+	public synchronized static DNAPairedFileReader getPairedReader(
+			String extension) {
+		if (StringUtils.isBlank(extension)) {
+			throw new RuntimeException(
+					"Supported file formats: FASTQ (.fq .fastq) FASTA(.fa .fasta)");
+		}
+		switch (extension.toLowerCase()) {
+		case "fq":
+		case "fastq":
+			return new FQPairedReader();
+
+		case "fa":
+		case "fasta":
+			return new FASTAPairedReader();
+
+		default:
+			throw new RuntimeException(
+					"Supported file formats: FASTQ (.fq .fastq) FASTA(.fa .fasta)");
 
 		}
 	}

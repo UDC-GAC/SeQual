@@ -29,13 +29,7 @@ public class StatService {
 			.getLogger(ConsoleInterface.class.getName());
 
 	/** The results. */
-	private static Map<String, Double> results = new HashMap<String, Double>();
-
-	/**
-	 * Instantiates a new stats service.
-	 */
-	public StatService() {
-	}
+	private Map<String, Double> results = new HashMap<String, Double>();
 
 	/**
 	 * Measure.
@@ -43,11 +37,11 @@ public class StatService {
 	 * @param seqs    the seqs
 	 * @param isFirst the is first
 	 */
-	public static void measure(JavaRDD<Sequence> seqs, Boolean isFirst) {
-		List<Stats> stats = getStats();
+	public void measure(JavaRDD<Sequence> seqs, Boolean isFirst) {
+		List<Stats> stats = this.getStats();
 
 		if (isFirst) {
-			results = new HashMap<String, Double>();
+			this.results = new HashMap<String, Double>();
 		}
 
 		if (!stats.isEmpty()) {
@@ -56,7 +50,7 @@ public class StatService {
 
 				LOGGER.info("Applying measurement " + stats.get(i));
 
-				addToResult(stats.get(i).toString(), stat.measure(seqs),
+				this.addToResult(stats.get(i).toString(), stat.measure(seqs),
 						isFirst);
 			}
 		} else {
@@ -72,7 +66,7 @@ public class StatService {
 	 *
 	 * @return the stats
 	 */
-	private static List<Stats> getStats() {
+	private List<Stats> getStats() {
 		String stats = ExecutionParametersManager.getParameter("Statistics");
 		ArrayList<Stats> enumStats = new ArrayList<>();
 		if (StringUtils.isNotBlank(stats)) {
@@ -89,8 +83,8 @@ public class StatService {
 	 *
 	 * @return the results
 	 */
-	public static Map<String, Double> getResults() {
-		return results;
+	public Map<String, Double> getResults() {
+		return this.results;
 	}
 
 	/**
@@ -98,13 +92,13 @@ public class StatService {
 	 *
 	 * @return the results as string
 	 */
-	public static String getResultsAsString() {
+	public String getResultsAsString() {
 		String resultString = "";
 
 		for (String statPhrase : StatsPhrasing.ORDERED_STATS) {
-			if (results.containsKey(statPhrase)) {
+			if (this.results.containsKey(statPhrase)) {
 				resultString = resultString.concat(
-						statPhrase + " " + results.get(statPhrase) + "\n");
+						statPhrase + " " + this.results.get(statPhrase) + "\n");
 			}
 		}
 
@@ -118,31 +112,30 @@ public class StatService {
 	 * @param result   the result
 	 * @param isFirst  the is first
 	 */
-	private static void addToResult(String statName, Double result,
-			Boolean isFirst) {
+	private void addToResult(String statName, Double result, Boolean isFirst) {
 
 		switch (statName) {
 		case StatsNaming.COUNT:
 			if (isFirst) {
-				results.put(StatsPhrasing.COUNT_BEFORE, result);
+				this.results.put(StatsPhrasing.COUNT_BEFORE, result);
 			} else {
-				results.put(StatsPhrasing.COUNT_AFTER, result);
+				this.results.put(StatsPhrasing.COUNT_AFTER, result);
 			}
 			break;
 
 		case StatsNaming.MEAN_LENGTH:
 			if (isFirst) {
-				results.put(StatsPhrasing.MEAN_LENGTH_BEFORE, result);
+				this.results.put(StatsPhrasing.MEAN_LENGTH_BEFORE, result);
 			} else {
-				results.put(StatsPhrasing.MEAN_LENGTH_AFTER, result);
+				this.results.put(StatsPhrasing.MEAN_LENGTH_AFTER, result);
 			}
 			break;
 
 		case StatsNaming.MEAN_QUALITY:
 			if (isFirst) {
-				results.put(StatsPhrasing.MEAN_QUALITY_BEFORE, result);
+				this.results.put(StatsPhrasing.MEAN_QUALITY_BEFORE, result);
 			} else {
-				results.put(StatsPhrasing.MEAN_QUALITY_AFTER, result);
+				this.results.put(StatsPhrasing.MEAN_QUALITY_AFTER, result);
 			}
 			break;
 

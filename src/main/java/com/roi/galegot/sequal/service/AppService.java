@@ -7,6 +7,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 
 import org.apache.commons.io.FilenameUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 import org.apache.spark.SparkConf;
@@ -16,27 +17,26 @@ import org.apache.spark.api.java.JavaSparkContext;
 import com.roi.galegot.sequal.common.Sequence;
 import com.roi.galegot.sequal.dnafilereader.DNAFileReaderFactory;
 import com.roi.galegot.sequal.util.ExecutionParametersManager;
-import com.roi.galegot.sequal.writer.HDFSToFile;
+import com.roi.galegot.sequal.writer.WriterUtils;
 
 /**
  * The Class AppService.
  */
 public class AppService {
 
-	/** The spark conf. */
 	private static SparkConf sparkConf;
-
-	/** The spark context. */
 	private static JavaSparkContext sparkContext;
 
-	/** The input. */
 	private String input;
-
-	/** The output. */
+	private String secondInput;
 	private String output;
 
-	/** The seqs. */
-	private JavaRDD<Sequence> seqs;
+	private JavaRDD<Sequence> sequences;
+
+	private FilterService filterService;
+	private TrimService trimService;
+	private StatService statService;
+	private FormatService formatService;
 
 	/**
 	 * Instantiates a new app service.
@@ -56,13 +56,21 @@ public class AppService {
 	 * @param configFile the config file
 	 * @param logLevel   the log level
 	 */
-	public AppService(String masterConf, String input, String output,
-			String configFile, Level sparkLogLevel) {
+	public AppService(String masterConf, String input, String output, String configFile, Level sparkLogLevel) {
 		this.input = input;
 		this.output = output;
 
+		this.filterService = new FilterService();
+		this.trimService = new TrimService();
+		this.statService = new StatService();
+		this.formatService = new FormatService();
+
 		this.start(masterConf, sparkLogLevel);
 		ExecutionParametersManager.setConfigFile(configFile);
+	}
+
+	public void setSecondInput(String secondInput) {
+		this.secondInput = secondInput;
 	}
 
 	/**
@@ -119,7 +127,7 @@ public class AppService {
 	 * @return the actual format
 	 */
 	private String getActualFormat() {
-		if (this.seqs.first().isHasQual()) {
+		if (this.sequences.first().getHasQuality()) {
 			return "fq";
 		}
 
@@ -132,8 +140,14 @@ public class AppService {
 	 * @throws IOException Signals that an I/O exception has occurred.
 	 */
 	public void read() throws IOException {
-		this.seqs = DNAFileReaderFactory.getReader(this.getFormat(this.input))
-				.readFileToRDD(this.input, sparkContext);
+		if (StringUtils.isNotBlank(this.secondInput)) {
+			this.sequences = DNAFileReaderFactory.getPairedReader(this.getFormat(this.input)).readFileToRDD(this.input,
+					this.secondInput, sparkContext);
+		} else {
+			this.sequences = DNAFileReaderFactory.getReader(this.getFormat(this.input)).readFileToRDD(this.input,
+					sparkContext);
+		}
+
 	}
 
 	/**
@@ -142,15 +156,19 @@ public class AppService {
 	 * @param singleFile the single file
 	 * @throws IOException Signals that an I/O exception has occurred.
 	 */
-	public void write(Boolean singleFile) throws IOException {
-		if (singleFile) {
-			String partsFolder = this.output + "/Parts";
-			this.seqs.saveAsTextFile(partsFolder);
-			HDFSToFile.writeToFile(this.output, this.getFileName(this.input)
-					+ "-results." + this.getActualFormat(), partsFolder);
-		} else {
-			this.seqs.saveAsTextFile(this.output);
-		}
+	public void write() throws IOException {
+		WriterUtils.writeHDFS(this.sequences, this.output);
+	}
+
+	/**
+	 * Write.
+	 *
+	 * @param singleFile the single file
+	 * @throws IOException Signals that an I/O exception has occurred.
+	 */
+	public void writeWithSingleFile() throws IOException {
+		WriterUtils.writeHDFSAndMergeToFile(this.sequences, this.output, this.getFileName(this.input),
+				this.getActualFormat());
 	}
 
 	/**
@@ -164,8 +182,8 @@ public class AppService {
 	 * Filter.
 	 */
 	public void filter() {
-		if (!this.seqs.isEmpty()) {
-			this.seqs = FilterService.filter(this.seqs);
+		if (!this.sequences.isEmpty()) {
+			this.sequences = this.filterService.filter(this.sequences);
 		}
 	}
 
@@ -173,8 +191,8 @@ public class AppService {
 	 * Format.
 	 */
 	public void format() {
-		if (!this.seqs.isEmpty()) {
-			this.seqs = FormatService.format(this.seqs);
+		if (!this.sequences.isEmpty()) {
+			this.sequences = this.formatService.format(this.sequences);
 		}
 	}
 
@@ -182,8 +200,8 @@ public class AppService {
 	 * Trim.
 	 */
 	public void trim() {
-		if (!this.seqs.isEmpty()) {
-			this.seqs = TrimService.trim(this.seqs);
+		if (!this.sequences.isEmpty()) {
+			this.sequences = this.trimService.trim(this.sequences);
 		}
 	}
 
@@ -193,8 +211,8 @@ public class AppService {
 	 * @param isFirst the is first
 	 */
 	public void measure(boolean isFirst) {
-		if (!this.seqs.isEmpty()) {
-			StatService.measure(this.seqs, isFirst);
+		if (!this.sequences.isEmpty()) {
+			this.statService.measure(this.sequences, isFirst);
 		}
 	}
 
@@ -202,7 +220,7 @@ public class AppService {
 	 * Prints the stats.
 	 */
 	public void printStats() {
-		System.out.println(StatService.getResultsAsString());
+		System.out.println(this.statService.getResultsAsString());
 	}
 
 	/**
@@ -211,14 +229,12 @@ public class AppService {
 	 * @throws IOException Signals that an I/O exception has occurred.
 	 */
 	public void generateConfigFile() throws IOException {
-		InputStream in = this.getClass()
-				.getResourceAsStream("/ExecutionParameters.properties");
+		InputStream in = this.getClass().getResourceAsStream("/ExecutionParameters.properties");
 
 		byte[] buffer = new byte[in.available()];
 		in.read(buffer);
 
-		File targetFile = new File(
-				this.output + "/ExecutionParameters.properties");
+		File targetFile = new File(this.output + "/ExecutionParameters.properties");
 		OutputStream outStream = new FileOutputStream(targetFile);
 		outStream.write(buffer);
 		outStream.close();

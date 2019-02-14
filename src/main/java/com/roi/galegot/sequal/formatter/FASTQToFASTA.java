@@ -14,6 +14,11 @@ public class FASTQToFASTA implements Formatter {
 
 	@Override
 	public JavaRDD<Sequence> format(JavaRDD<Sequence> sequences) {
+
+		if (sequences.first().getIsPaired()) {
+			return sequences.map(sequence -> this.doFormatPair(sequence));
+		}
+
 		return sequences.map(sequence -> this.doFormat(sequence));
 	}
 
@@ -24,6 +29,15 @@ public class FASTQToFASTA implements Formatter {
 	 * @return the sequence
 	 */
 	private Sequence doFormat(Sequence sequence) {
+		sequence.setName(">" + sequence.getName().substring(1));
+		sequence.setQualityString("");
+		return sequence;
+	}
+
+	private Sequence doFormatPair(Sequence sequence) {
+
+		// TODO
+
 		sequence.setName(">" + sequence.getName().substring(1));
 		sequence.setQualityString("");
 		return sequence;

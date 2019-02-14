@@ -19,6 +19,8 @@ public class MeanLength implements Stat {
 	@Override
 	public Double measure(JavaRDD<Sequence> seqs) {
 
+		// TODO Check how to adapt it to Paired End Sequences
+
 		BigDecimal mean;
 		DummyCount initialDummy = new DummyCount();
 		DummyCount resultDummy;
@@ -30,8 +32,7 @@ public class MeanLength implements Stat {
 			private static final long serialVersionUID = 1L;
 
 			@Override
-			public DummyCount call(DummyCount v1, Sequence v2)
-					throws Exception {
+			public DummyCount call(DummyCount v1, Sequence v2) throws Exception {
 				v1.countLength += v2.getLength();
 				v1.countNumber = v1.countNumber + Long.valueOf(1);
 
@@ -45,8 +46,7 @@ public class MeanLength implements Stat {
 			private static final long serialVersionUID = 1L;
 
 			@Override
-			public DummyCount call(DummyCount v1, DummyCount v2)
-					throws Exception {
+			public DummyCount call(DummyCount v1, DummyCount v2) throws Exception {
 				v1.countLength += v2.countLength;
 				v1.countNumber += v2.countNumber;
 
@@ -85,8 +85,7 @@ public class MeanLength implements Stat {
 				return BigDecimal.ZERO;
 			}
 
-			return BigDecimal.valueOf(this.countLength).divide(
-					BigDecimal.valueOf(this.countNumber), 2,
+			return BigDecimal.valueOf(this.countLength).divide(BigDecimal.valueOf(this.countNumber), 2,
 					BigDecimal.ROUND_UP);
 		}
 

@@ -32,7 +32,7 @@ public class AlmostDistinct implements GroupFilter {
 		JavaPairRDD<AlmostString, Sequence> group = sequences.mapToPair(
 				seq -> new Tuple2<AlmostString, Sequence>(new AlmostString(seq.getSequenceString(), maxDiff), seq));
 
-		if (sequences.first().isHasQual()) {
+		if (sequences.first().getHasQuality()) {
 			return group.reduceByKey((seq1, seq2) -> {
 				if (seq1.getQuality() >= seq2.getQuality()) {
 					return seq1;

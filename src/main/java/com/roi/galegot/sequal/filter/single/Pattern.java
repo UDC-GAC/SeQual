@@ -50,6 +50,10 @@ public class Pattern implements SingleFilter {
 
 		finalPattern = fullPattern;
 
+		if (sequences.first().getIsPaired()) {
+			return sequences.filter(s -> this.filterPair(s, finalPattern));
+		}
+
 		return sequences.filter(s -> this.filter(s, finalPattern));
 	}
 
@@ -61,6 +65,13 @@ public class Pattern implements SingleFilter {
 	 * @return the boolean
 	 */
 	private Boolean filter(Sequence seq, String finalPattern) {
+		return seq.getSequenceString().contains(finalPattern);
+	}
+
+	private Boolean filterPair(Sequence seq, String finalPattern) {
+
+		// TODO
+
 		return seq.getSequenceString().contains(finalPattern);
 	}
 }
