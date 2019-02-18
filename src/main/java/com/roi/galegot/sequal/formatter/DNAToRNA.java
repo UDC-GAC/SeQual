@@ -33,11 +33,17 @@ public class DNAToRNA implements Formatter {
 		return sequence;
 	}
 
+	/**
+	 * Do format pair.
+	 *
+	 * @param sequence the sequence
+	 * @return the sequence
+	 */
 	private Sequence doFormatPair(Sequence sequence) {
 
-		// TODO
+		this.doFormat(sequence);
 
-		sequence.setSequenceString(sequence.getSequenceString().replace("T", "U"));
+		sequence.setSequenceStringPair(sequence.getSequenceStringPair().replace("T", "U"));
 		return sequence;
 	}
 
