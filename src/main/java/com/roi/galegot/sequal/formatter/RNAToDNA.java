@@ -35,9 +35,10 @@ public class RNAToDNA implements Formatter {
 
 	private Sequence doFormatPair(Sequence sequence) {
 
-		// TODO
+		this.doFormat(sequence);
 
-		sequence.setSequenceString(sequence.getSequenceString().replace("U", "T"));
+		sequence.setSequenceStringPair(sequence.getSequenceStringPair().replace("U", "T"));
+
 		return sequence;
 	}
 }
