@@ -117,4 +117,47 @@ public class FormattersTest {
 		assertTrue(formatted.contains(seq3));
 		assertTrue(formatted.contains(seq4));
 	}
+
+	@Test
+	public void formatFASTQToFASTAPair() {
+		String seq1s1 = "@cluster_8:UMI_CTTTGA_1";
+		String seq1s2 = "UAUCCUCGCAAUACUCUCCGAACAGGAGAG";
+		String seq1s4 = "1/04.72,(003,-2-22+00-12./.-.4";
+		Sequence seq1 = new Sequence(seq1s1, seq1s2, commLine, seq1s4);
+
+		String seq1s1Pair = "@cluster_8:UMI_CTTTGA_2";
+		String seq1s2Pair = "UAUCCUCGCAAUACUCUCCGTTCAGGAGCT";
+		String seq1s4Pair = "1/04.72,(003,-2-.422+00-12./.-";
+		seq1.setPairSequence(seq1s1Pair, seq1s2Pair, commLine, seq1s4Pair);
+
+		String seq2s1 = "@cluster_12:UMI_GGTCAA";
+		String seq2s2 = "GCAGUUGCAGAUCAAUAUAUGCUAGAGCA";
+		String seq2s4 = "?7?AEEC@>=1?A?EEEB9ECB?==:B.A";
+		Sequence seq2 = new Sequence(seq2s1, seq2s2, commLine, seq2s4);
+
+		String seq2s1Pair = "@cluster_12:UMI_GGTCAA";
+		String seq2s2Pair = "GCAGUUGCAGAUCAAUAUAUGCUAGAGTT";
+		String seq2s4Pair = "?7?AEEC@>=1?A?EEEB9ECB?.A==:B";
+		seq2.setPairSequence(seq2s1Pair, seq2s2Pair, commLine, seq2s4Pair);
+
+		String seq1s1fa = ">cluster_8:UMI_CTTTGA_1";
+		String seq1s1faPair = ">cluster_8:UMI_CTTTGA_2";
+		String seq2s1fa = ">cluster_12:UMI_GGTCAA_1";
+		String seq2s1faPair = ">cluster_12:UMI_GGTCAA_2";
+
+		Sequence seq3 = new Sequence(seq1s1fa, seq1s2);
+		seq3.setPairSequence(seq1s1faPair, seq1s2Pair);
+
+		Sequence seq4 = new Sequence(seq2s1fa, seq2s2);
+		seq4.setPairSequence(seq2s1faPair, seq2s2Pair);
+
+		JavaRDD<Sequence> original = jsc.parallelize(Arrays.asList(seq1, seq2));
+		List<Sequence> formatted;
+		Formatter formatter = new FASTQToFASTA();
+
+		formatted = formatter.format(original).collect();
+
+		assertTrue(formatted.contains(seq3));
+		assertTrue(formatted.contains(seq4));
+	}
 }

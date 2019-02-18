@@ -29,17 +29,26 @@ public class FASTQToFASTA implements Formatter {
 	 * @return the sequence
 	 */
 	private Sequence doFormat(Sequence sequence) {
+
 		sequence.setName(">" + sequence.getName().substring(1));
 		sequence.setQualityString("");
+
 		return sequence;
 	}
 
+	/**
+	 * Do format pair.
+	 *
+	 * @param sequence the sequence
+	 * @return the sequence
+	 */
 	private Sequence doFormatPair(Sequence sequence) {
 
-		// TODO
+		this.doFormat(sequence);
 
-		sequence.setName(">" + sequence.getName().substring(1));
-		sequence.setQualityString("");
+		sequence.setNamePair(">" + sequence.getNamePair().substring(1));
+		sequence.setQualityStringPair("");
+
 		return sequence;
 	}
 }
