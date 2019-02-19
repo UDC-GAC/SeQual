@@ -69,16 +69,23 @@ public class TrimNLeft implements Trimmer {
 		return sequence;
 	}
 
+	/**
+	 * Do trim pair.
+	 *
+	 * @param sequence the sequence
+	 * @param limit    the limit
+	 * @return the sequence
+	 */
 	private Sequence doTrimPair(Sequence sequence, Integer limit) {
 
-		// TODO
+		this.doTrim(sequence, limit);
 
-		if (sequence.getLength() > limit) {
-			String strToCheck = sequence.getSequenceString().substring(0, limit);
+		if (sequence.getLengthPair() > limit) {
+			String strToCheck = sequence.getSequenceStringPair().substring(0, limit);
 			if (strToCheck.matches("N{" + limit + "}")) {
-				sequence.setSequenceString(sequence.getSequenceString().substring(limit));
+				sequence.setSequenceStringPair(sequence.getSequenceStringPair().substring(limit));
 				if (sequence.getHasQuality()) {
-					sequence.setQualityString(sequence.getQualityString().substring(limit));
+					sequence.setQualityStringPair(sequence.getQualityStringPair().substring(limit));
 				}
 			}
 		}
