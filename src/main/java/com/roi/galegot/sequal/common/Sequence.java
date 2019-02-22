@@ -95,7 +95,7 @@ public class Sequence implements Serializable {
 	}
 
 	public void setPairSequence(String line1, String line2) {
-		if (!SequenceUtils.checkFastaIsWellFormed(line1, line2)
+		if (this.hasQuality || !SequenceUtils.checkFastaIsWellFormed(line1, line2)
 				|| !SequenceUtils.checkIsAValidFastaPair(this.sequenceString, line2)) {
 			throw new InvalidSequenceException();
 		}
@@ -112,7 +112,7 @@ public class Sequence implements Serializable {
 	}
 
 	public void setPairSequence(String line1, String line2, String line3, String line4) {
-		if (!SequenceUtils.checkFastQIsWellFormed(line1, line2, line3, line4)
+		if (!this.hasQuality || !SequenceUtils.checkFastQIsWellFormed(line1, line2, line3, line4)
 				|| !SequenceUtils.checkIsAValidFastQPair(this.sequenceString, this.qualityString, line2, line4)) {
 			throw new InvalidSequenceException();
 		}
@@ -434,9 +434,19 @@ public class Sequence implements Serializable {
 	@Override
 	public String toString() {
 		if (this.hasQuality) {
-			return this.name + "\n" + this.sequenceString + "\n" + this.extra + "\n" + this.qualityString;
+			if (this.isPaired) {
+				return this.name + "\n" + this.sequenceString + "\n" + this.extra + "\n" + this.qualityString + "\n"
+						+ this.namePair + "\n" + this.sequenceStringPair + "\n" + this.extraPair + "\n"
+						+ this.qualityStringPair;
+			} else {
+				return this.name + "\n" + this.sequenceString + "\n" + this.extra + "\n" + this.qualityString;
+			}
 		} else {
-			return this.name + "\n" + this.sequenceString;
+			if (this.isPaired) {
+				return this.name + "\n" + this.sequenceString + "\n" + this.namePair + "\n" + this.sequenceStringPair;
+			} else {
+				return this.name + "\n" + this.sequenceString;
+			}
 		}
 	}
 
@@ -446,6 +456,10 @@ public class Sequence implements Serializable {
 		int result = 1;
 		result = (prime * result) + ((this.qualityString == null) ? 0 : this.qualityString.hashCode());
 		result = (prime * result) + ((this.sequenceString == null) ? 0 : this.sequenceString.hashCode());
+		if (this.isPaired) {
+			result = (prime * result) + ((this.qualityStringPair == null) ? 0 : this.qualityStringPair.hashCode());
+			result = (prime * result) + ((this.sequenceStringPair == null) ? 0 : this.sequenceStringPair.hashCode());
+		}
 		return result;
 	}
 
