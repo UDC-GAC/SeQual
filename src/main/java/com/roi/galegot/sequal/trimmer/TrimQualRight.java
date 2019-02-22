@@ -66,13 +66,14 @@ public class TrimQualRight implements Trimmer {
 
 	private Sequence doTrimPair(Sequence sequence, Double limit) {
 
-		// TODO
+		this.doTrim(sequence, limit);
 
-		while ((sequence.getQuality() > limit) && (sequence.getQualityString().length() > 1)) {
-			int length = sequence.getLength();
-			sequence.setSequenceString(sequence.getSequenceString().substring(0, length - 1));
-			sequence.setQualityString(sequence.getQualityString().substring(0, length - 1));
+		while ((sequence.getQualityPair() > limit) && (sequence.getQualityStringPair().length() > 1)) {
+			int length = sequence.getLengthPair();
+			sequence.setSequenceStringPair(sequence.getSequenceStringPair().substring(0, length - 1));
+			sequence.setQualityStringPair(sequence.getQualityStringPair().substring(0, length - 1));
 		}
+
 		return sequence;
 	}
 
