@@ -66,17 +66,25 @@ public class TrimLeftToLength implements Trimmer {
 		return sequence;
 	}
 
+	/**
+	 * Do trim pair.
+	 *
+	 * @param sequence the sequence
+	 * @param limit    the limit
+	 * @return the sequence
+	 */
 	private Sequence doTrimPair(Sequence sequence, Integer limit) {
 
-		// TODO
+		this.doTrim(sequence, limit);
 
-		int length = sequence.getLength();
+		int length = sequence.getLengthPair();
 		if (length > limit) {
-			sequence.setSequenceString(sequence.getSequenceString().substring(length - limit));
+			sequence.setSequenceStringPair(sequence.getSequenceStringPair().substring(length - limit));
 			if (sequence.getHasQuality()) {
-				sequence.setQualityString(sequence.getQualityString().substring(length - limit));
+				sequence.setQualityStringPair(sequence.getQualityStringPair().substring(length - limit));
 			}
 		}
+
 		return sequence;
 	}
 }
