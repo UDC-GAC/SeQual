@@ -63,14 +63,22 @@ public class TrimQualLeft implements Trimmer {
 		return sequence;
 	}
 
+	/**
+	 * Do trim pair.
+	 *
+	 * @param sequence the sequence
+	 * @param limit    the limit
+	 * @return the sequence
+	 */
 	private Sequence doTrimPair(Sequence sequence, Double limit) {
 
-		// TODO
+		this.doTrim(sequence, limit);
 
-		while ((sequence.getQuality() > limit) && (sequence.getQualityString().length() > 1)) {
-			sequence.setSequenceString(sequence.getSequenceString().substring(1));
-			sequence.setQualityString(sequence.getQualityString().substring(1));
+		while ((sequence.getQualityPair() > limit) && (sequence.getQualityStringPair().length() > 1)) {
+			sequence.setSequenceStringPair(sequence.getSequenceStringPair().substring(1));
+			sequence.setQualityStringPair(sequence.getQualityStringPair().substring(1));
 		}
+
 		return sequence;
 	}
 
