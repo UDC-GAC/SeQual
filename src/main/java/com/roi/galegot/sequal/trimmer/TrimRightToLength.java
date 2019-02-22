@@ -66,14 +66,21 @@ public class TrimRightToLength implements Trimmer {
 		return sequence;
 	}
 
+	/**
+	 * Do trim pair.
+	 *
+	 * @param sequence the sequence
+	 * @param limit    the limit
+	 * @return the sequence
+	 */
 	private Sequence doTrimPair(Sequence sequence, Integer limit) {
 
-		// TODO
+		this.doTrim(sequence, limit);
 
-		if (sequence.getLength() > limit) {
-			sequence.setSequenceString(sequence.getSequenceString().substring(0, limit));
+		if (sequence.getLengthPair() > limit) {
+			sequence.setSequenceStringPair(sequence.getSequenceStringPair().substring(0, limit));
 			if (sequence.getHasQuality()) {
-				sequence.setQualityString(sequence.getQualityString().substring(0, limit));
+				sequence.setQualityStringPair(sequence.getQualityStringPair().substring(0, limit));
 			}
 		}
 
