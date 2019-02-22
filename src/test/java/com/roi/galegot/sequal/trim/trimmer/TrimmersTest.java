@@ -449,6 +449,107 @@ public class TrimmersTest {
 	}
 
 	@Test
+	public void trimLeftPPair() {
+		/*
+		 * Length = 30
+		 */
+		String seq1s1 = "@cluster_8:UMI_CTTTGA_1";
+		String seq1s2 = "TATCCUNGCAATANTCTCCGAACNGGAGAG";
+		String seq1s4 = "1/04.72,(003,-2-22+00-12./.-.4";
+		Sequence seq1 = new Sequence(seq1s1, seq1s2, commLine, seq1s4);
+
+		String seq1s1Pair = "@cluster_8:UMI_CTTTGA_2";
+		String seq1s2Pair = "TATCCUNGCAATANTCTCCGAACNGGAGAG";
+		String seq1s4Pair = "1/04.72,(003,-2-22+00-12./.-.4";
+		seq1.setPairSequence(seq1s1Pair, seq1s2Pair, commLine, seq1s4Pair);
+
+		String seq1s1fa = ">cluster_8:UMI_CTTTGA_1";
+		Sequence seq1fa = new Sequence(seq1s1fa, seq1s2);
+
+		String seq1s1faPair = ">cluster_8:UMI_CTTTGA_2";
+		seq1fa.setPairSequence(seq1s1faPair, seq1s2Pair);
+
+		// Copy of above sequence with 27 characters
+		String seq4s2 = "CCUNGCAATANTCTCCGAACNGGAGAG";
+		String seq4s4 = "4.72,(003,-2-22+00-12./.-.4";
+		Sequence seq4 = new Sequence(seq1s1, seq4s2, commLine, seq4s4);
+		Sequence seq4fa = new Sequence(seq1s1fa, seq4s2);
+
+		String seq4s2Pair = "CCUNGCAATANTCTCCGAACNGGAGAG";
+		String seq4s4Pair = "4.72,(003,-2-22+00-12./.-.4";
+		seq4.setPairSequence(seq1s1Pair, seq4s2Pair, commLine, seq4s4Pair);
+		seq4fa.setPairSequence(seq1s1faPair, seq4s2Pair);
+
+		/*
+		 * Length = 29
+		 */
+		String seq2s1 = "@cluster_12:UMI_GGTCAA_1";
+		String seq2s2 = "GCAGTTNNAGATCAATATATNNNAGAGCA";
+		String seq2s4 = "?7?AEEC@>=1?A?EEEB9ECB?==:B.A";
+		Sequence seq2 = new Sequence(seq2s1, seq2s2, commLine, seq2s4);
+
+		String seq2s1Pair = "@cluster_12:UMI_GGTCAA_2";
+		String seq2s2Pair = "GCAGTTNNAGATCAATATATNNNAGAGCA";
+		String seq2s4Pair = "?7?AEEC@>=1?A?EEEB9ECB?==:B.A";
+		seq2.setPairSequence(seq2s1Pair, seq2s2Pair, commLine, seq2s4Pair);
+
+		String seq2s1fa = ">cluster_12:UMI_GGTCAA_1";
+		Sequence seq2fa = new Sequence(seq2s1fa, seq2s2);
+
+		String seq2s1faPair = ">cluster_12:UMI_GGTCAA_2";
+		seq2fa.setPairSequence(seq2s1faPair, seq2s2Pair);
+
+		// Copy of above sequence with 27 characters
+		String seq5s2 = "AGTTNNAGATCAATATATNNNAGAGCA";
+		String seq5s4 = "?AEEC@>=1?A?EEEB9ECB?==:B.A";
+		Sequence seq5 = new Sequence(seq2s1, seq5s2, commLine, seq5s4);
+		Sequence seq5fa = new Sequence(seq2s1fa, seq5s2);
+
+		String seq5s2Pair = "AGTTNNAGATCAATATATNNNAGAGCA";
+		String seq5s4Pair = "?AEEC@>=1?A?EEEB9ECB?==:B.A";
+		seq5.setPairSequence(seq2s1Pair, seq5s2Pair, commLine, seq5s4Pair);
+		seq5fa.setPairSequence(seq2s1faPair, seq5s2Pair);
+
+		JavaRDD<Sequence> original = jsc.parallelize(Arrays.asList(seq1, seq2));
+		JavaRDD<Sequence> originalFA = jsc.parallelize(Arrays.asList(seq1fa, seq2fa));
+		JavaRDD<Sequence> trimmered;
+		ArrayList<Sequence> list;
+		Trimmer trimmer = new TrimLeftP();
+
+		ExecutionParametersManager.setParameter("TrimLeftP", "");
+		trimmered = trimmer.trim(original);
+		assertEquals(original.collect(), trimmered.collect());
+
+		ExecutionParametersManager.setParameter("TrimLeftP", "0");
+		trimmered = trimmer.trim(original);
+		assertEquals(original.collect(), trimmered.collect());
+
+		ExecutionParametersManager.setParameter("TrimLeftP", "1");
+		trimmered = trimmer.trim(original);
+		assertEquals(original.collect(), trimmered.collect());
+
+		ExecutionParametersManager.setParameter("TrimLeftP", "-1");
+		trimmered = trimmer.trim(original);
+		assertEquals(original.collect(), trimmered.collect());
+
+		ExecutionParametersManager.setParameter("TrimLeftP", "0.10");
+		trimmered = trimmer.trim(original);
+		assertEquals(2, trimmered.count());
+		list = new ArrayList<>(trimmered.collect());
+		assertEquals(2, list.size());
+
+		assertTrue(list.contains(seq4));
+		assertTrue(list.contains(seq5));
+
+		trimmered = trimmer.trim(originalFA);
+		assertEquals(2, trimmered.count());
+		list = new ArrayList<>(trimmered.collect());
+		assertEquals(2, list.size());
+		assertTrue(list.contains(seq4fa));
+		assertTrue(list.contains(seq5fa));
+	}
+
+	@Test
 	public void trimRightP() {
 		/*
 		 * Length = 30

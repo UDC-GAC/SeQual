@@ -65,14 +65,21 @@ public class TrimLeftP implements Trimmer {
 		return sequence;
 	}
 
+	/**
+	 * Do trim pair.
+	 *
+	 * @param sequence   the sequence
+	 * @param percentage the percentage
+	 * @return the sequence
+	 */
 	private Sequence doTrimPair(Sequence sequence, Double percentage) {
 
-		// TODO
+		this.doTrim(sequence, percentage);
 
-		Integer valueToTrim = (int) (percentage * sequence.getLength());
-		sequence.setSequenceString(sequence.getSequenceString().substring(valueToTrim));
+		Integer valueToTrim = (int) (percentage * sequence.getLengthPair());
+		sequence.setSequenceStringPair(sequence.getSequenceStringPair().substring(valueToTrim));
 		if (sequence.getHasQuality()) {
-			sequence.setQualityString(sequence.getQualityString().substring(valueToTrim));
+			sequence.setQualityStringPair(sequence.getQualityStringPair().substring(valueToTrim));
 		}
 
 		return sequence;
