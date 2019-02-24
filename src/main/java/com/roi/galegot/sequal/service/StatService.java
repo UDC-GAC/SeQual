@@ -24,12 +24,12 @@ import com.roi.galegot.sequal.util.ExecutionParametersManager;
  */
 public class StatService {
 
-	/** The Constant LOGGER. */
-	private static final Logger LOGGER = Logger
-			.getLogger(ConsoleInterface.class.getName());
+	private static final Logger LOGGER = Logger.getLogger(ConsoleInterface.class.getName());
 
-	/** The results. */
 	private Map<String, Double> results = new HashMap<String, Double>();
+	private Map<String, Double> resultsPair = new HashMap<String, Double>();
+
+	private Boolean isPaired = false;
 
 	/**
 	 * Measure.
@@ -44,19 +44,25 @@ public class StatService {
 			this.results = new HashMap<String, Double>();
 		}
 
+		if (!seqs.isEmpty() && seqs.first().getIsPaired()) {
+			this.isPaired = true;
+		}
+
 		if (!stats.isEmpty()) {
 			for (int i = 0; i < stats.size(); i++) {
 				Stat stat = StatFactory.getStat(stats.get(i));
 
 				LOGGER.info("Applying measurement " + stats.get(i));
 
-				this.addToResult(stats.get(i).toString(), stat.measure(seqs),
-						isFirst);
+				this.addToResult(stats.get(i).toString(), stat.measure(seqs), isFirst, false);
+
+				if (this.isPaired) {
+					this.addToResult(stats.get(i).toString(), stat.measurePair(seqs), isFirst, true);
+				}
 			}
 		} else {
 			if (isFirst) {
-				LOGGER.warn(
-						"\nNo statistics specified. No measurements will be performed.\n");
+				LOGGER.warn("\nNo statistics specified. No measurements will be performed.\n");
 			}
 		}
 	}
@@ -88,6 +94,15 @@ public class StatService {
 	}
 
 	/**
+	 * Gets the results pair.
+	 *
+	 * @return the results pair
+	 */
+	public Map<String, Double> getResultsPair() {
+		return this.resultsPair;
+	}
+
+	/**
 	 * Gets the results as string.
 	 *
 	 * @return the results as string
@@ -95,10 +110,25 @@ public class StatService {
 	public String getResultsAsString() {
 		String resultString = "";
 
-		for (String statPhrase : StatsPhrasing.ORDERED_STATS) {
-			if (this.results.containsKey(statPhrase)) {
-				resultString = resultString.concat(
-						statPhrase + " " + this.results.get(statPhrase) + "\n");
+		if (!this.isPaired) {
+			for (String statPhrase : StatsPhrasing.ORDERED_STATS) {
+				if (this.results.containsKey(statPhrase)) {
+					resultString = resultString.concat(statPhrase + " " + this.results.get(statPhrase) + "\n");
+				}
+			}
+		} else {
+			resultString = resultString.concat("Results for first file:\n");
+			for (String statPhrase : StatsPhrasing.ORDERED_STATS) {
+				if (this.results.containsKey(statPhrase)) {
+					resultString = resultString.concat(statPhrase + " " + this.results.get(statPhrase) + "\n");
+				}
+			}
+
+			resultString = resultString.concat("\nResults for second file:\n");
+			for (String statPhrase : StatsPhrasing.ORDERED_STATS) {
+				if (this.resultsPair.containsKey(statPhrase)) {
+					resultString = resultString.concat(statPhrase + " " + this.results.get(statPhrase) + "\n");
+				}
 			}
 		}
 
@@ -112,30 +142,48 @@ public class StatService {
 	 * @param result   the result
 	 * @param isFirst  the is first
 	 */
-	private void addToResult(String statName, Double result, Boolean isFirst) {
+	private void addToResult(String statName, Double result, Boolean isFirst, Boolean pair) {
 
 		switch (statName) {
 		case StatsNaming.COUNT:
 			if (isFirst) {
 				this.results.put(StatsPhrasing.COUNT_BEFORE, result);
+				if (pair) {
+					this.resultsPair.put(StatsPhrasing.COUNT_BEFORE, result);
+				}
 			} else {
 				this.results.put(StatsPhrasing.COUNT_AFTER, result);
+				if (pair) {
+					this.resultsPair.put(StatsPhrasing.COUNT_AFTER, result);
+				}
 			}
 			break;
 
 		case StatsNaming.MEAN_LENGTH:
 			if (isFirst) {
 				this.results.put(StatsPhrasing.MEAN_LENGTH_BEFORE, result);
+				if (pair) {
+					this.resultsPair.put(StatsPhrasing.MEAN_LENGTH_BEFORE, result);
+				}
 			} else {
 				this.results.put(StatsPhrasing.MEAN_LENGTH_AFTER, result);
+				if (pair) {
+					this.resultsPair.put(StatsPhrasing.MEAN_LENGTH_AFTER, result);
+				}
 			}
 			break;
 
 		case StatsNaming.MEAN_QUALITY:
 			if (isFirst) {
 				this.results.put(StatsPhrasing.MEAN_QUALITY_BEFORE, result);
+				if (pair) {
+					this.resultsPair.put(StatsPhrasing.MEAN_QUALITY_BEFORE, result);
+				}
 			} else {
 				this.results.put(StatsPhrasing.MEAN_QUALITY_AFTER, result);
+				if (pair) {
+					this.resultsPair.put(StatsPhrasing.MEAN_QUALITY_AFTER, result);
+				}
 			}
 			break;
 

@@ -16,4 +16,12 @@ public interface Stat extends Serializable {
 	 */
 	public Double measure(JavaRDD<Sequence> seqs);
 
+	/**
+	 * Measure pair.
+	 *
+	 * @param seqs the seqs
+	 * @return the double
+	 */
+	public Double measurePair(JavaRDD<Sequence> seqs);
+
 }
