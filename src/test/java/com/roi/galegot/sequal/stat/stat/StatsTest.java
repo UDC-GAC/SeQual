@@ -273,10 +273,8 @@ public class StatsTest {
 		Sequence seq3 = new Sequence(seq3s1, seq3s2, commLine, seq3s4);
 
 		JavaRDD<Sequence> original1 = jsc.parallelize(Arrays.asList(seq1));
-		JavaRDD<Sequence> original2 = jsc
-				.parallelize(Arrays.asList(seq1, seq2));
-		JavaRDD<Sequence> original3 = jsc
-				.parallelize(Arrays.asList(seq1, seq2, seq3));
+		JavaRDD<Sequence> original2 = jsc.parallelize(Arrays.asList(seq1, seq2));
+		JavaRDD<Sequence> original3 = jsc.parallelize(Arrays.asList(seq1, seq2, seq3));
 
 		JavaRDD<Sequence> emptyRdd = jsc.parallelize(new ArrayList<Sequence>());
 		Double result;
@@ -293,6 +291,69 @@ public class StatsTest {
 		assertTrue(result == 22.34);
 
 		result = stat.measure(original3);
+		assertTrue(result == 21.88);
+	}
+
+	@Test
+	public void statMeanQualityPair() {
+		/*
+		 * Sequence 1 Quality = 14.566666666666666
+		 */
+		String seq1s1 = "@cluster_8:UMI_CTTTGA_1";
+		String seq1s2 = "TATCCUNGCAATANTCTCCGAACNGGAGAG";
+		String seq1s4 = "1/04.72,(003,-2-22+00-12./.-.4";
+		Sequence seq1 = new Sequence(seq1s1, seq1s2, commLine, seq1s4);
+
+		String seq1s1Pair = "@cluster_8:UMI_CTTTGA_2";
+		String seq1s2Pair = "TATCCUNGCAATANTCTCCGAACNGGAGAG";
+		String seq1s4Pair = "1/04.72,(003,-2-22+00-12./.-.4";
+		seq1.setPairSequence(seq1s1Pair, seq1s2Pair, commLine, seq1s4Pair);
+
+		/*
+		 * Sequence 2 Quality = 30.103448275862068
+		 */
+		String seq2s1 = "@cluster_12:UMI_GGTCAA_1";
+		String seq2s2 = "GCAGTTNNAGATCAATATATNNNAGAGCA";
+		String seq2s4 = "?7?AEEC@>=1?A?EEEB9ECB?==:B.A";
+		Sequence seq2 = new Sequence(seq2s1, seq2s2, commLine, seq2s4);
+
+		String seq2s1Pair = "@cluster_12:UMI_GGTCAA_2";
+		String seq2s2Pair = "GCAGTTNNAGATCAATATATNNNAGAGCA";
+		String seq2s4Pair = "?7?AEEC@>=1?A?EEEB9ECB?==:B.A";
+		seq2.setPairSequence(seq2s1Pair, seq2s2Pair, commLine, seq2s4Pair);
+
+		/*
+		 * Sequence 3 Quality = 20.964285714285715
+		 */
+		String seq3s1 = "@cluster_21:UMI_AGAACA_1";
+		String seq3s2 = "GGCATTGCAAAATTTNTTSCACCCCCAG";
+		String seq3s4 = ">=2.660/?:36AD;0<14703640334";
+		Sequence seq3 = new Sequence(seq3s1, seq3s2, commLine, seq3s4);
+
+		String seq3s1Pair = "@cluster_21:UMI_AGAACA_2";
+		String seq3s2Pair = "GGCATTGCAAAATTTNTTSCACCCCCAG";
+		String seq3s4Pair = ">=2.660/?:36AD;0<14703640334";
+		seq3.setPairSequence(seq3s1Pair, seq3s2Pair, commLine, seq3s4Pair);
+
+		JavaRDD<Sequence> original1 = jsc.parallelize(Arrays.asList(seq1));
+		JavaRDD<Sequence> original2 = jsc.parallelize(Arrays.asList(seq1, seq2));
+		JavaRDD<Sequence> original3 = jsc.parallelize(Arrays.asList(seq1, seq2, seq3));
+
+		JavaRDD<Sequence> emptyRdd = jsc.parallelize(new ArrayList<Sequence>());
+		Double result;
+		Stat stat = new MeanQuality();
+
+		// Test for empty RDD
+		result = stat.measurePair(emptyRdd);
+		assertTrue(result == 0);
+
+		result = stat.measurePair(original1);
+		assertTrue(result == 14.57);
+
+		result = stat.measurePair(original2);
+		assertTrue(result == 22.34);
+
+		result = stat.measurePair(original3);
 		assertTrue(result == 21.88);
 	}
 }
