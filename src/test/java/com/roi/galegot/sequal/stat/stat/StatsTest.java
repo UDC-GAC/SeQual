@@ -65,10 +65,8 @@ public class StatsTest {
 		Sequence seq3 = new Sequence(seq3s1, seq3s2, commLine, seq3s4);
 
 		JavaRDD<Sequence> original1 = jsc.parallelize(Arrays.asList(seq1));
-		JavaRDD<Sequence> original2 = jsc
-				.parallelize(Arrays.asList(seq1, seq2));
-		JavaRDD<Sequence> original3 = jsc
-				.parallelize(Arrays.asList(seq1, seq2, seq3));
+		JavaRDD<Sequence> original2 = jsc.parallelize(Arrays.asList(seq1, seq2));
+		JavaRDD<Sequence> original3 = jsc.parallelize(Arrays.asList(seq1, seq2, seq3));
 
 		JavaRDD<Sequence> emptyRdd = jsc.parallelize(new ArrayList<Sequence>());
 		Double result;
@@ -85,6 +83,55 @@ public class StatsTest {
 		assertTrue(result == 2);
 
 		result = stat.measure(original3);
+		assertTrue(result == 3);
+	}
+
+	@Test
+	public void statCountPair() {
+
+		/*
+		 * Sequence 1
+		 */
+		String seq1s1 = "@cluster_8:UMI_CTTTGA";
+		String seq1s2 = "TATCCUNGCAATANTCTCCGAACNGGAGAG";
+		String seq1s4 = "1/04.72,(003,-2-22+00-12./.-.4";
+		Sequence seq1 = new Sequence(seq1s1, seq1s2, commLine, seq1s4);
+
+		/*
+		 * Sequence 2
+		 */
+		String seq2s1 = "@cluster_12:UMI_GGTCAA";
+		String seq2s2 = "GCAGTTNNAGATCAATATATNNNAGAGCA";
+		String seq2s4 = "?7?AEEC@>=1?A?EEEB9ECB?==:B.A";
+		Sequence seq2 = new Sequence(seq2s1, seq2s2, commLine, seq2s4);
+
+		/*
+		 * Sequence 3
+		 */
+		String seq3s1 = "@cluster_21:UMI_AGAACA";
+		String seq3s2 = "GGCATTGCAAAATTTNTTSCACCCCCAG";
+		String seq3s4 = ">=2.660/?:36AD;0<14703640334";
+		Sequence seq3 = new Sequence(seq3s1, seq3s2, commLine, seq3s4);
+
+		JavaRDD<Sequence> original1 = jsc.parallelize(Arrays.asList(seq1));
+		JavaRDD<Sequence> original2 = jsc.parallelize(Arrays.asList(seq1, seq2));
+		JavaRDD<Sequence> original3 = jsc.parallelize(Arrays.asList(seq1, seq2, seq3));
+
+		JavaRDD<Sequence> emptyRdd = jsc.parallelize(new ArrayList<Sequence>());
+		Double result;
+		Stat stat = new Count();
+
+		// Test for empty RDD
+		result = stat.measurePair(emptyRdd);
+		assertTrue(result == 0);
+
+		result = stat.measurePair(original1);
+		assertTrue(result == 1);
+
+		result = stat.measurePair(original2);
+		assertTrue(result == 2);
+
+		result = stat.measurePair(original3);
 		assertTrue(result == 3);
 	}
 
