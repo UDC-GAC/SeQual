@@ -11,9 +11,14 @@ import com.roi.galegot.sequal.util.ExecutionParametersManager;
  */
 public class Pattern implements SingleFilter {
 
-	/** The Constant serialVersionUID. */
 	private static final long serialVersionUID = 5371376391297589941L;
 
+	/**
+	 * Validate.
+	 *
+	 * @param sequences the sequences
+	 * @return the java RDD
+	 */
 	@Override
 	public JavaRDD<Sequence> validate(JavaRDD<Sequence> sequences) {
 		String pattern;
@@ -51,7 +56,7 @@ public class Pattern implements SingleFilter {
 		finalPattern = fullPattern;
 
 		if (sequences.first().getIsPaired()) {
-			return sequences.filter(s -> this.filterPair(s, finalPattern));
+			return sequences.filter(s -> this.filter(s, finalPattern) && this.filterPair(s, finalPattern));
 		}
 
 		return sequences.filter(s -> this.filter(s, finalPattern));
@@ -60,18 +65,33 @@ public class Pattern implements SingleFilter {
 	/**
 	 * Filter.
 	 *
-	 * @param seq          the seq
+	 * @param sequence     the sequence
 	 * @param finalPattern the final pattern
 	 * @return the boolean
 	 */
-	private Boolean filter(Sequence seq, String finalPattern) {
-		return seq.getSequenceString().contains(finalPattern);
+	private Boolean filter(Sequence sequence, String finalPattern) {
+		return this.compare(sequence.getSequenceString(), finalPattern);
 	}
 
-	private Boolean filterPair(Sequence seq, String finalPattern) {
+	/**
+	 * Filter pair.
+	 *
+	 * @param sequence     the sequence
+	 * @param finalPattern the final pattern
+	 * @return the boolean
+	 */
+	private Boolean filterPair(Sequence sequence, String finalPattern) {
+		return this.compare(sequence.getSequenceStringPair(), finalPattern);
+	}
 
-		// TODO
-
-		return seq.getSequenceString().contains(finalPattern);
+	/**
+	 * Compare.
+	 *
+	 * @param sequenceString the sequence string
+	 * @param finalPattern   the final pattern
+	 * @return the boolean
+	 */
+	private Boolean compare(String sequenceString, String finalPattern) {
+		return sequenceString.contains(finalPattern);
 	}
 }
