@@ -11,9 +11,14 @@ import com.roi.galegot.sequal.util.ExecutionParametersManager;
  */
 public class NAmb implements SingleFilter {
 
-	/** The Constant serialVersionUID. */
 	private static final long serialVersionUID = -7389192873369227802L;
 
+	/**
+	 * Validate.
+	 *
+	 * @param sequences the sequences
+	 * @return the java RDD
+	 */
 	@Override
 	public JavaRDD<Sequence> validate(JavaRDD<Sequence> sequences) {
 		Integer limMin;
@@ -40,7 +45,8 @@ public class NAmb implements SingleFilter {
 		}
 
 		if (sequences.first().getIsPaired()) {
-			return sequences.filter(s -> this.filterPair(s, limMin, limMinUse, limMax, limMaxUse));
+			return sequences.filter(s -> this.filter(s, limMin, limMinUse, limMax, limMaxUse)
+					&& this.filterPair(s, limMin, limMinUse, limMax, limMaxUse));
 		}
 
 		return sequences.filter(s -> this.filter(s, limMin, limMinUse, limMax, limMaxUse));
@@ -49,39 +55,54 @@ public class NAmb implements SingleFilter {
 	/**
 	 * Filter.
 	 *
-	 * @param seq       the seq
+	 * @param sequence  the sequence
 	 * @param limMin    the lim min
 	 * @param limMinUse the lim min use
 	 * @param limMax    the lim max
 	 * @param limMaxUse the lim max use
 	 * @return the boolean
 	 */
-	private Boolean filter(Sequence seq, Integer limMin, Boolean limMinUse, Integer limMax, Boolean limMaxUse) {
-		if (limMinUse && limMaxUse) {
-			return ((seq.getnAmb() >= limMin) && (seq.getnAmb() <= limMax));
-		}
-		if (limMinUse) {
-			return (seq.getnAmb() >= limMin);
-		}
-		if (limMaxUse) {
-			return (seq.getnAmb() <= limMax);
-		}
-		return true;
+	private Boolean filter(Sequence sequence, Integer limMin, Boolean limMinUse, Integer limMax, Boolean limMaxUse) {
+		return this.compare(sequence.getnAmb(), limMin, limMinUse, limMax, limMaxUse);
 	}
 
-	private Boolean filterPair(Sequence seq, Integer limMin, Boolean limMinUse, Integer limMax, Boolean limMaxUse) {
+	/**
+	 * Filter pair.
+	 *
+	 * @param sequence  the sequence
+	 * @param limMin    the lim min
+	 * @param limMinUse the lim min use
+	 * @param limMax    the lim max
+	 * @param limMaxUse the lim max use
+	 * @return the boolean
+	 */
+	private Boolean filterPair(Sequence sequence, Integer limMin, Boolean limMinUse, Integer limMax,
+			Boolean limMaxUse) {
+		return this.compare(sequence.getnAmbPair(), limMin, limMinUse, limMax, limMaxUse);
+	}
 
-		// TODO
+	/**
+	 * Compare.
+	 *
+	 * @param nAmb      the n amb
+	 * @param limMin    the lim min
+	 * @param limMinUse the lim min use
+	 * @param limMax    the lim max
+	 * @param limMaxUse the lim max use
+	 * @return the boolean
+	 */
+	private Boolean compare(int nAmb, Integer limMin, Boolean limMinUse, Integer limMax, Boolean limMaxUse) {
 
 		if (limMinUse && limMaxUse) {
-			return ((seq.getnAmb() >= limMin) && (seq.getnAmb() <= limMax));
+			return ((nAmb >= limMin) && (nAmb <= limMax));
 		}
 		if (limMinUse) {
-			return (seq.getnAmb() >= limMin);
+			return (nAmb >= limMin);
 		}
 		if (limMaxUse) {
-			return (seq.getnAmb() <= limMax);
+			return (nAmb <= limMax);
 		}
+
 		return true;
 	}
 }
