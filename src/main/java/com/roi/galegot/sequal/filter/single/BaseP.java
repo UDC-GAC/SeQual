@@ -64,7 +64,8 @@ public class BaseP implements SingleFilter {
 		}
 
 		if (sequences.first().getIsPaired()) {
-			return sequences.filter(s -> this.filterPair(s, bases, baseMin, limMinUse, baseMax, limMaxUse));
+			return sequences.filter(s -> this.filter(s, bases, baseMin, limMinUse, baseMax, limMaxUse)
+					&& this.filterPair(s, bases, baseMin, limMinUse, baseMax, limMaxUse));
 		}
 
 		return sequences.filter(s -> this.filter(s, bases, baseMin, limMinUse, baseMax, limMaxUse));
@@ -73,7 +74,7 @@ public class BaseP implements SingleFilter {
 	/**
 	 * Filter.
 	 *
-	 * @param seq       the seq
+	 * @param sequence  the sequence
 	 * @param bases     the bases
 	 * @param baseMin   the base min
 	 * @param limMinUse the lim min use
@@ -81,41 +82,46 @@ public class BaseP implements SingleFilter {
 	 * @param limMaxUse the lim max use
 	 * @return the boolean
 	 */
-	private Boolean filter(Sequence seq, String[] bases, String[] baseMin, Boolean limMinUse, String[] baseMax,
+	private Boolean filter(Sequence sequence, String[] bases, String[] baseMin, Boolean limMinUse, String[] baseMax,
 			Boolean limMaxUse) {
-		Double lim1;
-		Double lim2;
-
-		for (int i = 0; i < bases.length; i++) {
-			Double perc = (double) StringUtils.countMatches(seq.getSequenceString(), bases[i])
-					/ seq.getSequenceString().length();
-			if (limMinUse) {
-				lim1 = new Double(baseMin[i]);
-				if ((lim1 != -1) && (perc < lim1)) {
-					return false;
-				}
-			}
-			if (limMaxUse) {
-				lim2 = new Double(baseMax[i]);
-				if ((lim2 != -1) && (perc > lim2)) {
-					return false;
-				}
-			}
-		}
-		return true;
+		return this.compare(sequence.getSequenceString(), bases, baseMin, limMinUse, baseMax, limMaxUse);
 	}
 
-	private Boolean filterPair(Sequence seq, String[] bases, String[] baseMin, Boolean limMinUse, String[] baseMax,
+	/**
+	 * Filter pair.
+	 *
+	 * @param sequence  the sequence
+	 * @param bases     the bases
+	 * @param baseMin   the base min
+	 * @param limMinUse the lim min use
+	 * @param baseMax   the base max
+	 * @param limMaxUse the lim max use
+	 * @return the boolean
+	 */
+	private Boolean filterPair(Sequence sequence, String[] bases, String[] baseMin, Boolean limMinUse, String[] baseMax,
 			Boolean limMaxUse) {
+		return this.compare(sequence.getSequenceStringPair(), bases, baseMin, limMinUse, baseMax, limMaxUse);
+	}
 
-		// TODO
+	/**
+	 * Compare.
+	 *
+	 * @param sequenceString the sequence string
+	 * @param bases          the bases
+	 * @param baseMin        the base min
+	 * @param limMinUse      the lim min use
+	 * @param baseMax        the base max
+	 * @param limMaxUse      the lim max use
+	 * @return the boolean
+	 */
+	private Boolean compare(String sequenceString, String[] bases, String[] baseMin, Boolean limMinUse,
+			String[] baseMax, Boolean limMaxUse) {
 
 		Double lim1;
 		Double lim2;
 
 		for (int i = 0; i < bases.length; i++) {
-			Double perc = (double) StringUtils.countMatches(seq.getSequenceString(), bases[i])
-					/ seq.getSequenceString().length();
+			Double perc = (double) StringUtils.countMatches(sequenceString, bases[i]) / sequenceString.length();
 			if (limMinUse) {
 				lim1 = new Double(baseMin[i]);
 				if ((lim1 != -1) && (perc < lim1)) {
@@ -129,6 +135,7 @@ public class BaseP implements SingleFilter {
 				}
 			}
 		}
+
 		return true;
 	}
 }
