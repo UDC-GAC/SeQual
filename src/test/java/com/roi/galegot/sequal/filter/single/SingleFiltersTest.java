@@ -104,6 +104,89 @@ public class SingleFiltersTest {
 	}
 
 	@Test
+	public void filterLengthPair() {
+
+		/*
+		 * Length = 30
+		 */
+		String seq2s1 = "@cluster_8:UMI_CTTTGA_1";
+		String seq2s2 = "TATCCUNGCAATANTCTCCGAACNGGAGAG";
+		String seq2s4 = "1/04.72,(003,-2-22+00-12./.-.4";
+		Sequence seq2 = new Sequence(seq2s1, seq2s2, commLine, seq2s4);
+
+		String seq2s1Pair = "@cluster_8:UMI_CTTTGA_2";
+		String seq2s2Pair = "TATCCUNGCAATANTCTCCGAACNGGAGAG";
+		String seq2s4Pair = "1/04.72,(003,-2-22+00-12./.-.4";
+		seq2.setPairSequence(seq2s1Pair, seq2s2Pair, commLine, seq2s4Pair);
+
+		/*
+		 * Length = 29
+		 */
+		String seq3s1 = "@cluster_12:UMI_GGTCAA_1";
+		String seq3s2 = "GCAGTTNNAGATCAATATATNNNAGAGCA";
+		String seq3s4 = "?7?AEEC@>=1?A?EEEB9ECB?==:B.A";
+		Sequence seq3 = new Sequence(seq3s1, seq3s2, commLine, seq3s4);
+
+		String seq3s1Pair = "@cluster_12:UMI_GGTCAA_2";
+		String seq3s2Pair = "GCAGTTNNAGATCAATATATNNNAGAGCA";
+		String seq3s4Pair = "?7?AEEC@>=1?A?EEEB9ECB?==:B.A";
+		seq3.setPairSequence(seq3s1Pair, seq3s2Pair, commLine, seq3s4Pair);
+
+		/*
+		 * Length = 28
+		 */
+		String seq4s1 = "@cluster_21:UMI_AGAACA_1";
+		String seq4s2 = "GGCATTGCAAAATTTNTTSCACCCCCAG";
+		String seq4s4 = ">=2.660/?:36AD;0<14703640334";
+		Sequence seq4 = new Sequence(seq4s1, seq4s2, commLine, seq4s4);
+
+		String seq4s1Pair = "@cluster_21:UMI_AGAACA_2";
+		String seq4s2Pair = "GGCATTGCAAAATTTNTTSCACCCCCAG";
+		String seq4s4Pair = ">=2.660/?:36AD;0<14703640334";
+		seq4.setPairSequence(seq4s1Pair, seq4s2Pair, commLine, seq4s4Pair);
+
+		JavaRDD<Sequence> original = jsc.parallelize(Arrays.asList(seq2, seq3, seq4));
+		JavaRDD<Sequence> emptyRdd = jsc.parallelize(new ArrayList<Sequence>());
+		JavaRDD<Sequence> filtered;
+		ArrayList<Sequence> list;
+		SingleFilter filter = new Length();
+
+		// Test for empty RDD
+		filtered = filter.validate(emptyRdd);
+		assertEquals(filtered.count(), 0);
+
+		ExecutionParametersManager.setParameter("LengthMinVal", "");
+		ExecutionParametersManager.setParameter("LengthMaxVal", "");
+		filtered = filter.validate(original);
+		assertEquals(original.collect(), filtered.collect());
+
+		ExecutionParametersManager.setParameter("LengthMinVal", "29");
+		filtered = filter.validate(original);
+		assertEquals(filtered.count(), 2);
+		list = new ArrayList<>(filtered.collect());
+		assertEquals(list.size(), 2);
+		assertTrue(list.contains(seq2));
+		assertTrue(list.contains(seq3));
+
+		ExecutionParametersManager.setParameter("LengthMinVal", "");
+		ExecutionParametersManager.setParameter("LengthMaxVal", "29");
+		filtered = filter.validate(original);
+		assertEquals(filtered.count(), 2);
+		list = new ArrayList<>(filtered.collect());
+		assertEquals(list.size(), 2);
+		assertTrue(list.contains(seq3));
+		assertTrue(list.contains(seq4));
+
+		ExecutionParametersManager.setParameter("LengthMinVal", "29");
+		ExecutionParametersManager.setParameter("LengthMaxVal", "29");
+		filtered = filter.validate(original);
+		assertEquals(filtered.count(), 1);
+		list = new ArrayList<>(filtered.collect());
+		assertEquals(list.size(), 1);
+		assertTrue(list.contains(seq3));
+	}
+
+	@Test
 	public void filterQuality() {
 
 		/*
