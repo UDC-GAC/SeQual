@@ -11,9 +11,14 @@ import com.roi.galegot.sequal.util.ExecutionParametersManager;
  */
 public class GC implements SingleFilter {
 
-	/** The Constant serialVersionUID. */
 	private static final long serialVersionUID = 8628696067644155529L;
 
+	/**
+	 * Validate.
+	 *
+	 * @param sequences the sequences
+	 * @return the java RDD
+	 */
 	@Override
 	public JavaRDD<Sequence> validate(JavaRDD<Sequence> sequences) {
 		Integer limMin;
@@ -40,7 +45,8 @@ public class GC implements SingleFilter {
 		}
 
 		if (sequences.first().getIsPaired()) {
-			return sequences.filter(s -> this.filterPair(s, limMin, limMinUse, limMax, limMaxUse));
+			return sequences.filter(s -> this.filter(s, limMin, limMinUse, limMax, limMaxUse)
+					&& this.filterPair(s, limMin, limMinUse, limMax, limMaxUse));
 		}
 
 		return sequences.filter(s -> this.filter(s, limMin, limMinUse, limMax, limMaxUse));
@@ -49,39 +55,54 @@ public class GC implements SingleFilter {
 	/**
 	 * Filter.
 	 *
-	 * @param seq       the seq
+	 * @param sequence  the sequence
 	 * @param limMin    the lim min
 	 * @param limMinUse the lim min use
 	 * @param limMax    the lim max
 	 * @param limMaxUse the lim max use
 	 * @return the boolean
 	 */
-	private Boolean filter(Sequence seq, Integer limMin, Boolean limMinUse, Integer limMax, Boolean limMaxUse) {
-		if (limMinUse && limMaxUse) {
-			return ((seq.getGuaCyt() >= limMin) && (seq.getGuaCyt() <= limMax));
-		}
-		if (limMinUse) {
-			return (seq.getGuaCyt() >= limMin);
-		}
-		if (limMaxUse) {
-			return (seq.getGuaCyt() <= limMax);
-		}
-		return true;
+	private Boolean filter(Sequence sequence, Integer limMin, Boolean limMinUse, Integer limMax, Boolean limMaxUse) {
+		return this.compare(sequence.getGuaCyt(), limMin, limMinUse, limMax, limMaxUse);
 	}
 
-	private Boolean filterPair(Sequence seq, Integer limMin, Boolean limMinUse, Integer limMax, Boolean limMaxUse) {
+	/**
+	 * Filter pair.
+	 *
+	 * @param sequence  the sequence
+	 * @param limMin    the lim min
+	 * @param limMinUse the lim min use
+	 * @param limMax    the lim max
+	 * @param limMaxUse the lim max use
+	 * @return the boolean
+	 */
+	private Boolean filterPair(Sequence sequence, Integer limMin, Boolean limMinUse, Integer limMax,
+			Boolean limMaxUse) {
+		return this.compare(sequence.getGuaCytPair(), limMin, limMinUse, limMax, limMaxUse);
+	}
 
-		// TODO
+	/**
+	 * Compare.
+	 *
+	 * @param guaCyt    the gua cyt
+	 * @param limMin    the lim min
+	 * @param limMinUse the lim min use
+	 * @param limMax    the lim max
+	 * @param limMaxUse the lim max use
+	 * @return the boolean
+	 */
+	private Boolean compare(int guaCyt, Integer limMin, Boolean limMinUse, Integer limMax, Boolean limMaxUse) {
 
 		if (limMinUse && limMaxUse) {
-			return ((seq.getGuaCyt() >= limMin) && (seq.getGuaCyt() <= limMax));
+			return ((guaCyt >= limMin) && (guaCyt <= limMax));
 		}
 		if (limMinUse) {
-			return (seq.getGuaCyt() >= limMin);
+			return (guaCyt >= limMin);
 		}
 		if (limMaxUse) {
-			return (seq.getGuaCyt() <= limMax);
+			return (guaCyt <= limMax);
 		}
+
 		return true;
 	}
 }
