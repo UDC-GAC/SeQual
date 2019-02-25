@@ -11,9 +11,14 @@ import com.roi.galegot.sequal.util.ExecutionParametersManager;
  */
 public class QualityScore implements SingleFilter {
 
-	/** The Constant serialVersionUID. */
 	private static final long serialVersionUID = 1986175935593684878L;
 
+	/**
+	 * Validate.
+	 *
+	 * @param sequences the sequences
+	 * @return the java RDD
+	 */
 	@Override
 	public JavaRDD<Sequence> validate(JavaRDD<Sequence> sequences) {
 		Double limMin;
@@ -40,7 +45,8 @@ public class QualityScore implements SingleFilter {
 		}
 
 		if (sequences.first().getIsPaired()) {
-			return sequences.filter(s -> this.filterPair(s, limMin, limMinUse, limMax, limMaxUse));
+			return sequences.filter(s -> this.filter(s, limMin, limMinUse, limMax, limMaxUse)
+					&& this.filterPair(s, limMin, limMinUse, limMax, limMaxUse));
 		}
 
 		return sequences.filter(s -> this.filter(s, limMin, limMinUse, limMax, limMaxUse));
@@ -49,78 +55,76 @@ public class QualityScore implements SingleFilter {
 	/**
 	 * Filter.
 	 *
-	 * @param seq       the seq
+	 * @param sequence  the sequence
 	 * @param limMin    the lim min
 	 * @param limMinUse the lim min use
 	 * @param limMax    the lim max
 	 * @param limMaxUse the lim max use
 	 * @return the boolean
 	 */
-	private Boolean filter(Sequence seq, Double limMin, Boolean limMinUse, Double limMax, Boolean limMaxUse) {
-		if (seq.getHasQuality()) {
-			if (limMinUse && limMaxUse) {
-				for (char c : seq.getQualityString().toCharArray()) {
-					int qual = c - 33;
-					if ((qual > limMax) || (qual < limMin)) {
-						return false;
-					}
-				}
-			}
-			if (limMinUse) {
-				for (char c : seq.getQualityString().toCharArray()) {
-					int qual = c - 33;
-					if (qual < limMin) {
-						return false;
-					}
-				}
-			}
-			if (limMaxUse) {
-				for (char c : seq.getQualityString().toCharArray()) {
-					int qual = c - 33;
-					if (qual > limMax) {
-						return false;
-					}
-				}
-			}
-			return true;
-		} else {
-			return false;
+	private Boolean filter(Sequence sequence, Double limMin, Boolean limMinUse, Double limMax, Boolean limMaxUse) {
+		if (sequence.getHasQuality()) {
+			return this.compare(sequence.getQualityString(), limMin, limMinUse, limMax, limMaxUse);
 		}
+
+		return false;
 	}
 
-	private Boolean filterPair(Sequence seq, Double limMin, Boolean limMinUse, Double limMax, Boolean limMaxUse) {
-
-		// TODO
-
-		if (seq.getHasQuality()) {
-			if (limMinUse && limMaxUse) {
-				for (char c : seq.getQualityString().toCharArray()) {
-					int qual = c - 33;
-					if ((qual > limMax) || (qual < limMin)) {
-						return false;
-					}
-				}
-			}
-			if (limMinUse) {
-				for (char c : seq.getQualityString().toCharArray()) {
-					int qual = c - 33;
-					if (qual < limMin) {
-						return false;
-					}
-				}
-			}
-			if (limMaxUse) {
-				for (char c : seq.getQualityString().toCharArray()) {
-					int qual = c - 33;
-					if (qual > limMax) {
-						return false;
-					}
-				}
-			}
-			return true;
-		} else {
-			return false;
+	/**
+	 * Filter pair.
+	 *
+	 * @param sequence  the sequence
+	 * @param limMin    the lim min
+	 * @param limMinUse the lim min use
+	 * @param limMax    the lim max
+	 * @param limMaxUse the lim max use
+	 * @return the boolean
+	 */
+	private Boolean filterPair(Sequence sequence, Double limMin, Boolean limMinUse, Double limMax, Boolean limMaxUse) {
+		if (sequence.getHasQuality()) {
+			return this.compare(sequence.getQualityStringPair(), limMin, limMinUse, limMax, limMaxUse);
 		}
+
+		return false;
+	}
+
+	/**
+	 * Compare.
+	 *
+	 * @param qualityString the quality string
+	 * @param limMin        the lim min
+	 * @param limMinUse     the lim min use
+	 * @param limMax        the lim max
+	 * @param limMaxUse     the lim max use
+	 * @return the boolean
+	 */
+	private Boolean compare(String qualityString, Double limMin, Boolean limMinUse, Double limMax, Boolean limMaxUse) {
+		if (limMinUse && limMaxUse) {
+			for (char c : qualityString.toCharArray()) {
+				int qual = c - 33;
+				if ((qual > limMax) || (qual < limMin)) {
+					return false;
+				}
+			}
+		}
+		if (limMinUse) {
+			for (char c : qualityString.toCharArray()) {
+				int qual = c - 33;
+				if (qual < limMin) {
+					return false;
+				}
+			}
+		}
+		if (limMaxUse) {
+			for (char c : qualityString.toCharArray()) {
+				int qual = c - 33;
+				if (qual > limMax) {
+					return false;
+				}
+			}
+		}
+
+		return true;
 	}
 
 }
