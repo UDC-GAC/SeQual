@@ -10,9 +10,14 @@ import com.roi.galegot.sequal.common.Sequence;
  */
 public class NonIupac implements SingleFilter {
 
-	/** The Constant serialVersionUID. */
 	private static final long serialVersionUID = -7681154534922631509L;
 
+	/**
+	 * Validate.
+	 *
+	 * @param sequences the sequences
+	 * @return the java RDD
+	 */
 	@Override
 	public JavaRDD<Sequence> validate(JavaRDD<Sequence> sequences) {
 		String[] bases = { "A", "C", "G", "T", "N" };
@@ -22,7 +27,7 @@ public class NonIupac implements SingleFilter {
 		}
 
 		if (sequences.first().getIsPaired()) {
-			return sequences.filter(s -> this.filterPair(s, bases));
+			return sequences.filter(s -> this.filter(s, bases) && this.filterPair(s, bases));
 		}
 
 		return sequences.filter(s -> this.filter(s, bases));
@@ -31,38 +36,42 @@ public class NonIupac implements SingleFilter {
 	/**
 	 * Filter.
 	 *
-	 * @param seq   the seq
-	 * @param bases the bases
+	 * @param sequence the sequence
+	 * @param bases    the bases
 	 * @return the boolean
 	 */
-	private Boolean filter(Sequence seq, String[] bases) {
-		int counter;
-		String sequence;
-
-		counter = 0;
-		sequence = seq.getSequenceString();
-
-		for (String base : bases) {
-			counter = counter + StringUtils.countMatches(sequence, base);
-		}
-
-		return (counter == sequence.length());
+	private Boolean filter(Sequence sequence, String[] bases) {
+		return this.compare(sequence.getSequenceString(), bases);
 	}
 
-	private Boolean filterPair(Sequence seq, String[] bases) {
+	/**
+	 * Filter pair.
+	 *
+	 * @param sequence the sequence
+	 * @param bases    the bases
+	 * @return the boolean
+	 */
+	private Boolean filterPair(Sequence sequence, String[] bases) {
+		return this.compare(sequence.getSequenceStringPair(), bases);
+	}
 
-		// TODO
+	/**
+	 * Compare.
+	 *
+	 * @param sequenceString the sequence string
+	 * @param bases          the bases
+	 * @return the boolean
+	 */
+	private Boolean compare(String sequenceString, String[] bases) {
 
 		int counter;
-		String sequence;
 
 		counter = 0;
-		sequence = seq.getSequenceString();
 
 		for (String base : bases) {
-			counter = counter + StringUtils.countMatches(sequence, base);
+			counter = counter + StringUtils.countMatches(sequenceString, base);
 		}
 
-		return (counter == sequence.length());
+		return (counter == sequenceString.length());
 	}
 }
