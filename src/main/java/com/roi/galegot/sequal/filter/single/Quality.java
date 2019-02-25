@@ -40,7 +40,8 @@ public class Quality implements SingleFilter {
 		}
 
 		if (sequences.first().getIsPaired()) {
-			return sequences.filter(s -> this.filterPair(s, limMin, limMinUse, limMax, limMaxUse));
+			return sequences.filter(s -> this.filter(s, limMin, limMinUse, limMax, limMaxUse)
+					&& this.filterPair(s, limMin, limMinUse, limMax, limMaxUse));
 		}
 
 		return sequences.filter(s -> this.filter(s, limMin, limMinUse, limMax, limMaxUse));
@@ -49,47 +50,59 @@ public class Quality implements SingleFilter {
 	/**
 	 * Filter.
 	 *
-	 * @param seq       the seq
+	 * @param sequence  the sequence
 	 * @param limMin    the lim min
 	 * @param limMinUse the lim min use
 	 * @param limMax    the lim max
 	 * @param limMaxUse the lim max use
 	 * @return the boolean
 	 */
-	private Boolean filter(Sequence seq, Double limMin, Boolean limMinUse, Double limMax, Boolean limMaxUse) {
-		if (seq.getHasQuality()) {
-			if (limMinUse && limMaxUse) {
-				return ((seq.getQuality() >= limMin) && (seq.getQuality() <= limMax));
-			}
-			if (limMinUse) {
-				return (seq.getQuality() >= limMin);
-			}
-			if (limMaxUse) {
-				return (seq.getQuality() <= limMax);
-			}
-			return true;
-		} else {
-			return false;
+	private Boolean filter(Sequence sequence, Double limMin, Boolean limMinUse, Double limMax, Boolean limMaxUse) {
+		if (sequence.getHasQuality()) {
+			return this.compare(sequence.getQuality(), limMin, limMinUse, limMax, limMaxUse);
 		}
+
+		return false;
 	}
 
-	private Boolean filterPair(Sequence seq, Double limMin, Boolean limMinUse, Double limMax, Boolean limMaxUse) {
-
-		// TODO
-
-		if (seq.getHasQuality()) {
-			if (limMinUse && limMaxUse) {
-				return ((seq.getQuality() >= limMin) && (seq.getQuality() <= limMax));
-			}
-			if (limMinUse) {
-				return (seq.getQuality() >= limMin);
-			}
-			if (limMaxUse) {
-				return (seq.getQuality() <= limMax);
-			}
-			return true;
-		} else {
-			return false;
+	/**
+	 * Filter pair.
+	 *
+	 * @param sequence  the sequence
+	 * @param limMin    the lim min
+	 * @param limMinUse the lim min use
+	 * @param limMax    the lim max
+	 * @param limMaxUse the lim max use
+	 * @return the boolean
+	 */
+	private Boolean filterPair(Sequence sequence, Double limMin, Boolean limMinUse, Double limMax, Boolean limMaxUse) {
+		if (sequence.getHasQuality()) {
+			return this.compare(sequence.getQualityPair(), limMin, limMinUse, limMax, limMaxUse);
 		}
+
+		return false;
+	}
+
+	/**
+	 * Compare.
+	 *
+	 * @param quality   the quality
+	 * @param limMin    the lim min
+	 * @param limMinUse the lim min use
+	 * @param limMax    the lim max
+	 * @param limMaxUse the lim max use
+	 * @return the boolean
+	 */
+	private Boolean compare(double quality, Double limMin, Boolean limMinUse, Double limMax, Boolean limMaxUse) {
+		if (limMinUse && limMaxUse) {
+			return ((quality >= limMin) && (quality <= limMax));
+		}
+		if (limMinUse) {
+			return (quality >= limMin);
+		}
+		if (limMaxUse) {
+			return (quality <= limMax);
+		}
+		return true;
 	}
 }
