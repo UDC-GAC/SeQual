@@ -443,6 +443,89 @@ public class SingleFiltersTest {
 	}
 
 	@Test
+	public void filterGCPair() {
+
+		/*
+		 * G = 4 C = 8
+		 */
+		String seq1s1 = "@cluster_21:UMI_AGAACA_1";
+		String seq1s2 = "GGCATTGCAAAATTTNTTSCACCCCCAG";
+		String seq1s4 = ">=2.660/?:36AD;0<14703640334";
+		Sequence seq1 = new Sequence(seq1s1, seq1s2, commLine, seq1s4);
+
+		String seq1s1Pair = "@cluster_21:UMI_AGAACA_2";
+		String seq1s2Pair = "GGCATTGCAAAATTTNTTSCACCCCCAG";
+		String seq1s4Pair = ">=2.660/?:36AD;0<14703640334";
+		seq1.setPairSequence(seq1s1Pair, seq1s2Pair, commLine, seq1s4Pair);
+
+		/*
+		 * G = 6 C = 7
+		 */
+		String seq2s1 = "@cluster_8:UMI_CTTTGA_1";
+		String seq2s2 = "TATCCUNGCAATANTCTCCGAACNGGAGAG";
+		String seq2s4 = "1/04.72,(003,-2-22+00-12./.-.4";
+		Sequence seq2 = new Sequence(seq2s1, seq2s2, commLine, seq2s4);
+
+		String seq2s1Pair = "@cluster_8:UMI_CTTTGA_2";
+		String seq2s2Pair = "TATCCUNGCAATANTCTCCGAACNGGAGAG";
+		String seq2s4Pair = "1/04.72,(003,-2-22+00-12./.-.4";
+		seq2.setPairSequence(seq2s1Pair, seq2s2Pair, commLine, seq2s4Pair);
+
+		/*
+		 * G = 8 C = 6
+		 */
+		String seq3s1 = "@cluster_12:UMI_GGTCAA_1";
+		String seq3s2 = "GCCGTCNCAGATCAATATATNGGGGAGCA";
+		String seq3s4 = "?7?AEEC@>=1?A?EEEB9ECB?==:B.A";
+		Sequence seq3 = new Sequence(seq3s1, seq3s2, commLine, seq3s4);
+
+		String seq3s1Pair = "@cluster_12:UMI_GGTCAA_2";
+		String seq3s2Pair = "GCCGTCNCAGATCAATATATNGGGGAGCA";
+		String seq3s4Pair = "?7?AEEC@>=1?A?EEEB9ECB?==:B.A";
+		seq3.setPairSequence(seq3s1Pair, seq3s2Pair, commLine, seq3s4Pair);
+
+		JavaRDD<Sequence> original = jsc.parallelize(Arrays.asList(seq1, seq2, seq3));
+		JavaRDD<Sequence> emptyRdd = jsc.parallelize(new ArrayList<Sequence>());
+		JavaRDD<Sequence> filtered;
+		ArrayList<Sequence> list;
+		SingleFilter filter = new GC();
+
+		// Test for empty RDD
+		filtered = filter.validate(emptyRdd);
+		assertEquals(filtered.count(), 0);
+
+		ExecutionParametersManager.setParameter("GCMinVal", "");
+		ExecutionParametersManager.setParameter("GCMaxVal", "");
+		filtered = filter.validate(original);
+		assertEquals(original.collect(), filtered.collect());
+
+		ExecutionParametersManager.setParameter("GCMinVal", "13");
+		filtered = filter.validate(original);
+		assertEquals(filtered.count(), 2);
+		list = new ArrayList<>(filtered.collect());
+		assertEquals(list.size(), 2);
+		assertTrue(list.contains(seq2));
+		assertTrue(list.contains(seq3));
+
+		ExecutionParametersManager.setParameter("GCMinVal", "");
+		ExecutionParametersManager.setParameter("GCMaxVal", "13");
+		filtered = filter.validate(original);
+		assertEquals(filtered.count(), 2);
+		list = new ArrayList<>(filtered.collect());
+		assertEquals(list.size(), 2);
+		assertTrue(list.contains(seq1));
+		assertTrue(list.contains(seq2));
+
+		ExecutionParametersManager.setParameter("GCMinVal", "13");
+		ExecutionParametersManager.setParameter("GCMaxVal", "13");
+		filtered = filter.validate(original);
+		assertEquals(filtered.count(), 1);
+		list = new ArrayList<>(filtered.collect());
+		assertEquals(list.size(), 1);
+		assertTrue(list.contains(seq2));
+	}
+
+	@Test
 	public void filterGCP() {
 
 		/*
@@ -1026,4 +1109,5 @@ public class SingleFiltersTest {
 		assertEquals(list.size(), 1);
 		assertTrue(list.contains(seq2));
 	}
+
 }
