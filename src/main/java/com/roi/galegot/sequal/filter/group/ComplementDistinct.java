@@ -4,10 +4,9 @@ import java.io.Serializable;
 
 import org.apache.spark.api.java.JavaPairRDD;
 import org.apache.spark.api.java.JavaRDD;
-import org.apache.spark.api.java.function.Function2;
-import org.apache.spark.api.java.function.PairFunction;
 
 import com.roi.galegot.sequal.common.Sequence;
+import com.roi.galegot.sequal.common.SequenceUtils;
 
 import scala.Tuple2;
 
@@ -16,7 +15,6 @@ import scala.Tuple2;
  */
 public class ComplementDistinct implements GroupFilter {
 
-	/** The Constant serialVersionUID. */
 	private static final long serialVersionUID = -5947189310641527595L;
 
 	@Override
@@ -25,42 +23,71 @@ public class ComplementDistinct implements GroupFilter {
 			return sequences;
 		}
 
-		JavaPairRDD<ComplementString, Sequence> group = sequences
-				.mapToPair(new PairFunction<Sequence, ComplementString, Sequence>() {
+		return this.filter(sequences);
+	}
 
-					private static final long serialVersionUID = -7740337890433733128L;
+	/**
+	 * Filter.
+	 *
+	 * @param sequences the sequences
+	 * @return the java RDD
+	 */
+	private JavaRDD<Sequence> filter(JavaRDD<Sequence> sequences) {
+		JavaPairRDD<ComplementString, Sequence> group;
 
-					@Override
-					public Tuple2<ComplementString, Sequence> call(Sequence seq) {
-						return new Tuple2<ComplementString, Sequence>(new ComplementString(seq.getSequenceString()),
-								seq);
-					}
-				});
+		if (sequences.first().getIsPaired()) {
+			group = this.filterPairedEnd(sequences);
+		} else {
+			group = this.filterSingleEnd(sequences);
+		}
 
 		if (sequences.first().getHasQuality()) {
-			return group.reduceByKey(new Function2<Sequence, Sequence, Sequence>() {
-
-				private static final long serialVersionUID = 409867625719430118L;
-
-				@Override
-				public Sequence call(Sequence seq1, Sequence seq2) {
-					if (seq1.getQuality() >= seq2.getQuality()) {
-						return seq1;
-					}
-					return seq2;
-				}
-			}).values();
-		} else {
-			return group.reduceByKey(new Function2<Sequence, Sequence, Sequence>() {
-
-				private static final long serialVersionUID = 6231420965110817797L;
-
-				@Override
-				public Sequence call(Sequence seq1, Sequence seq2) {
-					return seq1;
-				}
-			}).values();
+			return this.filterQuality(group);
 		}
+
+		return this.filterNoQuality(group);
+	}
+
+	/**
+	 * Filter single end.
+	 *
+	 * @param sequences the sequences
+	 * @return the java pair RDD
+	 */
+	private JavaPairRDD<ComplementString, Sequence> filterSingleEnd(JavaRDD<Sequence> sequences) {
+		return sequences.mapToPair(sequence -> new Tuple2<ComplementString, Sequence>(
+				new ComplementString(sequence.getSequenceString()), sequence));
+	}
+
+	/**
+	 * Filter pair.
+	 *
+	 * @param sequences the sequences
+	 * @return the java RDD
+	 */
+	private JavaPairRDD<ComplementString, Sequence> filterPairedEnd(JavaRDD<Sequence> sequences) {
+		return sequences.mapToPair(sequence -> new Tuple2<ComplementString, Sequence>(
+				new ComplementStringPair(sequence.getSequenceString(), sequence.getSequenceStringPair()), sequence));
+	}
+
+	/**
+	 * Filter quality.
+	 *
+	 * @param sequences the sequences
+	 * @return the java RDD
+	 */
+	private JavaRDD<Sequence> filterQuality(JavaPairRDD<ComplementString, Sequence> sequences) {
+		return sequences.reduceByKey((seq1, seq2) -> SequenceUtils.selectSequenceWithMaxQuality(seq1, seq2)).values();
+	}
+
+	/**
+	 * Filter no quality.
+	 *
+	 * @param sequences the sequences
+	 * @return the java RDD
+	 */
+	private JavaRDD<Sequence> filterNoQuality(JavaPairRDD<ComplementString, Sequence> sequences) {
+		return sequences.reduceByKey((seq1, seq2) -> seq1).values();
 	}
 
 	/**
@@ -68,11 +95,10 @@ public class ComplementDistinct implements GroupFilter {
 	 */
 	class ComplementString implements Serializable {
 
-		/** The Constant serialVersionUID. */
 		private static final long serialVersionUID = 3011027347808993546L;
 
-		/** The complementary sequence. */
-		private String sequence, complementarySequence;
+		protected String sequence;
+		protected String complementarySequence;
 
 		/**
 		 * Instantiates a new complement string.
@@ -127,11 +153,53 @@ public class ComplementDistinct implements GroupFilter {
 		@Override
 		public boolean equals(Object obj) {
 			ComplementString other = (ComplementString) obj;
-			if (!this.sequence.equals(other.complementarySequence)) {
-				return false;
-			}
-			return true;
+
+			return this.sequence.equals(other.complementarySequence);
 		}
+	}
+
+	/**
+	 * The Class ComplementStringPair.
+	 */
+	class ComplementStringPair extends ComplementString {
+
+		private static final long serialVersionUID = -7291101312113278780L;
+
+		private String sequencePair;
+		private String complementarySequencePair;
+
+		/**
+		 * Instantiates a new complement string pair.
+		 *
+		 * @param sequence     the sequence
+		 * @param sequencePair the sequence pair
+		 */
+		public ComplementStringPair(String sequence, String sequencePair) {
+			super(sequence);
+			this.sequencePair = sequencePair;
+			this.complementarySequencePair = super.getComplementary(sequencePair);
+		}
+
+		@Override
+		public int hashCode() {
+			final int prime = 31;
+			int result = 1;
+			result = (prime * result) + (((this.sequence == null) ? 0 : this.sequence.hashCode())
+					+ ((this.complementarySequence == null) ? 0 : this.complementarySequence.hashCode()));
+			result = (prime * result) + (((this.sequencePair == null) ? 0 : this.sequencePair.hashCode())
+					+ ((this.complementarySequencePair == null) ? 0 : this.complementarySequencePair.hashCode()));
+
+			return result;
+		}
+
+		@Override
+		public boolean equals(Object obj) {
+			ComplementStringPair other = (ComplementStringPair) obj;
+
+			return (this.sequence.equals(other.complementarySequence)
+					&& this.sequencePair.equals(other.complementarySequencePair));
+		}
+
 	}
 
 }
