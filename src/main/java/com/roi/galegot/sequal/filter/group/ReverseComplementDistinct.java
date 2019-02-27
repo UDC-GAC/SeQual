@@ -4,10 +4,9 @@ import java.io.Serializable;
 
 import org.apache.spark.api.java.JavaPairRDD;
 import org.apache.spark.api.java.JavaRDD;
-import org.apache.spark.api.java.function.Function2;
-import org.apache.spark.api.java.function.PairFunction;
 
 import com.roi.galegot.sequal.common.Sequence;
+import com.roi.galegot.sequal.common.SequenceUtils;
 
 import scala.Tuple2;
 
@@ -25,60 +24,86 @@ public class ReverseComplementDistinct implements GroupFilter {
 			return sequences;
 		}
 
-		JavaPairRDD<ReverseComplementString, Sequence> group = sequences
-				.mapToPair(new PairFunction<Sequence, ReverseComplementString, Sequence>() {
-
-					private static final long serialVersionUID = -6192877628808422227L;
-
-					@Override
-					public Tuple2<ReverseComplementString, Sequence> call(Sequence seq) {
-						return new Tuple2<ReverseComplementString, Sequence>(
-								new ReverseComplementString(seq.getSequenceString()), seq);
-					}
-				});
-
-		if (sequences.first().getHasQuality()) {
-			return group.reduceByKey(new Function2<Sequence, Sequence, Sequence>() {
-
-				private static final long serialVersionUID = -2285412703072618941L;
-
-				@Override
-				public Sequence call(Sequence seq1, Sequence seq2) {
-					if (seq1.getQuality() >= seq2.getQuality()) {
-						return seq1;
-					}
-					return seq2;
-				}
-			}).values();
-		} else {
-			return group.reduceByKey(new Function2<Sequence, Sequence, Sequence>() {
-
-				private static final long serialVersionUID = -6498038456070131065L;
-
-				@Override
-				public Sequence call(Sequence seq1, Sequence seq2) {
-					return seq1;
-				}
-			}).values();
-		}
+		return this.filter(sequences);
 	}
 
 	/**
-	 * The Class ReverseComplementString.
+	 * Filter.
+	 *
+	 * @param sequences the sequences
+	 * @return the java RDD
+	 */
+	private JavaRDD<Sequence> filter(JavaRDD<Sequence> sequences) {
+		JavaPairRDD<ReverseComplementString, Sequence> group;
+
+		if (sequences.first().getIsPaired()) {
+			group = this.filterPairedEnd(sequences);
+		} else {
+			group = this.filterSingleEnd(sequences);
+		}
+
+		if (sequences.first().getHasQuality()) {
+			return this.filterQuality(group);
+		}
+
+		return this.filterNoQuality(group);
+	}
+
+	/**
+	 * Filter single end.
+	 *
+	 * @param sequences the sequences
+	 * @return the java pair RDD
+	 */
+	private JavaPairRDD<ReverseComplementString, Sequence> filterSingleEnd(JavaRDD<Sequence> sequences) {
+		return sequences.mapToPair(sequence -> new Tuple2<ReverseComplementString, Sequence>(
+				new ReverseComplementString(sequence.getSequenceString()), sequence));
+	}
+
+	/**
+	 * Filter pair.
+	 *
+	 * @param sequences the sequences
+	 * @return the java RDD
+	 */
+	private JavaPairRDD<ReverseComplementString, Sequence> filterPairedEnd(JavaRDD<Sequence> sequences) {
+		return sequences.mapToPair(sequence -> new Tuple2<ReverseComplementString, Sequence>(
+				new ReverseComplementStringPair(sequence.getSequenceString(), sequence.getSequenceStringPair()),
+				sequence));
+	}
+
+	/**
+	 * Filter quality.
+	 *
+	 * @param sequences the sequences
+	 * @return the java RDD
+	 */
+	private JavaRDD<Sequence> filterQuality(JavaPairRDD<ReverseComplementString, Sequence> sequences) {
+		return sequences.reduceByKey((seq1, seq2) -> SequenceUtils.selectSequenceWithMaxQuality(seq1, seq2)).values();
+	}
+
+	/**
+	 * Filter no quality.
+	 *
+	 * @param sequences the sequences
+	 * @return the java RDD
+	 */
+	private JavaRDD<Sequence> filterNoQuality(JavaPairRDD<ReverseComplementString, Sequence> sequences) {
+		return sequences.reduceByKey((seq1, seq2) -> seq1).values();
+	}
+
+	/**
+	 * The Class ComplementString.
 	 */
 	class ReverseComplementString implements Serializable {
 
-		/** The Constant serialVersionUID. */
-		private static final long serialVersionUID = -7032196466156045735L;
+		private static final long serialVersionUID = 3011027347808993546L;
 
-		/** The sequence. */
-		private String sequence;
-
-		/** The reverse complementary sequence. */
-		private String reverseComplementarySequence;
+		protected String sequence;
+		protected String reverseComplementarySequence;
 
 		/**
-		 * Instantiates a new reverse complement string.
+		 * Instantiates a new complement string.
 		 *
 		 * @param sequence the sequence
 		 */
@@ -97,7 +122,6 @@ public class ReverseComplementDistinct implements GroupFilter {
 			char[] result = new char[sequence.length()];
 			int counter = 0;
 			for (char c : this.sequence.toCharArray()) {
-
 				switch (c) {
 				case 'A':
 					result[counter] = 'T';
@@ -131,11 +155,55 @@ public class ReverseComplementDistinct implements GroupFilter {
 		@Override
 		public boolean equals(Object obj) {
 			ReverseComplementString other = (ReverseComplementString) obj;
-			if (!this.sequence.equals(other.reverseComplementarySequence)) {
-				return false;
-			}
-			return true;
+
+			return this.sequence.equals(other.reverseComplementarySequence);
 		}
+	}
+
+	/**
+	 * The Class ComplementStringPair.
+	 */
+	class ReverseComplementStringPair extends ReverseComplementString {
+
+		private static final long serialVersionUID = -7291101312113278780L;
+
+		private String sequencePair;
+		private String reverseComplementarySequencePair;
+
+		/**
+		 * Instantiates a new complement string pair.
+		 *
+		 * @param sequence     the sequence
+		 * @param sequencePair the sequence pair
+		 */
+		public ReverseComplementStringPair(String sequence, String sequencePair) {
+			super(sequence);
+			this.sequencePair = sequencePair;
+			this.reverseComplementarySequencePair = new StringBuilder(super.getComplementary(sequencePair)).reverse()
+					.toString();
+		}
+
+		@Override
+		public int hashCode() {
+			final int prime = 31;
+			int result = 1;
+			result = (prime * result) + (((this.sequence == null) ? 0 : this.sequence.hashCode())
+					+ ((this.reverseComplementarySequence == null) ? 0 : this.reverseComplementarySequence.hashCode()));
+			result = (prime * result) + (((this.sequencePair == null) ? 0 : this.sequencePair.hashCode())
+					+ ((this.reverseComplementarySequencePair == null) ? 0
+							: this.reverseComplementarySequencePair.hashCode()));
+
+			return result;
+		}
+
+		@Override
+		public boolean equals(Object obj) {
+			ReverseComplementStringPair other = (ReverseComplementStringPair) obj;
+
+			return (this.sequence.equals(other.reverseComplementarySequence)
+					&& this.sequencePair.equals(other.reverseComplementarySequencePair));
+		}
+
 	}
 
 }
