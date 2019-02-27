@@ -4,10 +4,9 @@ import java.io.Serializable;
 
 import org.apache.spark.api.java.JavaPairRDD;
 import org.apache.spark.api.java.JavaRDD;
-import org.apache.spark.api.java.function.Function2;
-import org.apache.spark.api.java.function.PairFunction;
 
 import com.roi.galegot.sequal.common.Sequence;
+import com.roi.galegot.sequal.common.SequenceUtils;
 
 import scala.Tuple2;
 
@@ -25,41 +24,71 @@ public class ReverseDistinct implements GroupFilter {
 			return sequences;
 		}
 
-		JavaPairRDD<ReverseString, Sequence> group = sequences
-				.mapToPair(new PairFunction<Sequence, ReverseString, Sequence>() {
+		return this.filter(sequences);
+	}
 
-					private static final long serialVersionUID = -3184033798508472514L;
+	/**
+	 * Filter.
+	 *
+	 * @param sequences the sequences
+	 * @return the java RDD
+	 */
+	private JavaRDD<Sequence> filter(JavaRDD<Sequence> sequences) {
+		JavaPairRDD<ReverseString, Sequence> group;
 
-					@Override
-					public Tuple2<ReverseString, Sequence> call(Sequence seq) {
-						return new Tuple2<ReverseString, Sequence>(new ReverseString(seq.getSequenceString()), seq);
-					}
-				});
+		if (sequences.first().getIsPaired()) {
+			group = this.filterPairedEnd(sequences);
+		} else {
+			group = this.filterSingleEnd(sequences);
+		}
 
 		if (sequences.first().getHasQuality()) {
-			return group.reduceByKey(new Function2<Sequence, Sequence, Sequence>() {
-
-				private static final long serialVersionUID = -1935325326481753717L;
-
-				@Override
-				public Sequence call(Sequence seq1, Sequence seq2) {
-					if (seq1.getQuality() >= seq2.getQuality()) {
-						return seq1;
-					}
-					return seq2;
-				}
-			}).values();
-		} else {
-			return group.reduceByKey(new Function2<Sequence, Sequence, Sequence>() {
-
-				private static final long serialVersionUID = -3885295642075191150L;
-
-				@Override
-				public Sequence call(Sequence seq1, Sequence seq2) {
-					return seq1;
-				}
-			}).values();
+			return this.filterQuality(group);
 		}
+
+		return this.filterNoQuality(group);
+	}
+
+	/**
+	 * Filter single end.
+	 *
+	 * @param sequences the sequences
+	 * @return the java pair RDD
+	 */
+	private JavaPairRDD<ReverseString, Sequence> filterSingleEnd(JavaRDD<Sequence> sequences) {
+		return sequences.mapToPair(sequence -> new Tuple2<ReverseString, Sequence>(
+				new ReverseString(sequence.getSequenceString()), sequence));
+	}
+
+	/**
+	 * Filter pair.
+	 *
+	 * @param sequences the sequences
+	 * @return the java RDD
+	 */
+	private JavaPairRDD<ReverseString, Sequence> filterPairedEnd(JavaRDD<Sequence> sequences) {
+		return sequences.mapToPair(sequence -> new Tuple2<ReverseString, Sequence>(
+				new ReverseStringPair(sequence.getSequenceString(), sequence.getSequenceStringPair()), sequence));
+	}
+
+	/**
+	 * Filter quality.
+	 *
+	 * @param sequences the sequences
+	 * @return the java RDD
+	 */
+	private JavaRDD<Sequence> filterQuality(JavaPairRDD<ReverseString, Sequence> sequences) {
+		return sequences.reduceByKey((seq1, seq2) -> SequenceUtils.selectSequenceWithMaxQuality(seq1, seq2)).values();
+	}
+
+	/**
+	 * Filter no quality.
+	 *
+	 * @param sequences the sequences
+	 * @return the java RDD
+	 */
+	private JavaRDD<Sequence> filterNoQuality(JavaPairRDD<ReverseString, Sequence> sequences) {
+		return sequences.reduceByKey((seq1, seq2) -> seq1).values();
 	}
 
 	/**
@@ -67,11 +96,10 @@ public class ReverseDistinct implements GroupFilter {
 	 */
 	class ReverseString implements Serializable {
 
-		/** The Constant serialVersionUID. */
 		private static final long serialVersionUID = -3467393373228813336L;
 
-		/** The reverse sequence. */
-		private String sequence, reverseSequence;
+		protected String sequence;
+		protected String reverseSequence;
 
 		/**
 		 * Instantiates a new reverse string.
@@ -89,16 +117,58 @@ public class ReverseDistinct implements GroupFilter {
 			int result = 1;
 			result = (prime * result) + (((this.sequence == null) ? 0 : this.sequence.hashCode())
 					+ ((this.reverseSequence == null) ? 0 : this.reverseSequence.hashCode()));
+
 			return result;
 		}
 
 		@Override
 		public boolean equals(Object obj) {
 			ReverseString other = (ReverseString) obj;
-			if (!this.sequence.equals(other.reverseSequence)) {
-				return false;
-			}
-			return true;
+
+			return this.sequence.equals(other.reverseSequence);
+		}
+
+	}
+
+	/**
+	 * The Class ReverseStringPair.
+	 */
+	class ReverseStringPair extends ReverseString {
+
+		private static final long serialVersionUID = -7291101312113278780L;
+
+		private String sequencePair;
+		private String reverseSequencePair;
+
+		/**
+		 * Instantiates a new reverse string pair.
+		 *
+		 * @param sequence     the sequence
+		 * @param sequencePair the sequence pair
+		 */
+		public ReverseStringPair(String sequence, String sequencePair) {
+			super(sequence);
+			this.sequencePair = sequencePair;
+			this.reverseSequencePair = new StringBuilder(sequencePair).reverse().toString();
+		}
+
+		@Override
+		public int hashCode() {
+			final int prime = 31;
+			int result = 1;
+			result = (prime * result) + (((this.sequence == null) ? 0 : this.sequence.hashCode())
+					+ ((this.reverseSequence == null) ? 0 : this.reverseSequence.hashCode()));
+			result = (prime * result) + (((this.sequencePair == null) ? 0 : this.sequencePair.hashCode())
+					+ ((this.reverseSequencePair == null) ? 0 : this.reverseSequencePair.hashCode()));
+
+			return result;
+		}
+
+		@Override
+		public boolean equals(Object obj) {
+			ReverseStringPair other = (ReverseStringPair) obj;
+
+			return (this.sequence.equals(other.reverseSequence) && this.sequencePair.equals(other.reverseSequencePair));
 		}
 
 	}

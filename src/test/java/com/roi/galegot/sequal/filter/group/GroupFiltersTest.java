@@ -224,10 +224,90 @@ public class GroupFiltersTest {
 		String seq3s2fa = "CCCCCACACAAAAAGGCTAAACCCCCCCCCT";
 		Sequence seq3fa = new Sequence(seq3s1fa, seq3s2fa);
 
-		JavaRDD<Sequence> original = jsc
-				.parallelize(Arrays.asList(seq1, seq2, seq3));
-		JavaRDD<Sequence> originalFA = jsc
-				.parallelize(Arrays.asList(seq1fa, seq2fa, seq3fa));
+		JavaRDD<Sequence> original = jsc.parallelize(Arrays.asList(seq1, seq2, seq3));
+		JavaRDD<Sequence> originalFA = jsc.parallelize(Arrays.asList(seq1fa, seq2fa, seq3fa));
+		JavaRDD<Sequence> emptyRdd = jsc.parallelize(new ArrayList<Sequence>());
+		JavaRDD<Sequence> filtered;
+		ArrayList<Sequence> list;
+		GroupFilter filter = new ReverseDistinct();
+
+		// Test for empty RDD
+		filtered = filter.validate(emptyRdd);
+		assertEquals(filtered.count(), 0);
+
+		filtered = filter.validate(original);
+
+		list = new ArrayList<>(filtered.collect());
+
+		assertEquals(filtered.count(), 1);
+		list = new ArrayList<>(filtered.collect());
+		assertEquals(list.size(), 1);
+		assertTrue(list.contains(seq3));
+
+		filtered = filter.validate(originalFA);
+		assertEquals(filtered.count(), 1);
+		list = new ArrayList<>(filtered.collect());
+		assertEquals(list.size(), 1);
+	}
+
+	@Test
+	public void filterReverseDistinctPair() {
+		String seq1s1 = "@Original_1";
+		String seq1s2 = "TCCCCCCCCCAAATCGGAAAAACACACCCCC";
+		String seq1s4 = "5?:5;<02:@977=:<0=9>@5>7>;>*3,-";
+		Sequence seq1 = new Sequence(seq1s1, seq1s2, commLine, seq1s4);
+
+		String seq1s1Pair = "@Original_2";
+		String seq1s2Pair = "TCCCCCCCCCAAATCGGAAAAACACACCCCC";
+		String seq1s4Pair = "5?:5;<02:@977=:<0=9>@5>7>;>*3,-";
+		seq1.setPairSequence(seq1s1Pair, seq1s2Pair, commLine, seq1s4Pair);
+
+		String seq2s1 = "@ReverseCalidadIgual_1";
+		String seq2s2 = "CCCCCACACAAAAAGGCTAAACCCCCCCCCT";
+		String seq2s4 = "5?:5;<02:@977=:<0=9>@5>7>;>*3,-";
+		Sequence seq2 = new Sequence(seq2s1, seq2s2, commLine, seq2s4);
+
+		String seq2s1Pair = "@ReverseCalidadIgual_2";
+		String seq2s2Pair = "CCCCCACACAAAAAGGCTAAACCCCCCCCCT";
+		String seq2s4Pair = "5?:5;<02:@977=:<0=9>@5>7>;>*3,-";
+		seq2.setPairSequence(seq2s1Pair, seq2s2Pair, commLine, seq2s4Pair);
+
+		String seq3s1 = "@ReverseMasCalidad_1";
+		String seq3s2 = "CCCCCACACAAAAAGGCTAAACCCCCCCCCT";
+		String seq3s4 = "5?:5;<02:@977=:<0=9>@5>7>;>*3,1";
+		Sequence seq3 = new Sequence(seq3s1, seq3s2, commLine, seq3s4);
+
+		String seq3s1Pair = "@ReverseMasCalidad_2";
+		String seq3s2Pair = "CCCCCACACAAAAAGGCTAAACCCCCCCCCT";
+		String seq3s4Pair = "5?:5;<02:@977=:<0=9>@5>7>;>*3,1";
+		seq3.setPairSequence(seq3s1Pair, seq3s2Pair, commLine, seq3s4Pair);
+
+		String seq1s1fa = ">Original";
+		String seq1s2fa = "TCCCCCCCCCAAATCGGAAAAACACACCCCC";
+		Sequence seq1fa = new Sequence(seq1s1fa, seq1s2fa);
+
+		String seq1s1faPair = ">Original";
+		String seq1s2faPair = "TCCCCCCCCCAAATCGGAAAAACACACCCCC";
+		seq1fa.setPairSequence(seq1s1faPair, seq1s2faPair);
+
+		String seq2s1fa = ">Reverse";
+		String seq2s2fa = "CCCCCACACAAAAAGGCTAAACCCCCCCCCT";
+		Sequence seq2fa = new Sequence(seq2s1fa, seq2s2fa);
+
+		String seq2s1faPair = ">Reverse";
+		String seq2s2faPair = "CCCCCACACAAAAAGGCTAAACCCCCCCCCT";
+		seq2fa.setPairSequence(seq2s1faPair, seq2s2faPair);
+
+		String seq3s1fa = ">ReverseCopia";
+		String seq3s2fa = "CCCCCACACAAAAAGGCTAAACCCCCCCCCT";
+		Sequence seq3fa = new Sequence(seq3s1fa, seq3s2fa);
+
+		String seq3s1faPair = ">ReverseCopia";
+		String seq3s2faPair = "CCCCCACACAAAAAGGCTAAACCCCCCCCCT";
+		seq3fa.setPairSequence(seq3s1faPair, seq3s2faPair);
+
+		JavaRDD<Sequence> original = jsc.parallelize(Arrays.asList(seq1, seq2, seq3));
+		JavaRDD<Sequence> originalFA = jsc.parallelize(Arrays.asList(seq1fa, seq2fa, seq3fa));
 		JavaRDD<Sequence> emptyRdd = jsc.parallelize(new ArrayList<Sequence>());
 		JavaRDD<Sequence> filtered;
 		ArrayList<Sequence> list;
