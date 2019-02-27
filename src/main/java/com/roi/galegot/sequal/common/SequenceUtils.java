@@ -1,5 +1,9 @@
 package com.roi.galegot.sequal.common;
 
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.Comparator;
+
 import org.apache.commons.lang3.StringUtils;
 
 /**
@@ -163,6 +167,24 @@ public class SequenceUtils {
 	public static Sequence getSecondSequenceFromPair(Sequence sequence) {
 		return new Sequence(sequence.getNamePair(), sequence.getSequenceStringPair(), sequence.getExtraPair(),
 				sequence.getQualityStringPair());
+	}
+
+	/**
+	 * Select sequence with max quality.
+	 *
+	 * @param sequence1 the sequence 1
+	 * @param sequence2 the sequence 2
+	 * @return the sequence
+	 */
+	public static Sequence selectSequenceWithMaxQuality(Sequence sequence1, Sequence sequence2) {
+		if (sequence1.getIsPaired()) {
+
+			return Collections.max(Arrays.asList(sequence1, sequence2),
+					Comparator.comparing(s -> Math.max(s.getQuality(), s.getQualityPair())));
+
+		}
+
+		return Collections.max(Arrays.asList(sequence1, sequence2), Comparator.comparing(s -> s.getQuality()));
 	}
 
 }
