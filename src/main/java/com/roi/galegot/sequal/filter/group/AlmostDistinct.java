@@ -7,6 +7,7 @@ import org.apache.spark.api.java.JavaPairRDD;
 import org.apache.spark.api.java.JavaRDD;
 
 import com.roi.galegot.sequal.common.Sequence;
+import com.roi.galegot.sequal.common.SequenceUtils;
 import com.roi.galegot.sequal.util.ExecutionParametersManager;
 
 import scala.Tuple2;
@@ -29,19 +30,73 @@ public class AlmostDistinct implements GroupFilter {
 
 		Integer maxDiff = (StringUtils.isNotBlank(sDiff)) ? new Integer(sDiff) : 0;
 
-		JavaPairRDD<AlmostString, Sequence> group = sequences.mapToPair(
-				seq -> new Tuple2<AlmostString, Sequence>(new AlmostString(seq.getSequenceString(), maxDiff), seq));
+		return this.filter(sequences, maxDiff);
+	}
+
+	/**
+	 * Filter.
+	 *
+	 * @param sequences     the sequences
+	 * @param maxDifference the max difference
+	 * @return the java RDD
+	 */
+	private JavaRDD<Sequence> filter(JavaRDD<Sequence> sequences, Integer maxDifference) {
+		JavaPairRDD<AlmostString, Sequence> group;
+
+		if (sequences.first().getIsPaired()) {
+			group = this.filterPairedEnd(sequences, maxDifference);
+		} else {
+			group = this.filterSingleEnd(sequences, maxDifference);
+		}
 
 		if (sequences.first().getHasQuality()) {
-			return group.reduceByKey((seq1, seq2) -> {
-				if (seq1.getQuality() >= seq2.getQuality()) {
-					return seq1;
-				}
-				return seq2;
-			}).values();
-		} else {
-			return group.reduceByKey((seq1, seq2) -> seq1).values();
+			return this.filterQuality(group);
 		}
+
+		return this.filterNoQuality(group);
+	}
+
+	/**
+	 * Filter single.
+	 *
+	 * @param sequences     the sequences
+	 * @param maxDifference the max difference
+	 * @return the java RDD
+	 */
+	private JavaPairRDD<AlmostString, Sequence> filterSingleEnd(JavaRDD<Sequence> sequences, Integer maxDifference) {
+		return sequences.mapToPair(sequence -> new Tuple2<AlmostString, Sequence>(
+				new AlmostString(sequence.getSequenceString(), maxDifference), sequence));
+	}
+
+	/**
+	 * Filter pair.
+	 *
+	 * @return the java RDD
+	 */
+	private JavaPairRDD<AlmostString, Sequence> filterPairedEnd(JavaRDD<Sequence> sequences, Integer maxDifference) {
+		return sequences.mapToPair(sequence -> new Tuple2<AlmostString, Sequence>(
+				new AlmostStringPair(sequence.getSequenceString(), sequence.getSequenceStringPair(), maxDifference),
+				sequence));
+	}
+
+	/**
+	 * Filter quality.
+	 *
+	 * @param sequences the sequences
+	 * @return the java RDD
+	 */
+	private JavaRDD<Sequence> filterQuality(JavaPairRDD<AlmostString, Sequence> sequences) {
+		return sequences.reduceByKey((seq1, seq2) -> SequenceUtils.selectSequenceWithMaxQuality(seq1, seq2)).values();
+	}
+
+	/**
+	 * Filter no quality.
+	 *
+	 * @param sequences the sequences
+	 * @return the java RDD
+	 */
+	private JavaRDD<Sequence> filterNoQuality(JavaPairRDD<AlmostString, Sequence> sequences) {
+		return sequences.reduceByKey((seq1, seq2) -> seq1).values();
 	}
 
 	/**
@@ -49,13 +104,9 @@ public class AlmostDistinct implements GroupFilter {
 	 */
 	class AlmostString implements Serializable {
 
-		/** The Constant serialVersionUID. */
 		private static final long serialVersionUID = 3595254670141051507L;
 
-		/** The sequence. */
-		private String sequence;
-
-		/** The max diff. */
+		protected String sequence;
 		private int maxDiff;
 
 		/**
@@ -94,22 +145,91 @@ public class AlmostDistinct implements GroupFilter {
 				return false;
 			}
 
-			if ((this.maxDiff > 0) && (this.maxDiff < this.sequence.length())) {
-				int counter = 0;
-				int diffs = 0;
-				for (char c : this.sequence.toCharArray()) {
-					if (c != s2.charAt(counter)) {
-						diffs++;
-					}
-					if (diffs > this.maxDiff) {
-						return false;
-					}
-					counter++;
-				}
-				return true;
-			} else {
+			if ((this.maxDiff <= 0) || (this.maxDiff >= this.sequence.length())) {
 				return this.sequence.equals(s2);
 			}
+
+			int counter = 0;
+			int diffs = 0;
+
+			for (char c : this.sequence.toCharArray()) {
+				if (c != s2.charAt(counter)) {
+					diffs++;
+				}
+				if (diffs > this.maxDiff) {
+					return false;
+				}
+				counter++;
+			}
+
+			return true;
+
+		}
+
+	}
+
+	/**
+	 * The Class AlmostString.
+	 */
+	class AlmostStringPair extends AlmostString {
+
+		private static final long serialVersionUID = -7291101312113278780L;
+
+		private String sequencePair;
+
+		/**
+		 * Instantiates a new almost string pair.
+		 *
+		 * @param sequence     the sequence
+		 * @param sequencePair the sequence pair
+		 * @param maxDiff      the max diff
+		 */
+		public AlmostStringPair(String sequence, String sequencePair, int maxDiff) {
+			super(sequence, maxDiff);
+			this.sequencePair = sequencePair;
+		}
+
+		@Override
+		public boolean equals(Object obj) {
+			AlmostStringPair other = (AlmostStringPair) obj;
+
+			if (!super.checkSeq(other.sequence) || !this.checkSeqPair(other.sequencePair)) {
+				return false;
+			}
+
+			return true;
+		}
+
+		/**
+		 * Check seq pair.
+		 *
+		 * @param s2 the s 2
+		 * @return the boolean
+		 */
+		private Boolean checkSeqPair(String s2) {
+			if (this.sequencePair.length() != s2.length()) {
+				return false;
+			}
+
+			if ((super.maxDiff <= 0) || (super.maxDiff >= this.sequencePair.length())) {
+				return this.sequencePair.equals(s2);
+			}
+
+			int counter = 0;
+			int diffs = 0;
+			for (char c : this.sequencePair.toCharArray()) {
+				if (c != s2.charAt(counter)) {
+					diffs++;
+				}
+
+				if (diffs > super.maxDiff) {
+					return false;
+				}
+
+				counter++;
+			}
+
+			return true;
 		}
 
 	}
