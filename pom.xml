@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
@@ -5,127 +6,77 @@
 
 	<groupId>com.roi.galegot</groupId>
 	<artifactId>sequal</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
-	<packaging>jar</packaging>
+	<version>1.0-SNAPSHOT</version>
 
-	<name>sequal</name>
-	<url>http://maven.apache.org</url>
+	<name>SeQual</name>
+	<url>https://github.com/roigalegot/SeQual</url>
+
+	<packaging>pom</packaging>
 
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-		<spark.version>2.3.2</spark.version>
 		<junit.version>4.12</junit.version>
-		<hadoop.sequence.parser.version>1.0</hadoop.sequence.parser.version>
+		<jacoco.version>0.8.2</jacoco.version>
 		<maven.compiler.version>3.8.0</maven.compiler.version>
-		<maven.shade.version>3.2.0</maven.shade.version>
-		<maven.exec.version>1.6.0</maven.exec.version>
-		<maven.jar.version>3.1.0</maven.jar.version>
+		<maven.compiler.source.version>1.8</maven.compiler.source.version>
+		<maven.compiler.target.version>1.8</maven.compiler.target.version>
+		<maven.assembly.version>3.1.1</maven.assembly.version>
 	</properties>
 
 	<dependencies>
-		<dependency>
-			<groupId>org.apache.spark</groupId>
-			<artifactId>spark-core_2.11</artifactId>
-			<version>${spark.version}</version>
-		</dependency>
 		<dependency>
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
 			<version>${junit.version}</version>
 			<scope>test</scope>
 		</dependency>
-		<dependency>
-			<groupId>es.udc.gac</groupId>
-			<artifactId>hadoop-sequence-parser</artifactId>
-			<version>${hadoop.sequence.parser.version}</version>
-		</dependency>
 	</dependencies>
 
 	<build>
 		<finalName>${project.artifactId}</finalName>
-		
+
 		<plugins>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-compiler-plugin</artifactId>
 				<version>${maven.compiler.version}</version>
 				<configuration>
-					<source>1.8</source>
-					<target>1.8</target>
+					<source>${maven.compiler.source.version}</source>
+					<target>${maven.compiler.target.version}</target>
 				</configuration>
 			</plugin>
 
 			<plugin>
+				<artifactId>maven-assembly-plugin</artifactId>
 				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-shade-plugin</artifactId>
-				<version>${maven.shade.version}</version>
-				<configuration>
-					<!-- This transform is used so that merging of akka configuration files 
-						works -->
-					<filters>
-						<filter>
-							<artifact>*:*</artifact>
-							<excludes>
-								<exclude>META-INF/*.SF</exclude>
-								<exclude>META-INF/*.DSA</exclude>
-								<exclude>META-INF/*.RSA</exclude>
-							</excludes>
-						</filter>
-					</filters>
-					<transformers>
-						<transformer
-							implementation="org.apache.maven.plugins.shade.resource.ApacheLicenseResourceTransformer">
-						</transformer>
-						<transformer
-							implementation="org.apache.maven.plugins.shade.resource.AppendingTransformer">
-							<resource>reference.conf</resource>
-						</transformer>
-					</transformers>
-				</configuration>
+				<version>${maven.assembly.version}</version>
 				<executions>
 					<execution>
+						<id>make-executable-jar-with-dependencies</id>
 						<phase>package</phase>
 						<goals>
-							<goal>shade</goal>
+							<goal>single</goal>
 						</goals>
+						<configuration>
+							<archive>
+								<manifest>
+									<addClasspath>true</addClasspath>
+								</manifest>
+							</archive>
+							<descriptorRefs>
+								<descriptorRef>jar-with-dependencies</descriptorRef>
+							</descriptorRefs>
+							<appendAssemblyId>false</appendAssemblyId>
+						</configuration>
 					</execution>
 				</executions>
 			</plugin>
 
-			<plugin>
-				<groupId>org.codehaus.mojo</groupId>
-				<artifactId>exec-maven-plugin</artifactId>
-				<version>${maven.exec.version}</version>
-				<executions>
-					<execution>
-						<goals>
-							<goal>exec</goal>
-						</goals>
-					</execution>
-				</executions>
-				<configuration>
-					<executable>maven</executable>
-					<cleanupDaemonThreads>false</cleanupDaemonThreads>
-				</configuration>
-			</plugin>
-
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-jar-plugin</artifactId>
-				<version>${maven.jar.version}</version>
-				<configuration>
-					<archive>
-						<manifest>
-							<mainClass>com.roi.galegot.sequal.console.ConsoleInterface</mainClass>
-						</manifest>
-					</archive>
-				</configuration>
-			</plugin>
 
 			<plugin>
 				<groupId>org.jacoco</groupId>
 				<artifactId>jacoco-maven-plugin</artifactId>
-				<version>0.8.2</version>
+				<version>${jacoco.version}</version>
 				<executions>
 					<execution>
 						<goals>
@@ -143,16 +94,11 @@
 			</plugin>
 		</plugins>
 
-		<resources>
-			<resource>
-				<directory>.</directory>
-				<filtering>true</filtering>
-				<includes>
-					<include>*.properties</include>
-				</includes>
-			</resource>
-		</resources>
-
 	</build>
 
+	<modules>
+		<module>SeQual-GUI</module>
+		<module>SeQual-CMD</module>
+		<module>SeQual-Model</module>
+	</modules>
 </project>
