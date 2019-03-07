@@ -4,6 +4,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.spark.api.java.JavaRDD;
 
 import com.roi.galegot.sequal.sequalmodel.common.Sequence;
+import com.roi.galegot.sequal.sequalmodel.filter.FilterParametersNaming;
 import com.roi.galegot.sequal.sequalmodel.util.ExecutionParametersManager;
 
 /**
@@ -35,14 +36,14 @@ public class BaseN implements SingleFilter {
 			return sequences;
 		}
 
-		String basesStr = ExecutionParametersManager.getParameter("Base");
+		String basesStr = ExecutionParametersManager.getParameter(FilterParametersNaming.BASE);
 		if (StringUtils.isNotBlank(basesStr)) {
 			bases = basesStr.split("\\|");
 		} else {
 			return sequences;
 		}
 
-		basesMinStr = ExecutionParametersManager.getParameter("BaseMinVal");
+		basesMinStr = ExecutionParametersManager.getParameter(FilterParametersNaming.BASE_MIN_VAL);
 		if (StringUtils.isNotBlank(basesMinStr)) {
 			baseMin = basesMinStr.split("\\|");
 			limMinUse = true;
@@ -51,7 +52,7 @@ public class BaseN implements SingleFilter {
 			limMinUse = false;
 		}
 
-		basesMaxStr = ExecutionParametersManager.getParameter("BaseMaxVal");
+		basesMaxStr = ExecutionParametersManager.getParameter(FilterParametersNaming.BASE_MAX_VAL);
 		if (StringUtils.isNotBlank(basesMaxStr)) {
 			baseMax = basesMaxStr.split("\\|");
 			limMaxUse = true;

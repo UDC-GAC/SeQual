@@ -4,6 +4,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.spark.api.java.JavaRDD;
 
 import com.roi.galegot.sequal.sequalmodel.common.Sequence;
+import com.roi.galegot.sequal.sequalmodel.filter.FilterParametersNaming;
 import com.roi.galegot.sequal.sequalmodel.util.ExecutionParametersManager;
 
 /**
@@ -34,8 +35,8 @@ public class NAmbP implements SingleFilter {
 			return sequences;
 		}
 
-		limMinStr = ExecutionParametersManager.getParameter("NAmbPMinVal");
-		limMaxStr = ExecutionParametersManager.getParameter("NAmbPMaxVal");
+		limMinStr = ExecutionParametersManager.getParameter(FilterParametersNaming.NAMBP_MIN_VAL);
+		limMaxStr = ExecutionParametersManager.getParameter(FilterParametersNaming.NAMBP_MAX_VAL);
 
 		limMin = (limMinUse = StringUtils.isNotBlank(limMinStr)) ? new Double(limMinStr) : null;
 		limMax = (limMaxUse = StringUtils.isNotBlank(limMaxStr)) ? new Double(limMaxStr) : null;

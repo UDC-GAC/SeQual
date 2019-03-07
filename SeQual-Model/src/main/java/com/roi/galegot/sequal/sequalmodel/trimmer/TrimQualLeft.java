@@ -29,7 +29,7 @@ public class TrimQualLeft implements Trimmer {
 			return sequences;
 		}
 
-		limitStr = ExecutionParametersManager.getParameter("TrimQualLeft");
+		limitStr = ExecutionParametersManager.getParameter(TrimmerParametersNaming.TRIM_QUAL_LEFT);
 
 		if (StringUtils.isBlank(limitStr)) {
 			return sequences;

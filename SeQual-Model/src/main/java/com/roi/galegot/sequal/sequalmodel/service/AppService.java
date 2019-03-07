@@ -240,7 +240,7 @@ public class AppService {
 	 * @param param the param
 	 * @return the parameter
 	 */
-	public static String getParameter(String param) {
+	public String getParameter(String param) {
 		return ExecutionParametersManager.getParameter(param);
 	}
 
@@ -250,7 +250,7 @@ public class AppService {
 	 * @param param specified parameter
 	 * @param value specified value for the parameter
 	 */
-	public static void setParameter(String param, String value) {
+	public void setParameter(String param, String value) {
 		ExecutionParametersManager.setParameter(param, value);
 	}
 

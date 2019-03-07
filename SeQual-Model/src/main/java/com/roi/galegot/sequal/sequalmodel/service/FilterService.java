@@ -12,6 +12,7 @@ import org.apache.spark.api.java.JavaRDD;
 import com.roi.galegot.sequal.sequalmodel.common.Sequence;
 import com.roi.galegot.sequal.sequalmodel.filter.Filter;
 import com.roi.galegot.sequal.sequalmodel.filter.FilterFactory;
+import com.roi.galegot.sequal.sequalmodel.filter.FilterParametersNaming;
 import com.roi.galegot.sequal.sequalmodel.filter.Filters;
 import com.roi.galegot.sequal.sequalmodel.util.ExecutionParametersManager;
 
@@ -53,7 +54,7 @@ public class FilterService {
 
 		filtersMap = new TreeMap<Integer, Filters>();
 
-		filters = ExecutionParametersManager.getParameter("SingleFilters");
+		filters = ExecutionParametersManager.getParameter(FilterParametersNaming.SINGLE_FILTERS_LIST);
 		if (StringUtils.isNotBlank(filters)) {
 			splitFilters = filters.split("\\|");
 			for (String filter : splitFilters) {
@@ -62,7 +63,7 @@ public class FilterService {
 			}
 		}
 
-		filters = ExecutionParametersManager.getParameter("GroupFilters");
+		filters = ExecutionParametersManager.getParameter(FilterParametersNaming.GROUP_FILTERS_LIST);
 		if (StringUtils.isNotBlank(filters)) {
 			splitFilters = filters.split("\\|");
 			for (String filter : splitFilters) {

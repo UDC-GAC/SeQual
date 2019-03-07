@@ -8,6 +8,7 @@ import org.apache.spark.api.java.JavaRDD;
 
 import com.roi.galegot.sequal.sequalmodel.common.Sequence;
 import com.roi.galegot.sequal.sequalmodel.common.SequenceUtils;
+import com.roi.galegot.sequal.sequalmodel.filter.FilterParametersNaming;
 import com.roi.galegot.sequal.sequalmodel.util.ExecutionParametersManager;
 
 import scala.Tuple2;
@@ -26,7 +27,7 @@ public class AlmostDistinct implements GroupFilter {
 			return sequences;
 		}
 
-		String sDiff = ExecutionParametersManager.getParameter("MaxDifference");
+		String sDiff = ExecutionParametersManager.getParameter(FilterParametersNaming.MAX_DIFFERENCE);
 
 		Integer maxDiff = (StringUtils.isNotBlank(sDiff)) ? new Integer(sDiff) : 0;
 

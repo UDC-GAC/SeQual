@@ -4,6 +4,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.spark.api.java.JavaRDD;
 
 import com.roi.galegot.sequal.sequalmodel.common.Sequence;
+import com.roi.galegot.sequal.sequalmodel.filter.FilterParametersNaming;
 import com.roi.galegot.sequal.sequalmodel.util.ExecutionParametersManager;
 
 /**
@@ -34,8 +35,8 @@ public class GC implements SingleFilter {
 			return sequences;
 		}
 
-		limMinStr = ExecutionParametersManager.getParameter("GCMinVal");
-		limMaxStr = ExecutionParametersManager.getParameter("GCMaxVal");
+		limMinStr = ExecutionParametersManager.getParameter(FilterParametersNaming.GC_MIN_VAL);
+		limMaxStr = ExecutionParametersManager.getParameter(FilterParametersNaming.GC_MAX_VAL);
 
 		limMin = (limMinUse = StringUtils.isNotBlank(limMinStr)) ? new Integer(limMinStr) : null;
 		limMax = (limMaxUse = StringUtils.isNotBlank(limMaxStr)) ? new Integer(limMaxStr) : null;
