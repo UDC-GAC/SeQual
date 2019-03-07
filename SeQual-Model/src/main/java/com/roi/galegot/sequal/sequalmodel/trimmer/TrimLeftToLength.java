@@ -29,7 +29,7 @@ public class TrimLeftToLength implements Trimmer {
 			return sequences;
 		}
 
-		limitStr = ExecutionParametersManager.getParameter("TrimLeftToLength");
+		limitStr = ExecutionParametersManager.getParameter(TrimmerParametersNaming.TRIM_LEFT_TO_LENGTH);
 
 		if (StringUtils.isBlank(limitStr)) {
 			return sequences;

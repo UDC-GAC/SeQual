@@ -29,7 +29,7 @@ public class TrimRightP implements Trimmer {
 			return sequences;
 		}
 
-		percentageStr = ExecutionParametersManager.getParameter("TrimRightP");
+		percentageStr = ExecutionParametersManager.getParameter(TrimmerParametersNaming.TRIM_RIGHTP);
 
 		if (StringUtils.isBlank(percentageStr)) {
 			return sequences;

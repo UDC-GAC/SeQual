@@ -13,6 +13,7 @@ import com.roi.galegot.sequal.sequalmodel.common.Sequence;
 import com.roi.galegot.sequal.sequalmodel.exceptions.NonExistentStatException;
 import com.roi.galegot.sequal.sequalmodel.stat.Stat;
 import com.roi.galegot.sequal.sequalmodel.stat.StatFactory;
+import com.roi.galegot.sequal.sequalmodel.stat.StatParametersNaming;
 import com.roi.galegot.sequal.sequalmodel.stat.Stats;
 import com.roi.galegot.sequal.sequalmodel.stat.StatsNaming;
 import com.roi.galegot.sequal.sequalmodel.stat.StatsPhrasing;
@@ -72,7 +73,7 @@ public class StatService {
 	 * @return the stats
 	 */
 	private List<Stats> getStats() {
-		String stats = ExecutionParametersManager.getParameter("Statistics");
+		String stats = ExecutionParametersManager.getParameter(StatParametersNaming.STATISTICS_LIST);
 		ArrayList<Stats> enumStats = new ArrayList<>();
 		if (StringUtils.isNotBlank(stats)) {
 			String[] splitStats = stats.split("\\|");

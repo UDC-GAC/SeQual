@@ -29,7 +29,7 @@ public class TrimNLeft implements Trimmer {
 			return sequences;
 		}
 
-		limitStr = ExecutionParametersManager.getParameter("TrimNLeft");
+		limitStr = ExecutionParametersManager.getParameter(TrimmerParametersNaming.TRIM_N_LEFT);
 
 		if (StringUtils.isBlank(limitStr)) {
 			return sequences;

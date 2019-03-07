@@ -4,6 +4,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.spark.api.java.JavaRDD;
 
 import com.roi.galegot.sequal.sequalmodel.common.Sequence;
+import com.roi.galegot.sequal.sequalmodel.filter.FilterParametersNaming;
 import com.roi.galegot.sequal.sequalmodel.util.ExecutionParametersManager;
 
 /**
@@ -32,8 +33,8 @@ public class Pattern implements SingleFilter {
 			return sequences;
 		}
 
-		pattern = ExecutionParametersManager.getParameter("Pattern");
-		repsStr = ExecutionParametersManager.getParameter("RepPattern");
+		pattern = ExecutionParametersManager.getParameter(FilterParametersNaming.PATTERN);
+		repsStr = ExecutionParametersManager.getParameter(FilterParametersNaming.REP_PATTERN);
 
 		if (StringUtils.isBlank(pattern) || StringUtils.isBlank(repsStr)) {
 			return sequences;

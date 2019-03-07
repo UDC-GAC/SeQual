@@ -12,6 +12,7 @@ import org.apache.spark.api.java.JavaRDD;
 import com.roi.galegot.sequal.sequalmodel.common.Sequence;
 import com.roi.galegot.sequal.sequalmodel.trimmer.Trimmer;
 import com.roi.galegot.sequal.sequalmodel.trimmer.TrimmerFactory;
+import com.roi.galegot.sequal.sequalmodel.trimmer.TrimmerParametersNaming;
 import com.roi.galegot.sequal.sequalmodel.trimmer.Trimmers;
 import com.roi.galegot.sequal.sequalmodel.util.ExecutionParametersManager;
 
@@ -72,7 +73,7 @@ public class TrimService {
 
 		trimmersMap = new TreeMap<>();
 
-		trimmers = ExecutionParametersManager.getParameter("Trimmers");
+		trimmers = ExecutionParametersManager.getParameter(TrimmerParametersNaming.TRIMMERS_LIST);
 		if (StringUtils.isNotBlank(trimmers)) {
 			splitTrimmers = trimmers.split("\\|");
 			for (String trimmer : splitTrimmers) {

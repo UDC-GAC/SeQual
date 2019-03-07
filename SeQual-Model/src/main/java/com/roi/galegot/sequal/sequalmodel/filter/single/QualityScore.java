@@ -4,6 +4,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.spark.api.java.JavaRDD;
 
 import com.roi.galegot.sequal.sequalmodel.common.Sequence;
+import com.roi.galegot.sequal.sequalmodel.filter.FilterParametersNaming;
 import com.roi.galegot.sequal.sequalmodel.util.ExecutionParametersManager;
 
 /**
@@ -34,8 +35,8 @@ public class QualityScore implements SingleFilter {
 			return sequences;
 		}
 
-		limMinStr = ExecutionParametersManager.getParameter("QualityScoreMinVal");
-		limMaxStr = ExecutionParametersManager.getParameter("QualityScoreMaxVal");
+		limMinStr = ExecutionParametersManager.getParameter(FilterParametersNaming.QUALITY_SCORE_MIN_VAL);
+		limMaxStr = ExecutionParametersManager.getParameter(FilterParametersNaming.QUALITY_SCORE_MAX_VAL);
 
 		limMin = (limMinUse = StringUtils.isNotBlank(limMinStr)) ? new Double(limMinStr) : null;
 		limMax = (limMaxUse = StringUtils.isNotBlank(limMaxStr)) ? new Double(limMaxStr) : null;
