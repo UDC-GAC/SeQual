@@ -14,30 +14,25 @@
  * You should have received a copy of the GNU General Public License
  * along with SeQual.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.roi.galegot.sequal.sequalmodel.stat;
+package com.roi.galegot.sequal.sequalgui.util;
 
-import java.io.Serializable;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.util.concurrent.BlockingQueue;
 
-import org.apache.spark.api.java.JavaRDD;
+public class SoutToQueuePrinter extends OutputStream {
+	private BlockingQueue<String> messageQueue;
 
-import com.roi.galegot.sequal.sequalmodel.common.Sequence;
+	public SoutToQueuePrinter(BlockingQueue<String> messageQueue) {
+		this.messageQueue = messageQueue;
+	}
 
-public interface Stat extends Serializable {
-
-	/**
-	 * Measure.
-	 *
-	 * @param seqs the seqs
-	 * @return the double
-	 */
-	public Double measure(JavaRDD<Sequence> seqs);
-
-	/**
-	 * Measure pair.
-	 *
-	 * @param seqs the seqs
-	 * @return the double
-	 */
-	public Double measurePair(JavaRDD<Sequence> seqs);
-
+	@Override
+	public void write(int i) throws IOException {
+		try {
+			this.messageQueue.put(String.valueOf((char) i));
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
+	}
 }

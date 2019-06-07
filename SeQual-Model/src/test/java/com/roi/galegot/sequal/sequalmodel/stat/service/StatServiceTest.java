@@ -1,3 +1,19 @@
+/*
+ * This file is part of SeQual.
+ * 
+ * SeQual is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ * 
+ * SeQual is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with SeQual.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package com.roi.galegot.sequal.sequalmodel.stat.service;
 
 import static org.junit.Assert.assertEquals;
@@ -73,10 +89,8 @@ public class StatServiceTest {
 		String seq3s4 = ">=2.660/?:36AD;0<14703640334";
 		Sequence seq3 = new Sequence(seq3s1, seq3s2, commLine, seq3s4);
 
-		JavaRDD<Sequence> original1 = jsc
-				.parallelize(Arrays.asList(seq1, seq2, seq3));
-		JavaRDD<Sequence> original2 = jsc
-				.parallelize(Arrays.asList(seq1, seq2));
+		JavaRDD<Sequence> original1 = jsc.parallelize(Arrays.asList(seq1, seq2, seq3));
+		JavaRDD<Sequence> original2 = jsc.parallelize(Arrays.asList(seq1, seq2));
 
 		Map<String, Double> results;
 		String resultsString;
@@ -100,7 +114,7 @@ public class StatServiceTest {
 		assertFalse(results.isEmpty());
 		assertTrue(results.get(StatsPhrasing.COUNT_BEFORE) == 3);
 		assertTrue(results.get(StatsPhrasing.COUNT_AFTER) == null);
-		resultsString = "Count before transformations: 3.0\n";
+		resultsString = "Count before transformations: " + String.format("%.2f", 3d) + "\n";
 		assertEquals(resultsString, this.statService.getResultsAsString());
 
 		this.statService.measure(original2, false);
@@ -108,12 +122,11 @@ public class StatServiceTest {
 		assertFalse(results.isEmpty());
 		assertTrue(results.get(StatsPhrasing.COUNT_BEFORE) == 3);
 		assertTrue(results.get(StatsPhrasing.COUNT_AFTER) == 2);
-		resultsString = "Count before transformations: 3.0\n"
-				+ "Count after transformations: 2.0\n";
+		resultsString = "Count before transformations: " + String.format("%.2f", 3d) + "\n"
+				+ "Count after transformations: " + String.format("%.2f", 2d) + "\n";
 		assertEquals(resultsString, this.statService.getResultsAsString());
 
-		ExecutionParametersManager.setParameter("Statistics",
-				"COUNT|MEANLENGTH|MEANQUALITY");
+		ExecutionParametersManager.setParameter("Statistics", "COUNT|MEANLENGTH|MEANQUALITY");
 		this.statService.measure(original1, true);
 		results = this.statService.getResults();
 		assertFalse(results.isEmpty());
@@ -121,9 +134,9 @@ public class StatServiceTest {
 		assertTrue(results.get(StatsPhrasing.COUNT_AFTER) == null);
 		assertTrue(results.get(StatsPhrasing.MEAN_LENGTH_BEFORE) == 29);
 		assertTrue(results.get(StatsPhrasing.MEAN_LENGTH_AFTER) == null);
-		resultsString = "Count before transformations: 3.0\n"
-				+ "Mean quality before transformations: 21.88\n"
-				+ "Mean length before transformations: 29.0\n";
+		resultsString = "Count before transformations: " + String.format("%.2f", 3d) + "\n"
+				+ "Mean quality before transformations: " + String.format("%.2f", 21.88d) + "\n"
+				+ "Mean length before transformations: " + String.format("%.2f", 29d) + "\n";
 		assertEquals(resultsString, this.statService.getResultsAsString());
 
 		this.statService.measure(original2, false);
@@ -133,12 +146,13 @@ public class StatServiceTest {
 		assertTrue(results.get(StatsPhrasing.COUNT_AFTER) == 2);
 		assertTrue(results.get(StatsPhrasing.MEAN_LENGTH_BEFORE) == 29);
 		assertTrue(results.get(StatsPhrasing.MEAN_LENGTH_AFTER) == 29.5);
-		resultsString = "Count before transformations: 3.0\n"
-				+ "Mean quality before transformations: 21.88\n"
-				+ "Mean length before transformations: 29.0\n"
-				+ "Count after transformations: 2.0\n"
-				+ "Mean quality after transformations: 22.34\n"
-				+ "Mean length after transformations: 29.5\n";
+		resultsString = "Count before transformations: " + String.format("%.2f", 3d) + "\n"
+				+ "Mean quality before transformations: " + String.format("%.2f", 21.88d) + "\n"
+				+ "Mean length before transformations: " + String.format("%.2f", 29d) + "\n"
+				+ "Count after transformations: " + String.format("%.2f", 2d) + "\n"
+				+ "Mean quality after transformations: " + String.format("%.2f", 22.34d) + "\n"
+				+ "Mean length after transformations: " + String.format("%.2f", 29.5d) + "\n";
+		;
 		assertEquals(resultsString, this.statService.getResultsAsString());
 
 	}

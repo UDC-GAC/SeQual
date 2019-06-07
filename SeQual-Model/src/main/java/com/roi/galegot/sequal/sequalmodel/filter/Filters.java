@@ -1,3 +1,19 @@
+/*
+ * This file is part of SeQual.
+ * 
+ * SeQual is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ * 
+ * SeQual is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with SeQual.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package com.roi.galegot.sequal.sequalmodel.filter;
 
 /**
@@ -15,10 +31,10 @@ public enum Filters {
 	QUALITY(2, "com.roi.galegot.sequal.sequalmodel.filter.single.Quality"),
 
 	/** The gc. */
-	GC(3, "com.roi.galegot.sequal.sequalmodel.filter.single.GC"),
+	GCBASES(3, "com.roi.galegot.sequal.sequalmodel.filter.single.GCBases"),
 
 	/** The gcp. */
-	GCP(4, "com.roi.galegot.sequal.sequalmodel.filter.single.GCP"),
+	GCCONTENT(4, "com.roi.galegot.sequal.sequalmodel.filter.single.GCContent"),
 
 	/** The namb. */
 	NAMB(5, "com.roi.galegot.sequal.sequalmodel.filter.single.NAmb"),

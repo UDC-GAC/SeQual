@@ -1,3 +1,19 @@
+/*
+ * This file is part of SeQual.
+ *
+ * SeQual is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * SeQual is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with SeQual.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package com.roi.galegot.sequal.sequalmodel.filter.single;
 
 import org.apache.commons.lang3.StringUtils;
@@ -8,9 +24,9 @@ import com.roi.galegot.sequal.sequalmodel.filter.FilterParametersNaming;
 import com.roi.galegot.sequal.sequalmodel.util.ExecutionParametersManager;
 
 /**
- * The Class GCP.
+ * The Class GCContent.
  */
-public class GCP implements SingleFilter {
+public class GCContent implements SingleFilter {
 
 	private static final long serialVersionUID = 4373618581457549681L;
 
@@ -35,22 +51,24 @@ public class GCP implements SingleFilter {
 			return sequences;
 		}
 
-		limMinStr = ExecutionParametersManager.getParameter(FilterParametersNaming.GCP_MIN_VAL);
-		limMaxStr = ExecutionParametersManager.getParameter(FilterParametersNaming.GCP_MAX_VAL);
+		limMinStr = ExecutionParametersManager.getParameter(FilterParametersNaming.GCCONTENT_MIN_VAL);
+		limMaxStr = ExecutionParametersManager.getParameter(FilterParametersNaming.GCCONTENT_MAX_VAL);
+		limMinUse = StringUtils.isNotBlank(limMinStr);
+		limMaxUse = StringUtils.isNotBlank(limMaxStr);
 
-		limMin = (limMinUse = StringUtils.isNotBlank(limMinStr)) ? new Double(limMinStr) : null;
-		limMax = (limMaxUse = StringUtils.isNotBlank(limMaxStr)) ? new Double(limMaxStr) : null;
+		limMin = (limMinUse) ? new Double(limMinStr) : null;
+		limMax = (limMaxUse) ? new Double(limMaxStr) : null;
 
 		if (!limMinUse && !limMaxUse) {
 			return sequences;
 		}
 
 		if (sequences.first().getIsPaired()) {
-			return sequences.filter(s -> this.filter(s, limMin, limMinUse, limMax, limMaxUse)
-					&& this.filterPair(s, limMin, limMinUse, limMax, limMaxUse));
+			return sequences.filter(sequence -> this.filter(sequence, limMin, limMinUse, limMax, limMaxUse)
+					&& this.filterPair(sequence, limMin, limMinUse, limMax, limMaxUse));
 		}
 
-		return sequences.filter(s -> this.filter(s, limMin, limMinUse, limMax, limMaxUse));
+		return sequences.filter(sequence -> this.filter(sequence, limMin, limMinUse, limMax, limMaxUse));
 	}
 
 	/**

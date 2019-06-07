@@ -1,3 +1,19 @@
+/*
+ * This file is part of SeQual.
+ * 
+ * SeQual is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ * 
+ * SeQual is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with SeQual.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package com.roi.galegot.sequal.sequalmodel.stat;
 
 import java.io.Serializable;
@@ -120,7 +136,7 @@ public class MeanLength implements Stat {
 	 * @return the dummy count
 	 * @throws Exception the exception
 	 */
-	private DummyCount combineFunction(DummyCount v1, DummyCount v2) throws Exception {
+	private DummyCount combineFunction(DummyCount v1, DummyCount v2) {
 		v1.countLength += v2.countLength;
 		v1.countNumber += v2.countNumber;
 
@@ -130,7 +146,7 @@ public class MeanLength implements Stat {
 	/**
 	 * The Class DummyCount.
 	 */
-	public class DummyCount implements Serializable {
+	private class DummyCount implements Serializable {
 
 		private static final long serialVersionUID = -7774902974273299201L;
 		private Long countLength = Long.valueOf(0);

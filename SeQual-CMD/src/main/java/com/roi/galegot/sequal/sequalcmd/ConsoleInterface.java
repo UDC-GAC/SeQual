@@ -1,8 +1,23 @@
+/*
+ * This file is part of SeQual.
+ *
+ * SeQual is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * SeQual is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with SeQual.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package com.roi.galegot.sequal.sequalcmd;
 
 import java.io.IOException;
 import java.util.Arrays;
-import java.util.Map;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Level;
@@ -43,13 +58,11 @@ public class ConsoleInterface {
 		String configFile;
 		String masterConf;
 
-		Level sparkLogLevel;
+		Level logLevel;
 
 		Boolean writeStats;
 
 		AppService service;
-
-		Map<String, String> argsMap = processArgs(args);
 
 		lengthArgs = args.length;
 
@@ -116,19 +129,18 @@ public class ConsoleInterface {
 		configFile = args[position + 1];
 
 		position = findOption(args, ConsoleOptions.SPARKMASTERCONF.getOpt());
-		if ((position == -1) || (position == (lengthArgs - 1))) {
-			LOGGER.warn("Spark master not specified. All local cores will be used.\n");
-			masterConf = "local[*]";
-		} else {
+		if ((position != -1) && (position != (lengthArgs - 1))) {
 			masterConf = args[position + 1];
+		} else {
+			masterConf = "";
 		}
 
 		position = findOption(args, ConsoleOptions.SPARKLOGCONF.getOpt());
 		if ((position == -1) || (position == (lengthArgs - 1))) {
 			LOGGER.warn("Spark logger level not specified. ERROR level will be used.\n");
-			sparkLogLevel = Level.ERROR;
+			logLevel = Level.ERROR;
 		} else {
-			sparkLogLevel = Level.toLevel(args[position + 1]);
+			logLevel = Level.toLevel(args[position + 1]);
 		}
 
 		service = new AppService();
@@ -136,8 +148,10 @@ public class ConsoleInterface {
 		service.setInput(input);
 		service.setOutput(output);
 		service.setConfigFile(configFile);
-		service.setSparkLogLevel(sparkLogLevel);
-		service.setMasterConf(masterConf);
+		service.setLogLevel(logLevel);
+		if (StringUtils.isNotBlank(masterConf)) {
+			service.setMasterConf(masterConf);
+		}
 
 		if (StringUtils.isNotBlank(secondInput)) {
 			service.setSecondInput(secondInput);
@@ -197,7 +211,6 @@ public class ConsoleInterface {
 	 * Instructions.
 	 */
 	private static void instructions() {
-
 		System.out.println("\nConfiguration options:");
 		System.out.println("    -g: Generates a blank configuration file in the specified with -o location");
 		System.out.println("    -smc SparkMasterConf: Specifies Spark master configuration (local[*] by default)");
@@ -222,28 +235,4 @@ public class ConsoleInterface {
 		System.out.println("\n");
 	}
 
-	/**
-	 * Process args.
-	 *
-	 * @param args the args
-	 * @return the map
-	 */
-	private static Map<String, String> processArgs(String[] args) {
-
-		// GENERATECONFIGFILE("-g"),
-		// FILTER("-f"),
-		// INPUT("-i"),
-		// DOUBLEINPUT("-di"),
-		// OUTPUT("-o"),
-		// SINGLEFILEOUTPUT("-sfo"),
-		// OUTPUTSTATS("-os"),
-		// CONFIGFILE("-c"),
-		// TRIM("-t"),
-		// MEASURE("-s"),
-		// FORMAT("-fo"),
-		// SPARKMASTERCONF("-smc"),
-		// SPARKLOGCONF("-slc");
-
-		return null;
-	}
 }

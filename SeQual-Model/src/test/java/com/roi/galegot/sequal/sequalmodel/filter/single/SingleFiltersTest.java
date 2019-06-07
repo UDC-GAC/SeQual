@@ -1,3 +1,19 @@
+/*
+ * This file is part of SeQual.
+ * 
+ * SeQual is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ * 
+ * SeQual is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with SeQual.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package com.roi.galegot.sequal.sequalmodel.filter.single;
 
 import static org.junit.Assert.assertEquals;
@@ -15,6 +31,7 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 import com.roi.galegot.sequal.sequalmodel.common.Sequence;
+import com.roi.galegot.sequal.sequalmodel.filter.FilterParametersNaming;
 import com.roi.galegot.sequal.sequalmodel.util.ExecutionParametersManager;
 
 public class SingleFiltersTest {
@@ -819,18 +836,18 @@ public class SingleFiltersTest {
 		JavaRDD<Sequence> emptyRdd = jsc.parallelize(new ArrayList<Sequence>());
 		JavaRDD<Sequence> filtered;
 		ArrayList<Sequence> list;
-		SingleFilter filter = new GC();
+		SingleFilter filter = new GCBases();
 
 		// Test for empty RDD
 		filtered = filter.validate(emptyRdd);
 		assertEquals(filtered.count(), 0);
 
-		ExecutionParametersManager.setParameter("GCMinVal", "");
-		ExecutionParametersManager.setParameter("GCMaxVal", "");
+		ExecutionParametersManager.setParameter(FilterParametersNaming.GCBASES_MIN_VAL, "");
+		ExecutionParametersManager.setParameter(FilterParametersNaming.GCBASES_MAX_VAL, "");
 		filtered = filter.validate(original);
 		assertEquals(original.collect(), filtered.collect());
 
-		ExecutionParametersManager.setParameter("GCMinVal", "13");
+		ExecutionParametersManager.setParameter(FilterParametersNaming.GCBASES_MIN_VAL, "13");
 		filtered = filter.validate(original);
 		assertEquals(filtered.count(), 2);
 		list = new ArrayList<>(filtered.collect());
@@ -838,8 +855,8 @@ public class SingleFiltersTest {
 		assertTrue(list.contains(seq2));
 		assertTrue(list.contains(seq3));
 
-		ExecutionParametersManager.setParameter("GCMinVal", "");
-		ExecutionParametersManager.setParameter("GCMaxVal", "13");
+		ExecutionParametersManager.setParameter(FilterParametersNaming.GCBASES_MIN_VAL, "");
+		ExecutionParametersManager.setParameter(FilterParametersNaming.GCBASES_MAX_VAL, "13");
 		filtered = filter.validate(original);
 		assertEquals(filtered.count(), 2);
 		list = new ArrayList<>(filtered.collect());
@@ -847,8 +864,8 @@ public class SingleFiltersTest {
 		assertTrue(list.contains(seq1));
 		assertTrue(list.contains(seq2));
 
-		ExecutionParametersManager.setParameter("GCMinVal", "13");
-		ExecutionParametersManager.setParameter("GCMaxVal", "13");
+		ExecutionParametersManager.setParameter(FilterParametersNaming.GCBASES_MIN_VAL, "13");
+		ExecutionParametersManager.setParameter(FilterParametersNaming.GCBASES_MAX_VAL, "13");
 		filtered = filter.validate(original);
 		assertEquals(filtered.count(), 1);
 		list = new ArrayList<>(filtered.collect());
@@ -902,18 +919,18 @@ public class SingleFiltersTest {
 		JavaRDD<Sequence> emptyRdd = jsc.parallelize(new ArrayList<Sequence>());
 		JavaRDD<Sequence> filtered;
 		ArrayList<Sequence> list;
-		SingleFilter filter = new GC();
+		SingleFilter filter = new GCBases();
 
 		// Test for empty RDD
 		filtered = filter.validate(emptyRdd);
 		assertEquals(filtered.count(), 0);
 
-		ExecutionParametersManager.setParameter("GCMinVal", "");
-		ExecutionParametersManager.setParameter("GCMaxVal", "");
+		ExecutionParametersManager.setParameter(FilterParametersNaming.GCBASES_MIN_VAL, "");
+		ExecutionParametersManager.setParameter(FilterParametersNaming.GCBASES_MAX_VAL, "");
 		filtered = filter.validate(original);
 		assertEquals(original.collect(), filtered.collect());
 
-		ExecutionParametersManager.setParameter("GCMinVal", "13");
+		ExecutionParametersManager.setParameter(FilterParametersNaming.GCBASES_MIN_VAL, "13");
 		filtered = filter.validate(original);
 		assertEquals(filtered.count(), 2);
 		list = new ArrayList<>(filtered.collect());
@@ -921,8 +938,8 @@ public class SingleFiltersTest {
 		assertTrue(list.contains(seq2));
 		assertTrue(list.contains(seq3));
 
-		ExecutionParametersManager.setParameter("GCMinVal", "");
-		ExecutionParametersManager.setParameter("GCMaxVal", "13");
+		ExecutionParametersManager.setParameter(FilterParametersNaming.GCBASES_MIN_VAL, "");
+		ExecutionParametersManager.setParameter(FilterParametersNaming.GCBASES_MAX_VAL, "13");
 		filtered = filter.validate(original);
 		assertEquals(filtered.count(), 2);
 		list = new ArrayList<>(filtered.collect());
@@ -930,8 +947,8 @@ public class SingleFiltersTest {
 		assertTrue(list.contains(seq1));
 		assertTrue(list.contains(seq2));
 
-		ExecutionParametersManager.setParameter("GCMinVal", "13");
-		ExecutionParametersManager.setParameter("GCMaxVal", "13");
+		ExecutionParametersManager.setParameter(FilterParametersNaming.GCBASES_MIN_VAL, "13");
+		ExecutionParametersManager.setParameter(FilterParametersNaming.GCBASES_MAX_VAL, "13");
 		filtered = filter.validate(original);
 		assertEquals(filtered.count(), 1);
 		list = new ArrayList<>(filtered.collect());
@@ -943,7 +960,7 @@ public class SingleFiltersTest {
 	public void filterGCP() {
 
 		/*
-		 * GCP = 0.42857142857142855
+		 * GCContent = 0.42857142857142855
 		 */
 		String seq1s1 = "@cluster_21:UMI_AGAACA";
 		String seq1s2 = "GGCATTGCAAAATTTNTTSCACCCCCAG";
@@ -951,7 +968,7 @@ public class SingleFiltersTest {
 		Sequence seq1 = new Sequence(seq1s1, seq1s2, commLine, seq1s4);
 
 		/*
-		 * GCP = 0.43333333333333335
+		 * GCContent = 0.43333333333333335
 		 */
 		String seq2s1 = "@cluster_8:UMI_CTTTGA";
 		String seq2s2 = "TATCCUNGCAATANTCTCCGAACNGGAGAG";
@@ -959,7 +976,7 @@ public class SingleFiltersTest {
 		Sequence seq2 = new Sequence(seq2s1, seq2s2, commLine, seq2s4);
 
 		/*
-		 * GCP = 0.4444444444444444
+		 * GCContent = 0.4444444444444444
 		 */
 		String seq3s1 = "@cluster_29:UMI_GCAGGA";
 		String seq3s2 = "CCCCCTTAAATAGCTGTTTATTTGGCC";
@@ -970,18 +987,18 @@ public class SingleFiltersTest {
 		JavaRDD<Sequence> emptyRdd = jsc.parallelize(new ArrayList<Sequence>());
 		JavaRDD<Sequence> filtered;
 		ArrayList<Sequence> list;
-		SingleFilter filter = new GCP();
+		SingleFilter filter = new GCContent();
 
 		// Test for empty RDD
 		filtered = filter.validate(emptyRdd);
 		assertEquals(filtered.count(), 0);
 
-		ExecutionParametersManager.setParameter("GCPMinVal", "");
-		ExecutionParametersManager.setParameter("GCPMaxVal", "");
+		ExecutionParametersManager.setParameter(FilterParametersNaming.GCCONTENT_MIN_VAL, "");
+		ExecutionParametersManager.setParameter(FilterParametersNaming.GCCONTENT_MAX_VAL, "");
 		filtered = filter.validate(original);
 		assertEquals(original.collect(), filtered.collect());
 
-		ExecutionParametersManager.setParameter("GCPMinVal", "0.43");
+		ExecutionParametersManager.setParameter(FilterParametersNaming.GCCONTENT_MIN_VAL, "0.43");
 		filtered = filter.validate(original);
 		assertEquals(filtered.count(), 2);
 		list = new ArrayList<>(filtered.collect());
@@ -989,8 +1006,8 @@ public class SingleFiltersTest {
 		assertTrue(list.contains(seq2));
 		assertTrue(list.contains(seq3));
 
-		ExecutionParametersManager.setParameter("GCPMinVal", "");
-		ExecutionParametersManager.setParameter("GCPMaxVal", "0.44");
+		ExecutionParametersManager.setParameter(FilterParametersNaming.GCCONTENT_MIN_VAL, "");
+		ExecutionParametersManager.setParameter(FilterParametersNaming.GCCONTENT_MAX_VAL, "0.44");
 		filtered = filter.validate(original);
 		assertEquals(filtered.count(), 2);
 		list = new ArrayList<>(filtered.collect());
@@ -998,8 +1015,8 @@ public class SingleFiltersTest {
 		assertTrue(list.contains(seq1));
 		assertTrue(list.contains(seq2));
 
-		ExecutionParametersManager.setParameter("GCPMinVal", "0.43");
-		ExecutionParametersManager.setParameter("GCPMaxVal", "0.44");
+		ExecutionParametersManager.setParameter(FilterParametersNaming.GCCONTENT_MIN_VAL, "0.43");
+		ExecutionParametersManager.setParameter(FilterParametersNaming.GCCONTENT_MAX_VAL, "0.44");
 		filtered = filter.validate(original);
 		assertEquals(filtered.count(), 1);
 		list = new ArrayList<>(filtered.collect());
@@ -1011,7 +1028,7 @@ public class SingleFiltersTest {
 	public void filterGCPPair() {
 
 		/*
-		 * GCP = 0.42857142857142855
+		 * GCContent = 0.42857142857142855
 		 */
 		String seq1s1 = "@cluster_21:UMI_AGAACA_1";
 		String seq1s2 = "GGCATTGCAAAATTTNTTSCACCCCCAG";
@@ -1024,7 +1041,7 @@ public class SingleFiltersTest {
 		seq1.setPairSequence(seq1s1Pair, seq1s2Pair, commLine, seq1s4Pair);
 
 		/*
-		 * GCP = 0.43333333333333335
+		 * GCContent = 0.43333333333333335
 		 */
 		String seq2s1 = "@cluster_8:UMI_CTTTGA_1";
 		String seq2s2 = "TATCCUNGCAATANTCTCCGAACNGGAGAG";
@@ -1037,7 +1054,7 @@ public class SingleFiltersTest {
 		seq2.setPairSequence(seq2s1Pair, seq2s2Pair, commLine, seq2s4Pair);
 
 		/*
-		 * GCP = 0.4444444444444444
+		 * GCContent = 0.4444444444444444
 		 */
 		String seq3s1 = "@cluster_29:UMI_GCAGGA_1";
 		String seq3s2 = "CCCCCTTAAATAGCTGTTTATTTGGCC";
@@ -1053,18 +1070,18 @@ public class SingleFiltersTest {
 		JavaRDD<Sequence> emptyRdd = jsc.parallelize(new ArrayList<Sequence>());
 		JavaRDD<Sequence> filtered;
 		ArrayList<Sequence> list;
-		SingleFilter filter = new GCP();
+		SingleFilter filter = new GCContent();
 
 		// Test for empty RDD
 		filtered = filter.validate(emptyRdd);
 		assertEquals(filtered.count(), 0);
 
-		ExecutionParametersManager.setParameter("GCPMinVal", "");
-		ExecutionParametersManager.setParameter("GCPMaxVal", "");
+		ExecutionParametersManager.setParameter(FilterParametersNaming.GCCONTENT_MIN_VAL, "");
+		ExecutionParametersManager.setParameter(FilterParametersNaming.GCCONTENT_MAX_VAL, "");
 		filtered = filter.validate(original);
 		assertEquals(original.collect(), filtered.collect());
 
-		ExecutionParametersManager.setParameter("GCPMinVal", "0.43");
+		ExecutionParametersManager.setParameter(FilterParametersNaming.GCCONTENT_MIN_VAL, "0.43");
 		filtered = filter.validate(original);
 		assertEquals(filtered.count(), 2);
 		list = new ArrayList<>(filtered.collect());
@@ -1072,8 +1089,8 @@ public class SingleFiltersTest {
 		assertTrue(list.contains(seq2));
 		assertTrue(list.contains(seq3));
 
-		ExecutionParametersManager.setParameter("GCPMinVal", "");
-		ExecutionParametersManager.setParameter("GCPMaxVal", "0.44");
+		ExecutionParametersManager.setParameter(FilterParametersNaming.GCCONTENT_MIN_VAL, "");
+		ExecutionParametersManager.setParameter(FilterParametersNaming.GCCONTENT_MAX_VAL, "0.44");
 		filtered = filter.validate(original);
 		assertEquals(filtered.count(), 2);
 		list = new ArrayList<>(filtered.collect());
@@ -1081,8 +1098,8 @@ public class SingleFiltersTest {
 		assertTrue(list.contains(seq1));
 		assertTrue(list.contains(seq2));
 
-		ExecutionParametersManager.setParameter("GCPMinVal", "0.43");
-		ExecutionParametersManager.setParameter("GCPMaxVal", "0.44");
+		ExecutionParametersManager.setParameter(FilterParametersNaming.GCCONTENT_MIN_VAL, "0.43");
+		ExecutionParametersManager.setParameter(FilterParametersNaming.GCCONTENT_MAX_VAL, "0.44");
 		filtered = filter.validate(original);
 		assertEquals(filtered.count(), 1);
 		list = new ArrayList<>(filtered.collect());
@@ -1542,9 +1559,10 @@ public class SingleFiltersTest {
 	@Test
 	public void filterBaseN() {
 		/*
-		 * Length = 31 Quality = 25.29032258064516 GC = 19 GCP = 0.6129032258064516 NAmb
-		 * = 0 NAmbP = 0 A = 5 | 0.1612903226 T = 7 | 0.2258064516 G = 9 | 0.2903225806
-		 * C = 10 | 0.3225806452 AT = 2 | 0.06451612903
+		 * Length = 31 Quality = 25.29032258064516 GCBases = 19 GCContent =
+		 * 0.6129032258064516 NAmb = 0 NAmbP = 0 A = 5 | 0.1612903226 T = 7 |
+		 * 0.2258064516 G = 9 | 0.2903225806 C = 10 | 0.3225806452 AT = 2 |
+		 * 0.06451612903
 		 */
 		String seq1s1 = "@cluster_2:UMI_ATTCCG";
 		String seq1s2 = "TTTCCGGGGCACATAATCTTCAGCCGGGCGC";
@@ -1552,9 +1570,10 @@ public class SingleFiltersTest {
 		Sequence seq1 = new Sequence(seq1s1, seq1s2, commLine, seq1s4);
 
 		/*
-		 * Length = 30 Quality = 14.566666666666666 GC = 13 GCP = 0.43333333333333335
-		 * NAmb = 3 NAmbP = 0.1 A = 8 | 0.2666666667 T = 5 | 0.1666666667 G = 6 | 0.2 C
-		 * = 7 | 0.2333333333 N = 3 | 0.1 U = 1 | 0.0333333333 AT = 2 | 0.0666666667
+		 * Length = 30 Quality = 14.566666666666666 GCBases = 13 GCContent =
+		 * 0.43333333333333335 NAmb = 3 NAmbP = 0.1 A = 8 | 0.2666666667 T = 5 |
+		 * 0.1666666667 G = 6 | 0.2 C = 7 | 0.2333333333 N = 3 | 0.1 U = 1 |
+		 * 0.0333333333 AT = 2 | 0.0666666667
 		 */
 		String seq2s1 = "@cluster_8:UMI_CTTTGA";
 		String seq2s2 = "TATCCUNGCAATANTCTCCGAACNGGAGAG";
@@ -1562,10 +1581,10 @@ public class SingleFiltersTest {
 		Sequence seq2 = new Sequence(seq2s1, seq2s2, commLine, seq2s4);
 
 		/*
-		 * Length = 29 Quality = 30.103448275862068 GC = 8 GCP = 0.27586206896551724
-		 * NAmb = 5 NAmbP = 0.1724137931034483 A = 10 | 0.3448275862 T = 6 |
-		 * 0.2068965517 G = 5 | 0.1724137931 C = 3 | 0.1034482759 N = 5 | 0.1724137931
-		 * AT = 4 | 0.1379310345
+		 * Length = 29 Quality = 30.103448275862068 GCBases = 8 GCContent =
+		 * 0.27586206896551724 NAmb = 5 NAmbP = 0.1724137931034483 A = 10 | 0.3448275862
+		 * T = 6 | 0.2068965517 G = 5 | 0.1724137931 C = 3 | 0.1034482759 N = 5 |
+		 * 0.1724137931 AT = 4 | 0.1379310345
 		 */
 		String seq3s1 = "@cluster_12:UMI_GGTCAA";
 		String seq3s2 = "GCAGTTNNAGATCAATATATNNNAGAGCA";
@@ -1573,10 +1592,10 @@ public class SingleFiltersTest {
 		Sequence seq3 = new Sequence(seq3s1, seq3s2, commLine, seq3s4);
 
 		/*
-		 * Length = 28 Quality =20.964285714285715 GC = 12 GCP = 0.42857142857142855
-		 * NAmb = 1 NAmbP = 0.03571428571428571 A = 7 | 0.25 T = 7 | 0.25 G = 4 |
-		 * 0.1428571429 C = 8 | 0.2857142857 N = 1 | 0.03571428571 S = 1 | 0.03571428571
-		 * AT = 2 | 0.07142857143
+		 * Length = 28 Quality =20.964285714285715 GCBases = 12 GCContent =
+		 * 0.42857142857142855 NAmb = 1 NAmbP = 0.03571428571428571 A = 7 | 0.25 T = 7 |
+		 * 0.25 G = 4 | 0.1428571429 C = 8 | 0.2857142857 N = 1 | 0.03571428571 S = 1 |
+		 * 0.03571428571 AT = 2 | 0.07142857143
 		 */
 		String seq4s1 = "@cluster_21:UMI_AGAACA";
 		String seq4s2 = "GGCATTGCAAAATTTNTTSCACCCCCAG";
@@ -1584,9 +1603,9 @@ public class SingleFiltersTest {
 		Sequence seq4 = new Sequence(seq4s1, seq4s2, commLine, seq4s4);
 
 		/*
-		 * Length = 27 Quality = 30.62962962962963 GC = 12 GCP = 0.4444444444444444 NAmb
-		 * = 0 NAmbP = 0 A = 5 | 0.1851851852 T = 10 | 0.3703703704 G = 4 | 0.1481481481
-		 * C = 8 | 0.2962962963 AT = 2 | 0.07407407407
+		 * Length = 27 Quality = 30.62962962962963 GCBases = 12 GCContent =
+		 * 0.4444444444444444 NAmb = 0 NAmbP = 0 A = 5 | 0.1851851852 T = 10 |
+		 * 0.3703703704 G = 4 | 0.1481481481 C = 8 | 0.2962962963 AT = 2 | 0.07407407407
 		 */
 		String seq5s1 = "@cluster_29:UMI_GCAGGA";
 		String seq5s2 = "CCCCCTTAAATAGCTGTTTATTTGGCC";
@@ -1699,9 +1718,10 @@ public class SingleFiltersTest {
 	@Test
 	public void filterBaseNPair() {
 		/*
-		 * Length = 31 Quality = 25.29032258064516 GC = 19 GCP = 0.6129032258064516 NAmb
-		 * = 0 NAmbP = 0 A = 5 | 0.1612903226 T = 7 | 0.2258064516 G = 9 | 0.2903225806
-		 * C = 10 | 0.3225806452 AT = 2 | 0.06451612903
+		 * Length = 31 Quality = 25.29032258064516 GCBases = 19 GCContent =
+		 * 0.6129032258064516 NAmb = 0 NAmbP = 0 A = 5 | 0.1612903226 T = 7 |
+		 * 0.2258064516 G = 9 | 0.2903225806 C = 10 | 0.3225806452 AT = 2 |
+		 * 0.06451612903
 		 */
 		String seq1s1 = "@cluster_2:UMI_ATTCCG_1";
 		String seq1s2 = "TTTCCGGGGCACATAATCTTCAGCCGGGCGC";
@@ -1714,9 +1734,10 @@ public class SingleFiltersTest {
 		seq1.setPairSequence(seq1s1Pair, seq1s2Pair, commLine, seq1s4Pair);
 
 		/*
-		 * Length = 30 Quality = 14.566666666666666 GC = 13 GCP = 0.43333333333333335
-		 * NAmb = 3 NAmbP = 0.1 A = 8 | 0.2666666667 T = 5 | 0.1666666667 G = 6 | 0.2 C
-		 * = 7 | 0.2333333333 N = 3 | 0.1 U = 1 | 0.0333333333 AT = 2 | 0.0666666667
+		 * Length = 30 Quality = 14.566666666666666 GCBases = 13 GCContent =
+		 * 0.43333333333333335 NAmb = 3 NAmbP = 0.1 A = 8 | 0.2666666667 T = 5 |
+		 * 0.1666666667 G = 6 | 0.2 C = 7 | 0.2333333333 N = 3 | 0.1 U = 1 |
+		 * 0.0333333333 AT = 2 | 0.0666666667
 		 */
 		String seq2s1 = "@cluster_8:UMI_CTTTGA_1";
 		String seq2s2 = "TATCCUNGCAATANTCTCCGAACNGGAGAG";
@@ -1729,10 +1750,10 @@ public class SingleFiltersTest {
 		seq2.setPairSequence(seq2s1Pair, seq2s2Pair, commLine, seq2s4Pair);
 
 		/*
-		 * Length = 29 Quality = 30.103448275862068 GC = 8 GCP = 0.27586206896551724
-		 * NAmb = 5 NAmbP = 0.1724137931034483 A = 10 | 0.3448275862 T = 6 |
-		 * 0.2068965517 G = 5 | 0.1724137931 C = 3 | 0.1034482759 N = 5 | 0.1724137931
-		 * AT = 4 | 0.1379310345
+		 * Length = 29 Quality = 30.103448275862068 GCBases = 8 GCContent =
+		 * 0.27586206896551724 NAmb = 5 NAmbP = 0.1724137931034483 A = 10 | 0.3448275862
+		 * T = 6 | 0.2068965517 G = 5 | 0.1724137931 C = 3 | 0.1034482759 N = 5 |
+		 * 0.1724137931 AT = 4 | 0.1379310345
 		 */
 		String seq3s1 = "@cluster_12:UMI_GGTCAA_1";
 		String seq3s2 = "GCAGTTNNAGATCAATATATNNNAGAGCA";
@@ -1745,10 +1766,10 @@ public class SingleFiltersTest {
 		seq3.setPairSequence(seq3s1Pair, seq3s2Pair, commLine, seq3s4Pair);
 
 		/*
-		 * Length = 28 Quality =20.964285714285715 GC = 12 GCP = 0.42857142857142855
-		 * NAmb = 1 NAmbP = 0.03571428571428571 A = 7 | 0.25 T = 7 | 0.25 G = 4 |
-		 * 0.1428571429 C = 8 | 0.2857142857 N = 1 | 0.03571428571 S = 1 | 0.03571428571
-		 * AT = 2 | 0.07142857143
+		 * Length = 28 Quality =20.964285714285715 GCBases = 12 GCContent =
+		 * 0.42857142857142855 NAmb = 1 NAmbP = 0.03571428571428571 A = 7 | 0.25 T = 7 |
+		 * 0.25 G = 4 | 0.1428571429 C = 8 | 0.2857142857 N = 1 | 0.03571428571 S = 1 |
+		 * 0.03571428571 AT = 2 | 0.07142857143
 		 */
 		String seq4s1 = "@cluster_21:UMI_AGAACA_1";
 		String seq4s2 = "GGCATTGCAAAATTTNTTSCACCCCCAG";
@@ -1761,9 +1782,9 @@ public class SingleFiltersTest {
 		seq4.setPairSequence(seq4s1Pair, seq4s2Pair, commLine, seq4s4Pair);
 
 		/*
-		 * Length = 27 Quality = 30.62962962962963 GC = 12 GCP = 0.4444444444444444 NAmb
-		 * = 0 NAmbP = 0 A = 5 | 0.1851851852 T = 10 | 0.3703703704 G = 4 | 0.1481481481
-		 * C = 8 | 0.2962962963 AT = 2 | 0.07407407407
+		 * Length = 27 Quality = 30.62962962962963 GCBases = 12 GCContent =
+		 * 0.4444444444444444 NAmb = 0 NAmbP = 0 A = 5 | 0.1851851852 T = 10 |
+		 * 0.3703703704 G = 4 | 0.1481481481 C = 8 | 0.2962962963 AT = 2 | 0.07407407407
 		 */
 		String seq5s1 = "@cluster_29:UMI_GCAGGA_1";
 		String seq5s2 = "CCCCCTTAAATAGCTGTTTATTTGGCC";
@@ -1881,9 +1902,10 @@ public class SingleFiltersTest {
 	@Test
 	public void filterBaseP() {
 		/*
-		 * Length = 31 Quality = 25.29032258064516 GC = 19 GCP = 0.6129032258064516 NAmb
-		 * = 0 NAmbP = 0 A = 5 | 0.1612903226 T = 7 | 0.2258064516 G = 9 | 0.2903225806
-		 * C = 10 | 0.3225806452 AT = 2 | 0.06451612903
+		 * Length = 31 Quality = 25.29032258064516 GCBases = 19 GCContent =
+		 * 0.6129032258064516 NAmb = 0 NAmbP = 0 A = 5 | 0.1612903226 T = 7 |
+		 * 0.2258064516 G = 9 | 0.2903225806 C = 10 | 0.3225806452 AT = 2 |
+		 * 0.06451612903
 		 */
 		String seq1s1 = "@cluster_2:UMI_ATTCCG";
 		String seq1s2 = "TTTCCGGGGCACATAATCTTCAGCCGGGCGC";
@@ -1891,9 +1913,10 @@ public class SingleFiltersTest {
 		Sequence seq1 = new Sequence(seq1s1, seq1s2, commLine, seq1s4);
 
 		/*
-		 * Length = 30 Quality = 14.566666666666666 GC = 13 GCP = 0.43333333333333335
-		 * NAmb = 3 NAmbP = 0.1 A = 8 | 0.2666666667 T = 5 | 0.1666666667 G = 6 | 0.2 C
-		 * = 7 | 0.2333333333 N = 3 | 0.1 U = 1 | 0.0333333333 AT = 2 | 0.0666666667
+		 * Length = 30 Quality = 14.566666666666666 GCBases = 13 GCContent =
+		 * 0.43333333333333335 NAmb = 3 NAmbP = 0.1 A = 8 | 0.2666666667 T = 5 |
+		 * 0.1666666667 G = 6 | 0.2 C = 7 | 0.2333333333 N = 3 | 0.1 U = 1 |
+		 * 0.0333333333 AT = 2 | 0.0666666667
 		 */
 		String seq2s1 = "@cluster_8:UMI_CTTTGA";
 		String seq2s2 = "TATCCUNGCAATANTCTCCGAACNGGAGAG";
@@ -1901,10 +1924,10 @@ public class SingleFiltersTest {
 		Sequence seq2 = new Sequence(seq2s1, seq2s2, commLine, seq2s4);
 
 		/*
-		 * Length = 29 Quality = 30.103448275862068 GC = 8 GCP = 0.27586206896551724
-		 * NAmb = 5 NAmbP = 0.1724137931034483 A = 10 | 0.3448275862 T = 6 |
-		 * 0.2068965517 G = 5 | 0.1724137931 C = 3 | 0.1034482759 N = 5 | 0.1724137931
-		 * AT = 4 | 0.1379310345
+		 * Length = 29 Quality = 30.103448275862068 GCBases = 8 GCContent =
+		 * 0.27586206896551724 NAmb = 5 NAmbP = 0.1724137931034483 A = 10 | 0.3448275862
+		 * T = 6 | 0.2068965517 G = 5 | 0.1724137931 C = 3 | 0.1034482759 N = 5 |
+		 * 0.1724137931 AT = 4 | 0.1379310345
 		 */
 		String seq3s1 = "@cluster_12:UMI_GGTCAA";
 		String seq3s2 = "GCAGTTNNAGATCAATATATNNNAGAGCA";
@@ -1912,10 +1935,10 @@ public class SingleFiltersTest {
 		Sequence seq3 = new Sequence(seq3s1, seq3s2, commLine, seq3s4);
 
 		/*
-		 * Length = 28 Quality =20.964285714285715 GC = 12 GCP = 0.42857142857142855
-		 * NAmb = 1 NAmbP = 0.03571428571428571 A = 7 | 0.25 T = 7 | 0.25 G = 4 |
-		 * 0.1428571429 C = 8 | 0.2857142857 N = 1 | 0.03571428571 S = 1 | 0.03571428571
-		 * AT = 2 | 0.07142857143
+		 * Length = 28 Quality =20.964285714285715 GCBases = 12 GCContent =
+		 * 0.42857142857142855 NAmb = 1 NAmbP = 0.03571428571428571 A = 7 | 0.25 T = 7 |
+		 * 0.25 G = 4 | 0.1428571429 C = 8 | 0.2857142857 N = 1 | 0.03571428571 S = 1 |
+		 * 0.03571428571 AT = 2 | 0.07142857143
 		 */
 		String seq4s1 = "@cluster_21:UMI_AGAACA";
 		String seq4s2 = "GGCATTGCAAAATTTNTTSCACCCCCAG";
@@ -1923,9 +1946,9 @@ public class SingleFiltersTest {
 		Sequence seq4 = new Sequence(seq4s1, seq4s2, commLine, seq4s4);
 
 		/*
-		 * Length = 27 Quality = 30.62962962962963 GC = 12 GCP = 0.4444444444444444 NAmb
-		 * = 0 NAmbP = 0 A = 5 | 0.1851851852 T = 10 | 0.3703703704 G = 4 | 0.1481481481
-		 * C = 8 | 0.2962962963 AT = 2 | 0.07407407407
+		 * Length = 27 Quality = 30.62962962962963 GCBases = 12 GCContent =
+		 * 0.4444444444444444 NAmb = 0 NAmbP = 0 A = 5 | 0.1851851852 T = 10 |
+		 * 0.3703703704 G = 4 | 0.1481481481 C = 8 | 0.2962962963 AT = 2 | 0.07407407407
 		 */
 		String seq5s1 = "@cluster_29:UMI_GCAGGA";
 		String seq5s2 = "CCCCCTTAAATAGCTGTTTATTTGGCC";
@@ -2039,9 +2062,10 @@ public class SingleFiltersTest {
 	@Test
 	public void filterBasePPair() {
 		/*
-		 * Length = 31 Quality = 25.29032258064516 GC = 19 GCP = 0.6129032258064516 NAmb
-		 * = 0 NAmbP = 0 A = 5 | 0.1612903226 T = 7 | 0.2258064516 G = 9 | 0.2903225806
-		 * C = 10 | 0.3225806452 AT = 2 | 0.06451612903
+		 * Length = 31 Quality = 25.29032258064516 GCBases = 19 GCContent =
+		 * 0.6129032258064516 NAmb = 0 NAmbP = 0 A = 5 | 0.1612903226 T = 7 |
+		 * 0.2258064516 G = 9 | 0.2903225806 C = 10 | 0.3225806452 AT = 2 |
+		 * 0.06451612903
 		 */
 		String seq1s1 = "@cluster_2:UMI_ATTCCG";
 		String seq1s2 = "TTTCCGGGGCACATAATCTTCAGCCGGGCGC";
@@ -2054,9 +2078,10 @@ public class SingleFiltersTest {
 		seq1.setPairSequence(seq1s1Pair, seq1s2Pair, commLine, seq1s4Pair);
 
 		/*
-		 * Length = 30 Quality = 14.566666666666666 GC = 13 GCP = 0.43333333333333335
-		 * NAmb = 3 NAmbP = 0.1 A = 8 | 0.2666666667 T = 5 | 0.1666666667 G = 6 | 0.2 C
-		 * = 7 | 0.2333333333 N = 3 | 0.1 U = 1 | 0.0333333333 AT = 2 | 0.0666666667
+		 * Length = 30 Quality = 14.566666666666666 GCBases = 13 GCContent =
+		 * 0.43333333333333335 NAmb = 3 NAmbP = 0.1 A = 8 | 0.2666666667 T = 5 |
+		 * 0.1666666667 G = 6 | 0.2 C = 7 | 0.2333333333 N = 3 | 0.1 U = 1 |
+		 * 0.0333333333 AT = 2 | 0.0666666667
 		 */
 		String seq2s1 = "@cluster_8:UMI_CTTTGA";
 		String seq2s2 = "TATCCUNGCAATANTCTCCGAACNGGAGAG";
@@ -2069,10 +2094,10 @@ public class SingleFiltersTest {
 		seq2.setPairSequence(seq2s1Pair, seq2s2Pair, commLine, seq2s4Pair);
 
 		/*
-		 * Length = 29 Quality = 30.103448275862068 GC = 8 GCP = 0.27586206896551724
-		 * NAmb = 5 NAmbP = 0.1724137931034483 A = 10 | 0.3448275862 T = 6 |
-		 * 0.2068965517 G = 5 | 0.1724137931 C = 3 | 0.1034482759 N = 5 | 0.1724137931
-		 * AT = 4 | 0.1379310345
+		 * Length = 29 Quality = 30.103448275862068 GCBases = 8 GCContent =
+		 * 0.27586206896551724 NAmb = 5 NAmbP = 0.1724137931034483 A = 10 | 0.3448275862
+		 * T = 6 | 0.2068965517 G = 5 | 0.1724137931 C = 3 | 0.1034482759 N = 5 |
+		 * 0.1724137931 AT = 4 | 0.1379310345
 		 */
 		String seq3s1 = "@cluster_12:UMI_GGTCAA";
 		String seq3s2 = "GCAGTTNNAGATCAATATATNNNAGAGCA";
@@ -2085,10 +2110,10 @@ public class SingleFiltersTest {
 		seq3.setPairSequence(seq3s1Pair, seq3s2Pair, commLine, seq3s4Pair);
 
 		/*
-		 * Length = 28 Quality =20.964285714285715 GC = 12 GCP = 0.42857142857142855
-		 * NAmb = 1 NAmbP = 0.03571428571428571 A = 7 | 0.25 T = 7 | 0.25 G = 4 |
-		 * 0.1428571429 C = 8 | 0.2857142857 N = 1 | 0.03571428571 S = 1 | 0.03571428571
-		 * AT = 2 | 0.07142857143
+		 * Length = 28 Quality =20.964285714285715 GCBases = 12 GCContent =
+		 * 0.42857142857142855 NAmb = 1 NAmbP = 0.03571428571428571 A = 7 | 0.25 T = 7 |
+		 * 0.25 G = 4 | 0.1428571429 C = 8 | 0.2857142857 N = 1 | 0.03571428571 S = 1 |
+		 * 0.03571428571 AT = 2 | 0.07142857143
 		 */
 		String seq4s1 = "@cluster_21:UMI_AGAACA_1";
 		String seq4s2 = "GGCATTGCAAAATTTNTTSCACCCCCAG";
@@ -2101,9 +2126,9 @@ public class SingleFiltersTest {
 		seq4.setPairSequence(seq4s1Pair, seq4s2Pair, commLine, seq4s4Pair);
 
 		/*
-		 * Length = 27 Quality = 30.62962962962963 GC = 12 GCP = 0.4444444444444444 NAmb
-		 * = 0 NAmbP = 0 A = 5 | 0.1851851852 T = 10 | 0.3703703704 G = 4 | 0.1481481481
-		 * C = 8 | 0.2962962963 AT = 2 | 0.07407407407
+		 * Length = 27 Quality = 30.62962962962963 GCBases = 12 GCContent =
+		 * 0.4444444444444444 NAmb = 0 NAmbP = 0 A = 5 | 0.1851851852 T = 10 |
+		 * 0.3703703704 G = 4 | 0.1481481481 C = 8 | 0.2962962963 AT = 2 | 0.07407407407
 		 */
 		String seq5s1 = "@cluster_29:UMI_GCAGGA_1";
 		String seq5s2 = "CCCCCTTAAATAGCTGTTTATTTGGCC";

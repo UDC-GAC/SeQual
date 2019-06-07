@@ -1,3 +1,19 @@
+/*
+ * This file is part of SeQual.
+ *
+ * SeQual is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * SeQual is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with SeQual.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package com.roi.galegot.sequal.sequalmodel.dnafilereader;
 
 import java.io.IOException;
@@ -34,9 +50,9 @@ public class FQReader implements DNAFileReader {
 				Text.class, new Configuration());
 
 		return rdd.map(tuple -> {
-			String[] seq = tuple._2.toString().split("\\n");
+			String[] sequence = tuple._2.toString().split("\\n");
 
-			return new Sequence(seq[0], seq[1], seq[2], seq[3]);
+			return new Sequence(sequence[0], sequence[1], sequence[2], sequence[3]);
 		});
 	}
 }

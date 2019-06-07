@@ -1,3 +1,19 @@
+/*
+ * This file is part of SeQual.
+ *
+ * SeQual is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * SeQual is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with SeQual.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package com.roi.galegot.sequal.sequalmodel.common;
 
 import java.util.Arrays;
@@ -10,6 +26,12 @@ import org.apache.commons.lang3.StringUtils;
  * The Class SequenceUtils.
  */
 public class SequenceUtils {
+
+	/**
+	 * Instantiates a new sequence utils.
+	 */
+	private SequenceUtils() {
+	}
 
 	/**
 	 * Calculate quality.
@@ -47,7 +69,7 @@ public class SequenceUtils {
 	 * @param sequenceString the sequence string
 	 * @return the int
 	 */
-	public static int calculateGuaninoCitosyne(String sequenceString) {
+	public static int calculateGuanineCitosyne(String sequenceString) {
 		int guaCyt = 0;
 		for (char c : sequenceString.toCharArray()) {
 			if ((c == 'G') || (c == 'C')) {
@@ -178,10 +200,8 @@ public class SequenceUtils {
 	 */
 	public static Sequence selectSequenceWithMaxQuality(Sequence sequence1, Sequence sequence2) {
 		if (sequence1.getIsPaired()) {
-
 			return Collections.max(Arrays.asList(sequence1, sequence2),
 					Comparator.comparing(s -> Math.max(s.getQuality(), s.getQualityPair())));
-
 		}
 
 		return Collections.max(Arrays.asList(sequence1, sequence2), Comparator.comparing(s -> s.getQuality()));

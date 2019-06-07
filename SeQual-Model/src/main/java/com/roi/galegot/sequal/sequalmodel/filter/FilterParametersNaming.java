@@ -1,3 +1,19 @@
+/*
+ * This file is part of SeQual.
+ * 
+ * SeQual is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ * 
+ * SeQual is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with SeQual.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package com.roi.galegot.sequal.sequalmodel.filter;
 
 /**
@@ -29,17 +45,17 @@ public class FilterParametersNaming {
 	/** The Constant QUALITY_SCORE_MAX_VAL. */
 	public static final String QUALITY_SCORE_MAX_VAL = "QualityScoreMaxVal";
 
-	/** The Constant GC_MIN_VAL. */
-	public static final String GC_MIN_VAL = "GCMinVal";
+	/** The Constant GCBASES_MIN_VAL. */
+	public static final String GCBASES_MIN_VAL = "GCBasesMinVal";
 
-	/** The Constant GC_MAX_VAL. */
-	public static final String GC_MAX_VAL = "GCMaxVal";
+	/** The Constant GCBASES_MAX_VAL. */
+	public static final String GCBASES_MAX_VAL = "GCBasesMaxVal";
 
-	/** The Constant GCP_MIN_VAL. */
-	public static final String GCP_MIN_VAL = "GCPMinVal";
+	/** The Constant GCCONTENT_MIN_VAL. */
+	public static final String GCCONTENT_MIN_VAL = "GCContentMinVal";
 
-	/** The Constant GCP_MAX_VAL. */
-	public static final String GCP_MAX_VAL = "GCPMaxVal";
+	/** The Constant GCCONTENT_MAX_VAL. */
+	public static final String GCCONTENT_MAX_VAL = "GCContentMaxVal";
 
 	/** The Constant NAMB_MIN_VAL. */
 	public static final String NAMB_MIN_VAL = "NAmbMinVal";

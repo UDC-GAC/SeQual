@@ -1,3 +1,19 @@
+/*
+ * This file is part of SeQual.
+ *
+ * SeQual is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * SeQual is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with SeQual.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package com.roi.galegot.sequal.sequalmodel.writer;
 
 import java.io.BufferedReader;
@@ -13,15 +29,18 @@ import com.roi.galegot.sequal.sequalmodel.common.Sequence;
 import com.roi.galegot.sequal.sequalmodel.common.SequenceUtils;
 
 /**
- * The Class HDFSToFile.
+ * The Class WriterUtils.
  */
 public class WriterUtils {
 
-	private static String OUTPUT_FOLDER_NAME_FIRST_PAIR = "/FirstPairs";
-	private static String OUTPUT_FOLDER_NAME_SECOND_PAIR = "/SecondPairs";
+	/** The output folder name first pair. */
+	private static final String OUTPUT_FOLDER_NAME_FIRST_PAIR = "/FirstPairs";
+
+	/** The output folder name second pair. */
+	private static final String OUTPUT_FOLDER_NAME_SECOND_PAIR = "/SecondPairs";
 
 	/**
-	 * Instantiates a new HDFS to file.
+	 * Instantiates a new writer utils.
 	 */
 	public WriterUtils() {
 	}
@@ -70,7 +89,7 @@ public class WriterUtils {
 	 * @param output    the output
 	 */
 	public static void writeHDFS(JavaRDD<Sequence> sequences, String output) {
-		if (sequences.first().getIsPaired()) {
+		if (!sequences.isEmpty() && sequences.first().getIsPaired()) {
 			writeHDFSPaired(sequences, output);
 		} else {
 			sequences.saveAsTextFile(output);
@@ -89,7 +108,7 @@ public class WriterUtils {
 	public static void writeHDFSAndMergeToFile(JavaRDD<Sequence> sequences, String output, String filename,
 			String format) throws IOException {
 
-		if (sequences.first().getIsPaired()) {
+		if (!sequences.isEmpty() && sequences.first().getIsPaired()) {
 			String partsFolder1 = output + OUTPUT_FOLDER_NAME_FIRST_PAIR;
 			String partsFolder2 = output + OUTPUT_FOLDER_NAME_SECOND_PAIR;
 
