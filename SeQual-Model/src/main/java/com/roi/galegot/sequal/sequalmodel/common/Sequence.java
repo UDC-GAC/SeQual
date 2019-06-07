@@ -1,3 +1,19 @@
+/*
+ * This file is part of SeQual.
+ * 
+ * SeQual is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ * 
+ * SeQual is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with SeQual.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package com.roi.galegot.sequal.sequalmodel.common;
 
 import java.io.Serializable;
@@ -58,7 +74,7 @@ public class Sequence implements Serializable {
 		this.name = line1;
 		this.sequenceString = line2;
 		this.length = this.sequenceString.length();
-		this.guaCyt = SequenceUtils.calculateGuaninoCitosyne(this.sequenceString);
+		this.guaCyt = SequenceUtils.calculateGuanineCitosyne(this.sequenceString);
 		this.guaCytP = SequenceUtils.calculatePercentage(this.guaCyt, this.sequenceString);
 		this.nAmb = SequenceUtils.calculateNAmbiguous(this.sequenceString);
 		this.nAmbP = SequenceUtils.calculatePercentage(this.nAmb, this.sequenceString);
@@ -86,7 +102,7 @@ public class Sequence implements Serializable {
 		this.qualityString = line4;
 		this.length = this.sequenceString.length();
 		this.quality = SequenceUtils.calculateQuality(this.qualityString);
-		this.guaCyt = SequenceUtils.calculateGuaninoCitosyne(this.sequenceString);
+		this.guaCyt = SequenceUtils.calculateGuanineCitosyne(this.sequenceString);
 		this.guaCytP = SequenceUtils.calculatePercentage(this.guaCyt, this.sequenceString);
 		this.nAmb = SequenceUtils.calculateNAmbiguous(this.sequenceString);
 		this.nAmbP = SequenceUtils.calculatePercentage(this.nAmb, this.sequenceString);
@@ -103,7 +119,7 @@ public class Sequence implements Serializable {
 		this.namePair = line1;
 		this.sequenceStringPair = line2;
 		this.lengthPair = this.sequenceStringPair.length();
-		this.guaCytPair = SequenceUtils.calculateGuaninoCitosyne(this.sequenceStringPair);
+		this.guaCytPair = SequenceUtils.calculateGuanineCitosyne(this.sequenceStringPair);
 		this.guaCytPPair = SequenceUtils.calculatePercentage(this.guaCytPair, this.sequenceStringPair);
 		this.nAmbPair = SequenceUtils.calculateNAmbiguous(this.sequenceStringPair);
 		this.nAmbPPair = SequenceUtils.calculatePercentage(this.nAmbPair, this.sequenceStringPair);
@@ -123,7 +139,7 @@ public class Sequence implements Serializable {
 		this.qualityStringPair = line4;
 		this.lengthPair = this.sequenceStringPair.length();
 		this.qualityPair = SequenceUtils.calculateQuality(this.qualityStringPair);
-		this.guaCytPair = SequenceUtils.calculateGuaninoCitosyne(this.sequenceStringPair);
+		this.guaCytPair = SequenceUtils.calculateGuanineCitosyne(this.sequenceStringPair);
 		this.guaCytPPair = SequenceUtils.calculatePercentage(this.guaCytPair, this.sequenceStringPair);
 		this.nAmbPair = SequenceUtils.calculateNAmbiguous(this.sequenceStringPair);
 		this.nAmbPPair = SequenceUtils.calculatePercentage(this.nAmbPair, this.sequenceStringPair);
@@ -169,7 +185,7 @@ public class Sequence implements Serializable {
 	public void setSequenceString(String sequenceString) {
 		this.sequenceString = sequenceString;
 		this.length = sequenceString.length();
-		this.guaCyt = SequenceUtils.calculateGuaninoCitosyne(sequenceString);
+		this.guaCyt = SequenceUtils.calculateGuanineCitosyne(sequenceString);
 		this.guaCytP = SequenceUtils.calculatePercentage(this.guaCyt, this.sequenceString);
 		this.nAmb = SequenceUtils.calculateNAmbiguous(sequenceString);
 		this.nAmbP = SequenceUtils.calculatePercentage(this.nAmb, this.sequenceString);
@@ -329,7 +345,7 @@ public class Sequence implements Serializable {
 	public void setSequenceStringPair(String sequenceStringPair) {
 		this.sequenceStringPair = sequenceStringPair;
 		this.lengthPair = sequenceStringPair.length();
-		this.guaCytPair = SequenceUtils.calculateGuaninoCitosyne(sequenceStringPair);
+		this.guaCytPair = SequenceUtils.calculateGuanineCitosyne(sequenceStringPair);
 		this.guaCytPPair = SequenceUtils.calculatePercentage(this.guaCytPair, this.sequenceStringPair);
 		this.nAmbPair = SequenceUtils.calculateNAmbiguous(sequenceStringPair);
 		this.nAmbPPair = SequenceUtils.calculatePercentage(this.nAmbPair, this.sequenceStringPair);

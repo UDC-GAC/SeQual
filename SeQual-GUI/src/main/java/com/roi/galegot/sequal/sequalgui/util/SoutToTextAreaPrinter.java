@@ -14,30 +14,22 @@
  * You should have received a copy of the GNU General Public License
  * along with SeQual.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.roi.galegot.sequal.sequalmodel.stat;
+package com.roi.galegot.sequal.sequalgui.util;
 
-import java.io.Serializable;
+import java.io.IOException;
+import java.io.OutputStream;
 
-import org.apache.spark.api.java.JavaRDD;
+import javafx.scene.control.TextArea;
 
-import com.roi.galegot.sequal.sequalmodel.common.Sequence;
+public class SoutToTextAreaPrinter extends OutputStream {
+	private TextArea output;
 
-public interface Stat extends Serializable {
+	public SoutToTextAreaPrinter(TextArea ta) {
+		this.output = ta;
+	}
 
-	/**
-	 * Measure.
-	 *
-	 * @param seqs the seqs
-	 * @return the double
-	 */
-	public Double measure(JavaRDD<Sequence> seqs);
-
-	/**
-	 * Measure pair.
-	 *
-	 * @param seqs the seqs
-	 * @return the double
-	 */
-	public Double measurePair(JavaRDD<Sequence> seqs);
-
+	@Override
+	public void write(int i) throws IOException {
+		this.output.appendText(String.valueOf((char) i));
+	}
 }

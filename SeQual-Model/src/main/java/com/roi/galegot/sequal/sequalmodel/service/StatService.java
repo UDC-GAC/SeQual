@@ -1,3 +1,19 @@
+/*
+ * This file is part of SeQual.
+ * 
+ * SeQual is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ * 
+ * SeQual is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with SeQual.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package com.roi.galegot.sequal.sequalmodel.service;
 
 import java.util.ArrayList;
@@ -26,8 +42,8 @@ public class StatService {
 
 	private static final Logger LOGGER = Logger.getLogger(StatService.class.getName());
 
-	private Map<String, Double> results = new HashMap<String, Double>();
-	private Map<String, Double> resultsPair = new HashMap<String, Double>();
+	private Map<String, Double> results = new HashMap<>();
+	private Map<String, Double> resultsPair = new HashMap<>();
 
 	private Boolean isPaired = false;
 
@@ -41,7 +57,7 @@ public class StatService {
 		List<Stats> stats = this.getStats();
 
 		if (isFirst) {
-			this.results = new HashMap<String, Double>();
+			this.results = new HashMap<>();
 		}
 
 		if (!seqs.isEmpty() && seqs.first().getIsPaired()) {
@@ -52,7 +68,7 @@ public class StatService {
 			for (int i = 0; i < stats.size(); i++) {
 				Stat stat = StatFactory.getStat(stats.get(i));
 
-				LOGGER.info("\nApplying measurement " + stats.get(i));
+				LOGGER.info("Applying measurement " + stats.get(i) + "\n");
 
 				this.addToResult(stats.get(i).toString(), stat.measure(seqs), isFirst, false);
 
@@ -62,7 +78,7 @@ public class StatService {
 			}
 		} else {
 			if (isFirst) {
-				LOGGER.warn("\nNo statistics specified. No measurements will be performed.\n");
+				LOGGER.warn("No statistics specified. No measurements will be performed.\n");
 			}
 		}
 	}
@@ -78,7 +94,9 @@ public class StatService {
 		if (StringUtils.isNotBlank(stats)) {
 			String[] splitStats = stats.split("\\|");
 			for (String stat : splitStats) {
-				enumStats.add(Stats.valueOf(stat.trim()));
+				if (StringUtils.isNotBlank(stat)) {
+					enumStats.add(Stats.valueOf(stat.trim()));
+				}
 			}
 		}
 
@@ -111,24 +129,23 @@ public class StatService {
 	public String getResultsAsString() {
 		String resultString = "";
 
-		if (!this.isPaired) {
-			for (String statPhrase : StatsPhrasing.ORDERED_STATS) {
-				if (this.results.containsKey(statPhrase)) {
-					resultString = resultString.concat(statPhrase + " " + this.results.get(statPhrase) + "\n");
-				}
-			}
-		} else {
+		if (this.isPaired) {
 			resultString = resultString.concat("Results for first file:\n");
-			for (String statPhrase : StatsPhrasing.ORDERED_STATS) {
-				if (this.results.containsKey(statPhrase)) {
-					resultString = resultString.concat(statPhrase + " " + this.results.get(statPhrase) + "\n");
-				}
-			}
+		}
 
+		for (String statPhrase : StatsPhrasing.ORDERED_STATS) {
+			if (this.results.containsKey(statPhrase)) {
+				resultString = resultString
+						.concat(statPhrase + " " + String.format("%.2f", this.results.get(statPhrase)) + "\n");
+			}
+		}
+
+		if (this.isPaired) {
 			resultString = resultString.concat("\nResults for second file:\n");
 			for (String statPhrase : StatsPhrasing.ORDERED_STATS) {
 				if (this.resultsPair.containsKey(statPhrase)) {
-					resultString = resultString.concat(statPhrase + " " + this.results.get(statPhrase) + "\n");
+					resultString = resultString
+							.concat(statPhrase + " " + String.format("%.2f", this.results.get(statPhrase)) + "\n");
 				}
 			}
 		}

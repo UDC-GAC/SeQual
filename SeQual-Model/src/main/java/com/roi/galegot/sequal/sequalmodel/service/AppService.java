@@ -1,3 +1,19 @@
+/*
+ * This file is part of SeQual.
+ *
+ * SeQual is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * SeQual is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with SeQual.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package com.roi.galegot.sequal.sequalmodel.service;
 
 import java.io.File;
@@ -26,15 +42,15 @@ public class AppService {
 
 	private static final Logger LOGGER = Logger.getLogger(AppService.class.getName());
 
-	private static SparkConf sparkConf;
-	private static JavaSparkContext sparkContext;
+	private SparkConf sparkConf;
+	private JavaSparkContext sparkContext;
 
 	private String input;
 	private String secondInput;
 	private String output;
 	private String configFile;
 	private String masterConf;
-	private Level sparkLogLevel;
+	private Level logLevel;
 
 	private JavaRDD<Sequence> sequences;
 
@@ -58,32 +74,34 @@ public class AppService {
 	 */
 	public void start() {
 
-		if (this.sparkLogLevel == null) {
-			LOGGER.warn("\nSpark logger level not specified. ERROR level will be used.\n");
+		if (this.logLevel == null) {
+			LOGGER.warn("Spark logger level not specified. ERROR level will be used.\n");
 
-			this.sparkLogLevel = Level.ERROR;
+			this.setLogLevel(Level.ERROR);
 		}
 
-		Logger.getLogger("org").setLevel(this.sparkLogLevel);
-		Logger.getLogger("akka").setLevel(this.sparkLogLevel);
-
-		sparkConf = new SparkConf().setAppName("SeQual");
+		this.sparkConf = new SparkConf().setAppName("SeQual");
 
 		if (StringUtils.isBlank(this.masterConf)) {
-			LOGGER.warn("\nSpark master not specified. All local cores will be used.\n");
-			this.masterConf = "local[*]";
+			LOGGER.warn(
+					"Spark master not specified. Using existing conf or \"local[*]\" if the first doesn't exist.\n");
+
+			this.setMasterConf(this.sparkConf.get("spark.master", "local[*]"));
 		}
 
-		sparkConf.setMaster(this.masterConf);
+		this.sparkConf.setMaster(this.masterConf);
 
-		sparkContext = new JavaSparkContext(sparkConf);
+		this.sparkContext = new JavaSparkContext(this.sparkConf);
 	}
 
 	/**
 	 * Stops the Spark app and its context.
 	 */
 	public void stop() {
-		sparkContext.close();
+		LOGGER.info("Stopping Spark context.\n");
+
+		this.sparkContext.close();
+		this.sparkContext.stop();
 	}
 
 	/**
@@ -126,11 +144,13 @@ public class AppService {
 	 */
 	public void read() throws IOException {
 		if (StringUtils.isNotBlank(this.secondInput)) {
+			LOGGER.info("Reading files " + this.input + " and " + this.secondInput + ".\n");
 			this.sequences = DNAFileReaderFactory.getPairedReader(this.getFormat(this.input)).readFileToRDD(this.input,
-					this.secondInput, sparkContext);
+					this.secondInput, this.sparkContext);
 		} else {
+			LOGGER.info("Reading file " + this.input + ".\n");
 			this.sequences = DNAFileReaderFactory.getReader(this.getFormat(this.input)).readFileToRDD(this.input,
-					sparkContext);
+					this.sparkContext);
 		}
 
 	}
@@ -141,6 +161,7 @@ public class AppService {
 	 * @throws IOException Signals that an I/O exception has occurred.
 	 */
 	public void write() throws IOException {
+		LOGGER.info("Writing results to " + this.output + ".\n");
 		WriterUtils.writeHDFS(this.sequences, this.output);
 	}
 
@@ -150,21 +171,17 @@ public class AppService {
 	 * @throws IOException Signals that an I/O exception has occurred.
 	 */
 	public void writeWithSingleFile() throws IOException {
+		LOGGER.info("Writing results to " + this.output + ".\n");
 		WriterUtils.writeHDFSAndMergeToFile(this.sequences, this.output, this.getFileName(this.input),
 				this.getActualFormat());
-	}
-
-	/**
-	 * None.
-	 */
-	public void none() {
-		this.stop();
 	}
 
 	/**
 	 * Filter.
 	 */
 	public void filter() {
+		LOGGER.info("Starting filtering.\n");
+
 		if (!this.sequences.isEmpty()) {
 			this.sequences = this.filterService.filter(this.sequences);
 		}
@@ -174,6 +191,8 @@ public class AppService {
 	 * Format.
 	 */
 	public void format() {
+		LOGGER.info("Starting formatting.\n");
+
 		if (!this.sequences.isEmpty()) {
 			this.sequences = this.formatService.format(this.sequences);
 		}
@@ -183,6 +202,8 @@ public class AppService {
 	 * Trim.
 	 */
 	public void trim() {
+		LOGGER.info("Starting trimming.\n");
+
 		if (!this.sequences.isEmpty()) {
 			this.sequences = this.trimService.trim(this.sequences);
 		}
@@ -193,7 +214,9 @@ public class AppService {
 	 *
 	 * @param isFirst the is first
 	 */
-	public void measure(boolean isFirst) {
+	public void measure(Boolean isFirst) {
+		LOGGER.info("Starting measuring.\n");
+
 		if (!this.sequences.isEmpty()) {
 			this.statService.measure(this.sequences, isFirst);
 		}
@@ -203,6 +226,7 @@ public class AppService {
 	 * Prints the stats.
 	 */
 	public void printStats() {
+		LOGGER.info("Printing stats.\n");
 		System.out.println(this.statService.getResultsAsString());
 	}
 
@@ -212,6 +236,10 @@ public class AppService {
 	 * @throws IOException Signals that an I/O exception has occurred.
 	 */
 	public void generateConfigFile() throws IOException {
+
+		LOGGER.info("Generating configuration file at location" + this.output
+				+ " named as ExecutionParameters.properties.\n");
+
 		InputStream in = this.getClass().getResourceAsStream("/ExecutionParameters.properties");
 
 		byte[] buffer = new byte[in.available()];
@@ -229,9 +257,17 @@ public class AppService {
 	 *
 	 * @param sparkLogLevel the new log level
 	 */
-	public void setLogLevel(Level sparkLogLevel) {
-		Logger.getLogger("org").setLevel(sparkLogLevel);
-		Logger.getLogger("akka").setLevel(sparkLogLevel);
+	public void setLogLevel(Level logLevel) {
+		LOGGER.info("Setting log level " + logLevel + " to Spark and dependencies loggers.\n");
+
+		this.logLevel = logLevel;
+
+		org.apache.logging.log4j.core.config.Configurator.setLevel("es.udc.gac.hadoop",
+				org.apache.logging.log4j.Level.getLevel(logLevel.toString()));
+
+		Logger.getLogger("io.netty").setLevel(this.logLevel);
+		Logger.getLogger("org").setLevel(logLevel);
+		Logger.getLogger("akka").setLevel(logLevel);
 	}
 
 	/**
@@ -259,8 +295,8 @@ public class AppService {
 	 *
 	 * @return the spark conf
 	 */
-	public static SparkConf getSparkConf() {
-		return sparkConf;
+	public SparkConf getSparkConf() {
+		return this.sparkConf;
 	}
 
 	/**
@@ -268,8 +304,8 @@ public class AppService {
 	 *
 	 * @param sparkConf the new spark conf
 	 */
-	public static void setSparkConf(SparkConf sparkConf) {
-		AppService.sparkConf = sparkConf;
+	public void setSparkConf(SparkConf sparkConf) {
+		this.sparkConf = sparkConf;
 	}
 
 	/**
@@ -277,8 +313,8 @@ public class AppService {
 	 *
 	 * @return the spark context
 	 */
-	public static JavaSparkContext getSparkContext() {
-		return sparkContext;
+	public JavaSparkContext getSparkContext() {
+		return this.sparkContext;
 	}
 
 	/**
@@ -286,8 +322,8 @@ public class AppService {
 	 *
 	 * @param sparkContext the new spark context
 	 */
-	public static void setSparkContext(JavaSparkContext sparkContext) {
-		AppService.sparkContext = sparkContext;
+	public void setSparkContext(JavaSparkContext sparkContext) {
+		this.sparkContext = sparkContext;
 	}
 
 	/**
@@ -378,6 +414,8 @@ public class AppService {
 	 * @param masterConf the new master conf
 	 */
 	public void setMasterConf(String masterConf) {
+		LOGGER.info("Setting Spark master configuration as " + masterConf + ".\n");
+
 		this.masterConf = masterConf;
 	}
 
@@ -386,17 +424,8 @@ public class AppService {
 	 *
 	 * @return the spark log level
 	 */
-	public Level getSparkLogLevel() {
-		return this.sparkLogLevel;
-	}
-
-	/**
-	 * Sets the spark log level.
-	 *
-	 * @param sparkLogLevel the new spark log level
-	 */
-	public void setSparkLogLevel(Level sparkLogLevel) {
-		this.sparkLogLevel = sparkLogLevel;
+	public Level getLogLevel() {
+		return this.logLevel;
 	}
 
 	/**
