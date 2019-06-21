@@ -6,7 +6,7 @@
 	<parent>
 		<artifactId>sequal</artifactId>
 		<groupId>com.roi.galegot</groupId>
-		<version>1.0-SNAPSHOT</version>
+		<version>1.0</version>
 	</parent>
 
 	<groupId>com.roi.galegot.sequal</groupId>
