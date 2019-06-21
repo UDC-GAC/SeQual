@@ -135,7 +135,7 @@ public class ConsoleInterface {
 			masterConf = "";
 		}
 
-		position = findOption(args, ConsoleOptions.SPARKLOGCONF.getOpt());
+		position = findOption(args, ConsoleOptions.LOGCONF.getOpt());
 		if ((position == -1) || (position == (lengthArgs - 1))) {
 			LOGGER.warn("Spark logger level not specified. ERROR level will be used.\n");
 			logLevel = Level.ERROR;
@@ -212,15 +212,15 @@ public class ConsoleInterface {
 	 */
 	private static void instructions() {
 		System.out.println("\nConfiguration options:");
-		System.out.println("    -g: Generates a blank configuration file in the specified with -o location");
-		System.out.println("    -smc SparkMasterConf: Specifies Spark master configuration (local[*] by default)");
-		System.out.println("    -slc SparkLoggerConf: Specifies Spark log configuration (ERROR by default)");
-
-		System.out.println("\nMandatory options:");
 		System.out.println("    -i InputFile: Specifies input file from where sequences will be read");
+		System.out.println(
+				"    -di InputFile: Specifies second input file from where sequences will be read, in case of paired-end sequences");
 		System.out
 				.println("    -o OuputDirectory: Specifies output directory where resulting sequences will be written");
 		System.out.println("    -c ConfigFile: Specifies run options configuration file");
+		System.out.println("    -g: Generates a blank configuration file in the specified with -o location");
+		System.out.println("    -smc SparkMasterConf: Specifies Spark master configuration (local[*] by default)");
+		System.out.println("    -lc SparkLoggerConf: Specifies Spark log configuration (ERROR by default)");
 
 		System.out.println("\nAvailable options:");
 		System.out.println("    -f: Filters read sequences following specified parameters");
@@ -230,7 +230,6 @@ public class ConsoleInterface {
 				"    -s: Calculates statistics before and after performing transformations on the read sequences");
 		System.out.println(
 				"    -sfo: Generates a single file containing result sequences inside the output directory named {input-file-name}-results.{format}, along with a folder named Parts containing HDFS files");
-		System.out.println("    -di InputFile: Allows a second input file for paired-end sequences");
 
 		System.out.println("\n");
 	}
