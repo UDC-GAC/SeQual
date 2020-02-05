@@ -23,7 +23,6 @@ SeQual can be executed both on Windows and UNIX-based (GNU/Linux, macOS) systems
 
 ```
 unzip SeQual-bin-1.0.zip
-cd SeQual
 ```
 
 ### Execution
