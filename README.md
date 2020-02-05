@@ -61,9 +61,9 @@ The properties file used in the previous example contains the following values:
 SingleFilters=QUALITY
 QualityMinVal=25
 
-### SeQual-GUI
+#### SeQual-GUI
 
-SeQual-GUI allows using a graphic user interface rather than a console, thus greatly simplifying its use to non-computer science experts. To execute SeQual-GUI, it is also recommended to use the spark-submit command. In this case, unlike SeQual-CMD, no arguments are needed to run it, just execute the following:
+SeQual-GUI allows using a graphical user interface rather than the console, thus greatly simplifying its use to non-computer science experts. To execute SeQual-GUI, it is also highly recommended to use the spark-submit command. In this case, unlike SeQual-CMD, no additional arguments are needed to run it, just launch the appropriate jar file (sequal-gui.jar) also located at the *bin* directory:
 
 ```
 spark-submit sequal-gui.jar
@@ -175,7 +175,9 @@ To compile SeQual, you just need to execute the following Maven command from wit
 mvn package -DskipTests
 ```
 
-This will generate a directory called /target within each of the three modules of the project (i.e. SeQual-Model, SeQual-CMD and SeQual-GUI), containing each one the appropiated jar file. Note that the first time you execute the previous command, Maven will download all the plugins and related dependencies it needs to fulfill the command. From a clean installation of Maven, this can take quite a while. If you execute the command again, Maven will now have what it needs, so it will be able to execute the command much more quickly.
+This will generate a directory called *target* within each of the three Maven modules of the project (i.e. SeQual-Model, SeQual-CMD and SeQual-GUI), containing the appropiated jar files to execute SeQual.
+
+Note that the first time you execute the previous command, Maven will download all the plugins and related dependencies it needs to fulfill the command. From a clean installation of Maven, this can take quite a while. If you execute the command again, Maven will now have what it needs, so it will be able to execute the command much more quickly.
 
 ## Repository
 
@@ -184,8 +186,8 @@ This will generate a directory called /target within each of the three modules o
 ## Authors
 
 * **Roi Galego Torreiro** (https://www.linkedin.com/in/roi-galego)
-* **Jorge Gonz&aacute;lez Dom&iacute;nguez** (http://gac.udc.es/~jgonzalezd)
 * **Roberto R. Exp&oacute;sito** (http://gac.udc.es/~rreye)
+* **Jorge Gonz&aacute;lez Dom&iacute;nguez** (http://gac.udc.es/~jgonzalezd)
 
 ## License
 
