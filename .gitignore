@@ -23,8 +23,7 @@
 hs_err_pid*
 
 # Unnecesary files
-/bin/
-/dist
+/dist/
 /target/
 /.settings/
 .classpath
