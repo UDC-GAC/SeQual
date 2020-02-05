@@ -182,7 +182,11 @@ To compile SeQual, you just need to execute the following Maven command from wit
 mvn package -DskipTests
 ```
 
-This will generate a directory called *target* within each of the three Maven modules of the project (i.e. SeQual-Model, SeQual-CMD and SeQual-GUI), containing the appropiated jar files to execute SeQual.
+This will generate a directory called *target* within each of the three Maven modules of the project (i.e. SeQual-Model, SeQual-CMD and SeQual-GUI), containing the appropiated jar files to execute SeQual. Example for executing SeQual-GUI from within the SeQual root directory:
+
+```
+spark-submit ./SeQual-GUI/target//sequal-gui.jar
+```
 
 Note that the first time you execute the previous command, Maven will download all the plugins and related dependencies it needs to fulfill the command. From a clean installation of Maven, this can take quite a while. If you execute the command again, Maven will now have what it needs, so it will be able to execute the command much more quickly.
 
