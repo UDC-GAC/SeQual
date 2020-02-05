@@ -6,7 +6,7 @@ SeQual is a parallel tool that allows to perform various quality controls, as we
 
 ## Getting Started
 
-SeQual can be used both on Windows and UNIX based systems. Nevertheless, to be able to compile and use SeQual, you need a valid installation of the following:
+SeQual can be used both on Windows and UNIX-based systems. Nevertheless, to be able to compile and use SeQual, you need a valid installation of the following:
 
 * **Java Development Kit (JDK)** version 1.8 or above. 
 * **Apache Maven** version 3.0 or above. 
