@@ -12,11 +12,11 @@ SeQual can be executed both on Windows and UNIX-based (GNU/Linux, macOS) systems
 
 ### Prerequisites
 
-* Make sure you have a working Java Runtime Environment (JRE) version 1.8
+* Make sure you have a working **Java Runtime Environment (JRE) version 1.8**
   * JAVA_HOME environmental variable must be set accordingly
   * If you plan to use the graphical interface provided by SeQual (SeQual-GUI), it is strongly recommended to use Oracle JRE 1.8 which already includes the required JavaFX runtime libraries. Otherwise, you must ensure that such libraries are available on your JRE/system.
 
-* Make sure you have a working Spark distribution, either in local or cluster mode, version 2.2 or above
+* Make sure you have a working **Spark distribution version 2.2** (or above), either in local or cluster mode
   * See [Spark's Cluster Mode Overview](https://spark.apache.org/docs/latest/cluster-overview.html)
 
 * Download SeQual from the releases page and unzip the tarball. On Linux, just follow the instructions below:
@@ -170,9 +170,9 @@ Besides the previous mentioned groups, there are other features grouped under th
 
 In case you need to compile SeQual, the prerequisites are the following:
 
-* **Java Development Kit (JDK)** version 1.8
+* **Java Development Kit (JDK) version 1.8**
   * JAVA_HOME environmental variable must be set accordingly
-* **Apache Maven** version 3.0 or above
+* **Apache Maven version 3.0** (or above)
   * See [Installing Maven](https://maven.apache.org/install.html)
 * Clone the github repository to obtain the source code by executing the following command:
 
