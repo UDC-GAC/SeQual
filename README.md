@@ -1,7 +1,7 @@
 [![Build Status](https://travis-ci.com/roigalegot/SeQual.svg?token=az3pEmytBgoPiNLjCssG&branch=master)](https://travis-ci.com/roigalegot/SeQual)
 
 # SeQual
-SeQual is a parallel tool that allows to perform various quality controls, as well as transformations, on genomic sequence datasets in an efficient way. It is oriented to work with massive amounts of data or Big Data in distributed environments, looking forward to offer the best performance, and uses Apache Spark to manage such distributed data processing.
+SeQual is a Big Data tool that allows to perform various quality control operations (e.g. filtering, trimming) on genomic datasets in a scalable way. This tool is specifically oriented to work with massive amounts of data on distributed-memory systems looking forward to offer the best performance. SeQual is implemented upon the open-source Apache Spark framework to manage such distributed data processing over a cluster of machines.
 
 
 ## Getting Started
@@ -25,14 +25,14 @@ This will generate a folder called /target inside the three modules of the proje
 
 ## Features
 
-SeQual offers mainly four groups of features or operations to apply to the datasets, grouped based on the operation's objective. These groups are:
+SeQual offers mainly four groups of features or operations that can be performed over the input datasets, grouped based on the operation's objective. These groups are:
 
-* **Filters**: They remove the sequences that doesn't comply with the specified thresholds. 
-* **Trimmers**: They trim the sequences following specified parameters.
-* **Formatters**: They apply format transformations to the sequences.
-* **Statistics**: They measure and calculate different dataset statistics. 
+* **Filters**: They remove the sequences that do not comply with the specified thresholds specified by the user.
+* **Trimmers**: They trim the sequences following the specified parameters.
+* **Formatters**: They apply data transformations to the sequences.
+* **Statistics**: They compute different statistics in the dataset.
     
-Besides the previous mentioned groups, there are other features grouped under the name **Transversals**, which allow the user to configure the application more thoroughly, specifying aspects like the log level or Spark's configuration.
+Besides the previous mentioned groups, there are other features grouped under the name **Transversals**, which allow the user to configure the application more thoroughly, specifying aspects like the log level or the Spark configuration.
 
 
 ### Available Filters
@@ -86,13 +86,13 @@ Besides the previous mentioned groups, there are other features grouped under th
 
 * **Reading of FASTA format datasets:** Allows to read datasets of sequences in FASTA format.
 * **Reading of FASTQ format datasets:** Allows to read datasets of sequences in FASTA format.
-* **Reading of paired-end FASTA format datasets:** Allows to read datasets of paired-end sequences in FASTA format. The sequences must be separated in two different files.
-* **Reading of paired-end FASTQ format datasets:** Allows to read datasets of paired-end sequences in FASTA format. The sequences must be separated in two different files.
-* **Writing of resulting sequences:** Allows to write the resulting sequences after the operations in the indicated route, generating two different folders in case of paired-end datasets. This type of writing is done by default, writing the result in several text files.
-* **Writing of resulting sequences to an individual file:** Allows to write the resulting sequences after operations to an individual file (with the same format as the input) in the indicated path, or to two files in case of paired-end datasets.
-* **Configure Apache Spark's execution mode:** Allows to configure Spark's execution mode, being local[*] by default (which implies using all the available cores in the machine where the work is executed).
+* **Reading of paired-end FASTA format datasets:** Allows to read datasets of paired-end sequences in FASTA format. The sequences must be separated in two different input files.
+* **Reading of paired-end FASTQ format datasets:** Allows to read datasets of paired-end sequences in FASTA format. The sequences must be separated in two different input files.
+* **Writing of resulting sequences:** Allows to write the resulting sequences after the operations in the indicated path, generating two different folders in case of paired-end datasets. This type of writing is done by default, writing the result in several output text files.
+* **Writing of resulting sequences to an individual file:** Allows to write the resulting sequences after the operations to a single output file in the indicated path, or in to two output files in case of paired-end datasets.
+* **Configure Spark execution mode:** Allows to configure the master URL for Spark, being local[*] by default (which implies using all the available cores in the machine where SeQual is executed).
 * **Configure the level of log shown to the user:** Allows to configure the log level shown to the user by Spark and other libraries. The default level is ERROR.
-* **Generation and reading of a parameter specification file:** Allows to generate a template file where the operations to be carried out can be specified, as well as the necessary parameters for them.
+* **Generation and reading of a properties file:** Allows to generate a template file where the operations to be carried out can be specified, as well as the necessary parameters for them.
     
 ## How to use SeQual-CMD
 
@@ -135,19 +135,19 @@ The interface is shown in the following picture.
 
 The interface is mainly composed by 6 different fields:
 
-* **1: Configuration section.** Allows the user to specify different parameters, like the input file, the output folder, the level of log...
-* **2: Filters section.** Allows the user to select which filters should be applied, as well as a place to specify the parameters they need.
-* **3: Trimmers section.** Allows the user to select which trimmers should be applied, as well as a place to specify the parameters they need.
+* **1: Configuration section.** Allows the user to specify different parameters, like the input file, the output folder, the log level...
+* **2: Filters section.** Allows the user to select which filters should be applied, as well as their input parameters.
+* **3: Trimmers section.** Allows the user to select which trimmers should be applied, as well as their input parameters.
 * **4: Formmatters sections.** Allows the user to select which formatters should be applied.
-* **5: Statistics sections.** Allows the user to select which statistics should be measured.
-* **6: Output section.** Console-like window used to show information to the user.
+* **5: Statistics sections.** Allows the user to select which statistics should be computed.
+* **6: Output section.** Console-like window used to show information to the user about the status of the execution.
 
 
 ## Used tools
 
 * [Java](https://www.java.com/) - Programming Language
-* [Apache Spark](https://spark.apache.org/) - Data processor
-* [Hadoop Sequence Parser](https://github.com/rreye/hsp) - File Reader
+* [Apache Spark](https://spark.apache.org/) - Big Data Framework
+* [Hadoop Sequence Parser](https://github.com/rreye/hsp) - Input File Reader
 * [Apache Maven](https://maven.apache.org/) - Dependency Management
 * [JavaFX](https://openjfx.io/) - Graphic User Interface
 * [Travis CI](https://travis-ci.com/roigalegot/SeQual) - Continuous Integration Tool
@@ -156,11 +156,9 @@ The interface is mainly composed by 6 different fields:
 
 [GitHub Repository](https://github.com/roigalegot/SeQual) 
 
-## Author
+## Authors
 
 * **Roi Galego Torreiro** (https://www.linkedin.com/in/roi-galego)
-
-## Mentors
 
 * **Jorge Gonz&aacute;lez Dom&iacute;nguez** (http://gac.udc.es/~jgonzalezd)
 
