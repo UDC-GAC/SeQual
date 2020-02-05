@@ -60,8 +60,10 @@ spark-submit bin/sequal-cmd.jar -i dataset.fastq -o output -c etc/ExecutionParam
 
 The properties file used in the previous example contains the following values:
 
+```
 SingleFilters=QUALITY
 QualityMinVal=25
+```
 
 #### SeQual-GUI
 
