@@ -28,13 +28,13 @@ cd SeQual
 
 ### Execution
 
-SeQual can be used through a command-line interface (SeQual-CMD) or by executing the graphical user interface (SeQual-GUI). The usage of use each module is explained separately below.
+SeQual can be used through a command-line interface (SeQual-CMD) or by executing the graphical user interface (SeQual-GUI). The specific usage of each module is explained separately below.
 
 #### SeQual-CMD
 
 SeQual-CMD allows the processing of NGS datasets from a console interface. To do so, you just need to use the *spark-submit* command provided by Spark to launch the appropriate jar file (sequal-cmd.jar) located at the *bin* directory.
 
-To specify the specific operations to be performed over the input datasets, together with their necessary parameters, a Java properties file is used as input argument. SeQual includes a blank properties file at the *bin* directory (ExecutionParameters.properties) to be used as template, includes all the possible operations and parameters. Additionally, SeQual-CMD includes the option -g to generate a new blank properties file as shown below.
+To specify the specific operations to be performed over the input datasets, together with their necessary parameters, a Java properties file is used as input argument. SeQual includes a blank properties file at the *etc* directory (ExecutionParameters.properties) to be used as a template, which includes all the possible operations and parameters. Additionally, SeQual-CMD includes the option -g to generate a new blank properties file as shown below.
 
 All the available input arguments to SeQual-CMD are the following:
 * **-i InputFile:** Specifies the input file from where sequences will be read.
@@ -52,10 +52,10 @@ All the available input arguments to SeQual-CMD are the following:
 
 ##### Example
 
-As an example, the following command processes a single-end FASTQ dataset (dataset_1,fastq) to filter out sequences whose mean quality is below 25:
+As an example, the following command processes a single-end FASTQ dataset (dataset.fastq) to filter out sequences whose mean quality is below 25:
 
 ```
-spark-submit bin/sequal-cmd.jar -i dataset_1.fastq -o output -c etc/ExecutionParameters.properties -f
+spark-submit bin/sequal-cmd.jar -i dataset.fastq -o output -c etc/ExecutionParameters.properties -f
 ```
 
 The properties file used in the previous example contains the following values:
@@ -65,7 +65,7 @@ QualityMinVal=25
 
 #### SeQual-GUI
 
-SeQual-GUI allows using a graphical user interface rather than the console, thus greatly simplifying its use to non-computer science experts. To execute SeQual-GUI, it is possible to use the java command with the -jar option, although it is highly recommended to also rely on the spark-submit command.
+SeQual-GUI allows using a graphical user interface rather than the console, thus greatly simplifying its usage to non-computer science experts. To execute SeQual-GUI, it is possible to use directly the java command with the -jar option to launch the SeQual-GUI's jar file, although it is highly recommended to also rely on the spark-submit command to do so.
 
 Unlike SeQual-CMD, no additional arguments are needed to run SeQual-GUI, just launch the appropriate jar file (sequal-gui.jar) which is also located at the *bin* directory:
 
