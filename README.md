@@ -65,7 +65,9 @@ QualityMinVal=25
 
 #### SeQual-GUI
 
-SeQual-GUI allows using a graphical user interface rather than the console, thus greatly simplifying its use to non-computer science experts. To execute SeQual-GUI, it is also highly recommended to use the spark-submit command. In this case, unlike SeQual-CMD, no additional arguments are needed to run it, just launch the appropriate jar file (sequal-gui.jar) also located at the *bin* directory:
+SeQual-GUI allows using a graphical user interface rather than the console, thus greatly simplifying its use to non-computer science experts. To execute SeQual-GUI, it is possible to use the java command with the -jar option, although it is highly recommended to also rely on the spark-submit command.
+
+Unlike SeQual-CMD, no additional arguments are needed to run SeQual-GUI, just launch the appropriate jar file (sequal-gui.jar) which is also located at the *bin* directory:
 
 ```
 spark-submit bin/sequal-gui.jar
@@ -182,13 +184,14 @@ To compile SeQual, you just need to execute the following Maven command from wit
 mvn package -DskipTests
 ```
 
-This will generate a directory called *target* within each of the three Maven modules of the project (i.e. SeQual-Model, SeQual-CMD and SeQual-GUI), containing the appropiated jar files to execute SeQual. Example for executing SeQual-GUI from within the SeQual root directory:
-
-```
-spark-submit ./SeQual-GUI/target//sequal-gui.jar
-```
-
 Note that the first time you execute the previous command, Maven will download all the plugins and related dependencies it needs to fulfill the command. From a clean installation of Maven, this can take quite a while. If you execute the command again, Maven will now have what it needs, so it will be able to execute the command much more quickly.
+
+As a result of a successful compilation, Maven generates a directory called *target* within each of the three modules of the project (i.e. SeQual-Model, SeQual-CMD and SeQual-GUI), which contain the appropiated jar files to execute SeQual. Example for executing the GUI version from within the SeQual root directory:
+
+```
+spark-submit ./SeQual-GUI/target/sequal-gui.jar
+```
+
 
 ## Repository
 
