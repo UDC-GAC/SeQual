@@ -66,7 +66,7 @@ QualityMinVal=25
 SeQual-GUI allows using a graphical user interface rather than the console, thus greatly simplifying its use to non-computer science experts. To execute SeQual-GUI, it is also highly recommended to use the spark-submit command. In this case, unlike SeQual-CMD, no additional arguments are needed to run it, just launch the appropriate jar file (sequal-gui.jar) also located at the *bin* directory:
 
 ```
-spark-submit sequal-gui.jar
+spark-submit bin/sequal-gui.jar
 ```
 
 The graphical interface of SeQual is shown in the following picture.
