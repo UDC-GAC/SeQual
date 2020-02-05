@@ -50,6 +50,8 @@ All the available input arguments to SeQual-CMD are the following:
 * **-s:** Computes the statistics before and after performing other operations on the sequences.
 * **-sfo:** Generates a single output file named {input-file-name}-results.{format} within the output directory, along with a folder named Parts containing the output files for each partition.
 
+##### Example
+
 As an example, the following command processes a single-end FASTQ dataset (dataset_1,fastq) to filter out sequences whose mean quality is below 25:
 
 ```
@@ -168,6 +170,11 @@ In case you need to recompile SeQual, the prerequisites are the following:
   * JAVA_HOME environmental variable must be set accordingly
 * **Apache Maven** version 3.0 or above
   * See [Installing Maven](https://maven.apache.org/install.html)
+* Clone the github repository to obtain the source code by executing the following command:
+
+```
+git clone https://github.com/roigalegot/SeQual
+```
 
 To compile SeQual, you just need to execute the following Maven command from within the SeQual root directory:
 
