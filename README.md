@@ -12,7 +12,7 @@ SeQual can be executed both on Windows and UNIX-based (GNU/Linux, macOS) systems
 
 ### Prerequisites
 
-* Make sure you have the Java Runtime Environment (JRE) version 1.8
+* Make sure you have a working Java Runtime Environment (JRE) version 1.8
   * JAVA_HOME environmental variable must be set accordingly
   * If you plan to use the graphical interface provided by SeQual (SeQual-GUI), it is strongly recommended to use Oracle JRE 1.8 which already includes the required JavaFX runtime libraries. Otherwise, you must ensure that such libraries are available on your JRE/system.
 
@@ -166,7 +166,7 @@ Besides the previous mentioned groups, there are other features grouped under th
 
 ## Compilation
 
-In case you need to recompile SeQual, the prerequisites are the following:
+In case you need to compile SeQual, the prerequisites are the following:
 
 * **Java Development Kit (JDK)** version 1.8
   * JAVA_HOME environmental variable must be set accordingly
