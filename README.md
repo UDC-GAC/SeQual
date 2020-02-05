@@ -19,10 +19,10 @@ SeQual can be executed both on Windows and UNIX-based (GNU/Linux, macOS) systems
 * Make sure you have a working **Spark distribution version 2.2** (or above), either in local or cluster mode
   * See [Spark's Cluster Mode Overview](https://spark.apache.org/docs/latest/cluster-overview.html)
 
-* Download SeQual from the releases page and unzip the tarball. On Linux, just follow the instructions below:
+* Download SeQual binaries from the releases page and unzip the tarball. On Linux, just follow the instructions below:
 
 ```
-unzip SeQual-v1.0.zip
+unzip SeQual-bin-1.0.zip
 cd SeQual
 ```
 
@@ -174,7 +174,7 @@ In case you need to compile SeQual, the prerequisites are the following:
   * JAVA_HOME environmental variable must be set accordingly
 * **Apache Maven version 3.0** (or above)
   * See [Installing Maven](https://maven.apache.org/install.html)
-* Clone the github repository to obtain the source code by executing the following command:
+* Download the source code of SeQual from the releases page and unzip the tarball. Alternatively, clone the github repository by executing the following command:
 
 ```
 git clone https://github.com/roigalegot/SeQual
