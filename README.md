@@ -14,7 +14,7 @@ SeQual can be executed both on Windows and UNIX-based (GNU/Linux, macOS) systems
 
 * Make sure you have a working **Java Runtime Environment (JRE) version 1.8**
   * JAVA_HOME environmental variable must be set accordingly
-  * If you plan to use the graphical interface provided by SeQual (SeQual-GUI), it is strongly recommended to use Oracle JRE 1.8 which already includes the required JavaFX runtime libraries. Otherwise, you must ensure that such libraries are available on your JRE/system.
+  * If you plan to use the graphical interface provided by SeQual (SeQual-GUI), it is strongly **recommended to use Oracle JRE 1.8** which already includes the required JavaFX runtime libraries. Otherwise, you must ensure that such libraries are available on your JRE/system.
 
 * Make sure you have a working **Spark distribution version 2.2** (or above), either in local or cluster mode
   * See [Spark's Cluster Mode Overview](https://spark.apache.org/docs/latest/cluster-overview.html)
