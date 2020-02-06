@@ -22,11 +22,11 @@ SeQual can be executed both on Windows and UNIX-based (GNU/Linux, macOS) systems
 unzip SeQual-bin-1.0.zip
 ```
 
-### Execution
+## Execution
 
 SeQual can be used through a command-line interface (SeQual-CMD) or by executing the graphical user interface (SeQual-GUI). The specific usage of each module is explained separately below.
 
-#### SeQual-CMD
+### SeQual-CMD
 
 SeQual-CMD allows the processing of NGS datasets from a console interface. To do so, you just need to use the *spark-submit* command provided by Spark to launch the appropriate jar file (sequal-cmd.jar) located at the *bin* directory.
 
@@ -51,7 +51,7 @@ All the available input arguments to SeQual-CMD are the following:
 * **-s:** Computes the statistics before and after performing other operations on the sequences.
 * **-sfo:** Generates a single output file named {input-file-name}-results.{format} within the output directory, along with a folder named Parts containing the output files for each partition.
 
-##### Example
+#### Example
 
 As an example, the following command processes a single-end FASTQ dataset (dataset.fastq) to filter out sequences whose mean quality is below 25:
 
@@ -66,7 +66,7 @@ SingleFilters=QUALITY
 QualityMinVal=25
 ```
 
-#### SeQual-GUI
+### SeQual-GUI
 
 SeQual-GUI allows using a graphical user interface rather than the console, thus greatly simplifying its usage to non-computer science experts. This GUI has been implemented upon the [JavaFX](https://openjfx.io) library.
 
@@ -76,11 +76,11 @@ To execute SeQual-GUI, you must also rely on the spark-submit command to do so. 
 spark-submit [SPARK_ARGS] bin/sequal-gui.jar
 ```
 
-##### Important notes about JavaFX
+#### Important notes about JavaFX
 
-In order to use SeQual-GUI, you need a JRE 1.8 flavour **with bundled JavaFX** support to execute SeQual-GUI. For simplicity, it is **recommended to use Oracle JRE 1.8** which already includes the required JavaFX libraries. Otherwise, you must ensure that such libraries are available on your system or that you use a JRE 1.8 flavour with them (i.e. BellSoft, Azu Zulu). Note that most JRE 1.8 versions from OpenJDK do not provide JavaFX libraries, which are available to be installed separately on some systems. On UNIX-based systems, you can use the [SDKMAN manager](https://sdkman.io) to install a JRE 1.8 flavour with JavaFX, which are those listed with the FX suffix when executing sdk list java.
+In order to use SeQual-GUI, you need a JRE 1.8 flavour **with bundled JavaFX** support. For simplicity, it is **recommended to use Oracle JRE 1.8** which already includes the required JavaFX libraries. Otherwise, you must ensure that such libraries are available on your system or that you use a JRE 1.8 flavour with them (i.e. BellSoft, Azu Zulu). Note that most JRE 1.8 versions from OpenJDK do not provide JavaFX libraries, which are available to be installed separately on some systems. On UNIX-based systems, you can use the [SDKMAN manager](https://sdkman.io) to install a JRE 1.8 flavour with JavaFX, which are those listed with the FX suffix when executing sdk list java.
 
-##### GUI
+#### GUI
 
 The graphical interface of SeQual is shown in the following picture.
 
