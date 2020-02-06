@@ -1,9 +1,9 @@
 [![Build Status](https://travis-ci.com/roigalegot/SeQual.svg?token=az3pEmytBgoPiNLjCssG&branch=master)](https://travis-ci.com/roigalegot/SeQual)
 
 # SeQual
-**SeQual** is a Big Data tool to perform multiple quality control operations (e.g. filtering, trimming) on genomic datasets in a scalable way, currently supporting single-end and paired-end reads in FASTQ/FASTA formats.
+**SeQual** is a Big Data tool to perform quality control operations (e.g. filtering, trimming) on genomic datasets in a scalable way, currently supporting single-end and paired-end reads in FASTQ/FASTA formats.
 
-This tool is specifically oriented to work with massive amounts of data on distributed-memory systems looking forward to offer the best performance. SeQual is implemented in Java on top of the open-source [Apache Spark](http://spark.apache.org) framework in order to manage such distributed data processing over a cluster of machines.
+This tool is specifically oriented to work with large amounts of data taking advantage of distributed-memory systems such as clusters and clouds looking forward to offer the best performance. SeQual is implemented in Java on top of the open-source [Apache Spark](http://spark.apache.org) framework to manage such distributed data processing over a cluster of machines.
 
 
 ## Getting Started
@@ -12,13 +12,10 @@ SeQual can be executed both on Windows and UNIX-based (GNU/Linux, macOS) systems
 
 ### Prerequisites
 
-* Make sure you have a working **Java Runtime Environment (JRE) version 1.8**
-  * JAVA_HOME environmental variable must be set accordingly
-  * If you plan to use the graphical interface provided by SeQual (SeQual-GUI), it is strongly **recommended to use Oracle JRE 1.8** which already includes the required JavaFX runtime libraries. Otherwise, you must ensure that such libraries are available on your JRE/system.
-
-* Make sure you have a working **Spark distribution version 2.2** (or above), either in local or cluster mode
-  * See [Spark's Cluster Mode Overview](https://spark.apache.org/docs/latest/cluster-overview.html)
-
+* **Spark distribution version 2.X.Y**, working either in local or cluster mode
+  * For cluster mode, see [Spark's Cluster Mode Overview](https://spark.apache.org/docs/latest/cluster-overview.html)
+* **Java Runtime Environment (JRE) version 1.8**
+  * Current Spark 2.X.Y versions do not support JRE 11 (or later), which is planned for the upcoming [Spark 3.0](https://issues.apache.org/jira/browse/SPARK-24417) release
 * Download SeQual binaries from the releases page and unzip the tarball. On Linux, just follow the instructions below:
 
 ```
@@ -33,9 +30,14 @@ SeQual can be used through a command-line interface (SeQual-CMD) or by executing
 
 SeQual-CMD allows the processing of NGS datasets from a console interface. To do so, you just need to use the *spark-submit* command provided by Spark to launch the appropriate jar file (sequal-cmd.jar) located at the *bin* directory.
 
-To specify the specific operations to be performed over the input datasets, together with their necessary parameters, a Java properties file is used as input argument. SeQual includes a blank properties file at the *etc* directory (ExecutionParameters.properties) to be used as a template, which includes all the possible operations and parameters. Additionally, SeQual-CMD includes the option -g to generate a new blank properties file as shown below.
+```
+spark-submit [SPARK_ARGS] bin/sequal-cmd.jar [SEQUAL_ARGS]
+```
+
+To specify the specific operations to be performed over the input datasets, together with their necessary parameters, a Java properties file is used as input argument (option -c). SeQual includes a blank properties file at the *etc* directory (ExecutionParameters.properties) that can be used as template, which includes all the possible operations and parameters. Additionally, SeQual-CMD includes the option -g to generate a new blank properties file as shown below.
 
 All the available input arguments to SeQual-CMD are the following:
+
 * **-i InputFile:** Specifies the input file from where sequences will be read.
 * **-di InputFile:** Specifies the second input file from where paired sequences will be read, in case of processing paired-end datasets.
 * **-o OuputDirectory:** Specifies the output directory where the resulting sequences will be written to.
@@ -66,13 +68,19 @@ QualityMinVal=25
 
 #### SeQual-GUI
 
-SeQual-GUI allows using a graphical user interface rather than the console, thus greatly simplifying its usage to non-computer science experts. To execute SeQual-GUI, it is possible to use directly the java command with the -jar option to launch the SeQual-GUI's jar file, although it is highly recommended to also rely on the spark-submit command to do so.
+SeQual-GUI allows using a graphical user interface rather than the console, thus greatly simplifying its usage to non-computer science experts. This GUI has been implemented upon the [JavaFX](https://openjfx.io) library.
 
-Unlike SeQual-CMD, no additional arguments are needed to run SeQual-GUI, just launch the appropriate jar file (sequal-gui.jar) which is also located at the *bin* directory:
+To execute SeQual-GUI, you must also rely on the spark-submit command to do so. Unlike SeQual-CMD, no additional arguments are needed, so just launch the appropriate jar file (sequal-gui.jar) which is also located at the *bin* directory:
 
 ```
-spark-submit bin/sequal-gui.jar
+spark-submit [SPARK_ARGS] bin/sequal-gui.jar
 ```
+
+##### Important notes about JavaFX
+
+In order to use SeQual-GUI, you need a JRE 1.8 flavour **with bundled JavaFX** support to execute SeQual-GUI. For simplicity, it is **recommended to use Oracle JRE 1.8** which already includes the required JavaFX libraries. Otherwise, you must ensure that such libraries are available on your system or that you use a JRE 1.8 flavour with them (i.e. BellSoft, Azu Zulu). Note that most JRE 1.8 versions from OpenJDK do not provide JavaFX libraries, which are available to be installed separately on some systems. On UNIX-based systems, you can use the [SDKMAN manager](https://sdkman.io) to install a JRE 1.8 flavour with JavaFX, which are those listed with the FX suffix when executing sdk list java.
+
+##### GUI
 
 The graphical interface of SeQual is shown in the following picture.
 
@@ -87,7 +95,7 @@ This interface is mainly composed by 6 different fields:
 * **5: Statistics sections.** Allows the user to select which statistics should be computed.
 * **6: Output section.** A console-like window that shows useful information to the user about the status of the data processing.
 
-## Features
+## SeQual features
 
 SeQual offers mainly four groups of features or operations that can be performed over the input datasets, grouped based on the operation's objective. These groups are:
 
@@ -98,7 +106,7 @@ SeQual offers mainly four groups of features or operations that can be performed
     
 Besides the previous mentioned groups, there are other features grouped under the name **Transversals**, which allow the user to configure the application more thoroughly, specifying aspects like the log level or the Spark configuration.
 
-### Available Filters
+### Filters
 
 * **LENGTH**: Filters sequences based on an indicated maximum and/or minimum length threshold.
 * **QUALITYSCORE**: Filters sequences based on an indicated maximum and/or minimum quality score per base threshold, removing them if any of its bases is outside the threshold. Quality score from each base is calculated following Illumina encoding.
@@ -119,7 +127,7 @@ Besides the previous mentioned groups, there are other features grouped under th
 * **COMPLEMENTDISTINCT**: Filters complementary sequences maintaining the ones with the highest quality (if they have associated quality). For example, the complementary sequence of ATG is TAC.
 * **REVERSECOMPLEMENTDISTINCT**: Filters reverse complementary sequences maintaining the ones with the highest quality (if they have associated quality). For example, the reverse sequence of ATG is CAT.
 
-### Available Trimmers
+### Trimmers
 
 * **TRIMLEFT**: Trims sequences according to an indicated number of positions  starting from the 5'-end (left).
 * **TRIMRIGHT**: Trims sequences according to an indicated number of positions  starting from the 3'-end (right).
@@ -132,19 +140,19 @@ Besides the previous mentioned groups, there are other features grouped under th
 * **TRIMLEFTTOLENGTH**: Trims sequences to a specified maximum length starting from the 5'-end (left).
 * **TRIMRIGHTTOLENGTH**: Trims sequences to a specified maximum length starting from the 3'-end (right).
 
-### Available Formatters
+### Formatters
 
 * **DNATORNA**: Transforms DNA sequences to RNA sequences.
 * **RNATODNA**: Transforms RNA sequences to DNA sequences.
 * **FASTQTOFASTA**: Transforms sequences in FASTQ format to FASTA format. In this case base the information of the quality is lost.
 
-### Available Statistics
+### Statistics
 
 * **COUNT**: Calculates the total number of sequences in the dataset before and after performing the indicated operations on them.
 * **MEANLENGTH**: Calculates the mean length of the sequences in the dataset before and after performing the indicated operations on them.
 * **MEANQUALITY**: Calculates the mean quality of the sequences in the dataset before and after performing the indicated operations on them.
 
-### Available Transversals
+### Transversals
 
 * **Reading of FASTA format datasets:** Allows to read datasets of sequences in FASTA format.
 * **Reading of FASTQ format datasets:** Allows to read datasets of sequences in FASTA format.
@@ -167,11 +175,11 @@ Besides the previous mentioned groups, there are other features grouped under th
 
 ## Compilation
 
-In case you need to compile SeQual, the prerequisites are the following:
+In case you need to recompile SeQual, the prerequisites are the following:
 
-* **Java Development Kit (JDK) version 1.8**
+* **Java Development Kit (JDK) version 1.8** (or later)
   * JAVA_HOME environmental variable must be set accordingly
-* **Apache Maven version 3.0** (or above)
+* **Apache Maven version 3.X**
   * See [Installing Maven](https://maven.apache.org/install.html)
 * Download the source code of SeQual from the releases page and unzip the tarball. Alternatively, clone the github repository by executing the following command:
 
@@ -193,11 +201,6 @@ As a result of a successful compilation, Maven generates a directory called *tar
 spark-submit ./SeQual-GUI/target/sequal-gui.jar
 ```
 
-
-## Repository
-
-[GitHub Repository](https://github.com/roigalegot/SeQual) 
-
 ## Authors
 
 * **Roi Galego Torreiro** (https://www.linkedin.com/in/roi-galego)
@@ -206,4 +209,4 @@ spark-submit ./SeQual-GUI/target/sequal-gui.jar
 
 ## License
 
-SeQual is distributed as free software and is publicly available under the GNU GPLv3 license (see the [LICENSE](LICENSE) file for more details).
+SeQual is distributed as free software and is publicly available under the GNU AGPLv3 license (see the [LICENSE](LICENSE) file for more details).
