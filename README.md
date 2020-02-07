@@ -34,7 +34,7 @@ SeQual-CMD allows the processing of NGS datasets from a console interface. To do
 spark-submit [SPARK_ARGS] bin/sequal-cmd.jar [SEQUAL_ARGS]
 ```
 
-To specify the specific operations to be performed over the input datasets, together with their necessary parameters, a Java properties file is used as input argument (option -c). SeQual includes a blank properties file at the *etc* directory (ExecutionParameters.properties) that can be used as template, which includes all the possible operations and parameters. Additionally, SeQual-CMD includes the option -g to generate a new blank properties file as shown below.
+To specify the specific operations to be performed over the input datasets, together with their necessary parameters, a Java properties file is used as input argument (option -c). SeQual includes a blank properties file at the *etc* directory (ExecutionParameters.properties) that can be used as template, which includes all the possible operations and parameters. Additionally, SeQual-CMD provides the option -g to generate a new blank properties file as shown in the examples below.
 
 All the available input arguments to SeQual-CMD are the following:
 
@@ -51,19 +51,37 @@ All the available input arguments to SeQual-CMD are the following:
 * **-s:** Computes the statistics before and after performing other operations on the sequences.
 * **-sfo:** Generates a single output file named {input-file-name}-results.{format} within the output directory, along with a folder named Parts containing the output files for each partition.
 
-#### Example
+#### Examples
 
-As an example, the following command processes a single-end FASTQ dataset (dataset.fastq) to filter out sequences whose mean quality is below 25:
+The following command processes a single-end FASTQ dataset using the TRIMRIGHT operation in order to trim sequences 15 positions (i.e. bases) starting from the right:
 
 ```
-spark-submit bin/sequal-cmd.jar -i dataset.fastq -o output -c etc/ExecutionParameters.properties -f
+spark-submit bin/sequal-cmd.jar -i dataset.fastq -o output -c etc/ExecutionParameters.properties -t
 ```
 
 The properties file used in the previous example contains the following values:
 
 ```
+Trimmers=TRIMRIGHT
+TrimRight=15
+```
+
+The following example shows the processing of a paired-end dataset (i.e. two input files) using the QUALITY operation in order to filter out those paired sequences whose mean quality is below 25
+
+```
+spark-submit bin/sequal-cmd.jar -i dataset_1.fastq -di dataset_2.fastq -o output -c etc/ExecutionParameters.properties -f
+```
+In the previous example, the properties file contains:
+
+```
 SingleFilters=QUALITY
 QualityMinVal=25
+```
+
+The last example shows how to create a new blank properties file (ExecutionParameters.properties) using the option -g. The template is generated within the directory specified using the option -o:
+
+```
+spark-submit bin/sequal-cmd.jar -g -o ouput
 ```
 
 ### SeQual-GUI
@@ -129,8 +147,8 @@ Besides the previous mentioned groups, there are other features grouped under th
 
 ### Trimmers
 
-* **TRIMLEFT**: Trims sequences according to an indicated number of positions  starting from the 5'-end (left).
-* **TRIMRIGHT**: Trims sequences according to an indicated number of positions  starting from the 3'-end (right).
+* **TRIMLEFT**: Trims sequences according to an indicated number of positions starting from the 5'-end (left).
+* **TRIMRIGHT**: Trims sequences according to an indicated number of positions starting from the 3'-end (right).
 * **TRIMLEFTP**: Trims sequences according to an indicated percentage of the total number of bases starting from the 5'-end (left). 
 * **TRIMRIGHTP**: Trims sequences according to an indicated percentage of the total number of bases starting from the 3'-end (right).
 * **TRIMQUALLEFT**: Trims sequences until achieving an indicated mean sequence quality starting from the 5'-end (left).
