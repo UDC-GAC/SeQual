@@ -15,12 +15,12 @@
 
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-		<junit.version>4.12</junit.version>
-		<jacoco.version>0.8.2</jacoco.version>
-		<maven.compiler.version>3.8.0</maven.compiler.version>
+		<junit.version>4.13</junit.version>
+		<jacoco.version>0.8.5</jacoco.version>
+		<maven.compiler.version>3.8.1</maven.compiler.version>
 		<maven.compiler.source.version>1.8</maven.compiler.source.version>
 		<maven.compiler.target.version>1.8</maven.compiler.target.version>
-		<maven.assembly.version>3.1.1</maven.assembly.version>
+		<maven.assembly.version>3.2.0</maven.assembly.version>
 	</properties>
 
 	<dependencies>
