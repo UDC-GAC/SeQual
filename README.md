@@ -5,6 +5,11 @@
 
 This tool is specifically oriented to work with large amounts of data taking advantage of distributed-memory systems such as clusters and clouds looking forward to offer the best performance. SeQual is implemented in Java on top of the open-source [Apache Spark](http://spark.apache.org) framework to manage such distributed data processing over a cluster of machines.
 
+### Citation
+
+If you use **SeQual** in your research, please cite our work using the following reference:
+
+> Roberto R. Expósito, Roi Galego-Torreiro, Jorge González-Domínguez. [SeQual: Big Data Tool to Perform Quality Control and Data Preprocessing of Large NGS Datasets](https://doi.org/10.1109/ACCESS.2020.3015016). IEEE Access 8: 146075-146084 (2020).
 
 ## Getting Started
 
